@@ -1,0 +1,4 @@
+keycode  43 = Left
+keycode  44 = Down
+keycode  45 = Up
+keycode  46 = Right

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+find $DOTFILES_REPO/ -path $DOTFILES_REPO/.git -prune -o -printf "%P\n" | rsync --ignore-missing-args --files-from=- ~ $DOTFILES_REPO
+cd $DOTFILES_REPO
+git status

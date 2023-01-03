@@ -1,0 +1,109 @@
+#!/bin/sh
+
+[ -n "$1" ] && cd $DOTFILES_REPO && git pull
+find $DOTFILES_REPO/ -path $DOTFILES_REPO/.git -prune -o -printf "%P\n" | rsync --ignore-missing-args --exclude README.md --files-from=- $DOTFILES_REPO ~
+
+[ ! -f $HOME/.Xresources ] && echo '#include ".Xresources.d/cursor"
+#include ".Xresources.d/urxvt"
+
+Xft.dpi: 96
+Xcursor.size: 16' > $HOME/.Xresources
+
+echo "[org/gnome/evolution/plugin/mail-notification]
+notify-dbus-enabled=false
+notify-only-inbox=false
+notify-sound-beep=false
+notify-sound-enabled=false
+notify-status-notification=false
+
+[org/gnome/evolution/plugin/prefer-plain]
+mode='prefer_plain'
+show-suppressed=true
+
+[org/gnome/evolution/shell]
+use-header-bar=false
+
+[org/gnome/nm-applet]
+disable-connected-notifications=true
+disable-disconnected-notifications=true
+disable-vpn-notifications=true
+suppress-wireless-networks-available=true
+
+[org/mate/caja/icon-view]
+labels-beside-icons=true
+
+[org/mate/caja/preferences]
+always-use-browser=false
+click-policy='single'
+date-format='iso'
+default-folder-viewer='icon-view'
+enable-delete=true
+
+[org/mate/desktop/keybindings/custom0]
+action='keepassxc'
+binding='<Mod4>p'
+name='KeePassXC'
+
+[org/mate/desktop/keybindings/custom1]
+action='spotify'
+binding='<Mod4>y'
+name='Spotify'
+
+[org/mate/desktop/media-handling]
+automount-open=false
+
+[org/mate/desktop/peripherals/mouse]
+cursor-theme='default'
+
+[org/mate/desktop/applications/terminal]
+exec='i3-sensible-terminal'
+
+[org/mate/desktop/interface]
+enable-animations=false
+gtk-enable-animations=false
+gtk-theme='Adwaita-dark'
+icon-theme='mate'
+
+[org/mate/eom/ui]
+image-collection=false
+sidebar=false
+
+[org/mate/marco/general]
+mouse-button-modifier='<Super>'
+theme='Shiny'
+
+[org/mate/marco/global-keybindings]
+cycle-windows='<Mod4>space'
+panel-run-dialog='<Mod4>d'
+run-command-terminal='<Mod4>Return'
+switch-group='<Mod4>grave'
+switch-to-workspace-1='<Mod4>1'
+switch-to-workspace-2='<Mod4>2'
+switch-to-workspace-3='<Mod4>3'
+switch-to-workspace-4='<Mod4>4'
+switch-windows='<Mod4>Tab'
+
+[org/mate/marco/window-keybindings]
+close='<Mod4>q'
+lower='<Mod4>j'
+minimize='<Mod4>BackSpace'
+move-to-workspace-1='<Shift><Mod4>exclam'
+move-to-workspace-2='<Shift><Mod4>at'
+move-to-workspace-3='<Shift><Mod4>numbersign'
+move-to-workspace-4='<Shift><Mod4>dollar'
+raise='<Mod4>k'
+toggle-fullscreen='<Mod4>f'
+
+[org/mate/settings-daemon/plugins/media-keys]
+calculator='<Mod4>c'
+home='<Mod4>b'
+media='<Mod4>u'
+www='<Mod4>w'
+
+[org/mate/terminal/profiles/default]
+background-darkness=0.92
+background-type='transparent'
+" | dconf load /
+
+systemctl --user daemon-reload
+i3-msg reload

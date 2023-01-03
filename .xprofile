@@ -1,0 +1,17 @@
+#!/bin/sh
+export TERMINAL="/usr/bin/urxvt"
+export WINIT_X11_SCALE_FACTOR=1
+export MOZ_USE_XINPUT2=1
+export QT_STYLE_OVERRIDE=Windows
+export GTK_THEME=Adwaita:dark
+eval $(ssh-agent)
+
+xset b off &
+unclutter --ignore-scrolling &
+
+if [ -d ~/.xprofile.d ] ; then
+ for f in ~/.xprofile.d/?*.sh ; do
+  [ -x "$f" ] && . "$f"
+ done
+ unset f
+fi

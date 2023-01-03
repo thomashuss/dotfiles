@@ -1,0 +1,299 @@
+# i3 config file (v4)
+
+set $mod Mod4
+floating_modifier $mod
+tiling_drag modifier
+
+# appearance
+	# font
+		font pango:sans 9
+		set $i3-input i3-input -f "pango: sans 9"
+		set $i3-nagbar i3-nagbar -f "pango: sans 9"
+		set $dmenu_font sans-10
+		for_window [all] title_window_icon yes
+	# color scheme
+		# class                 border  backgr. text    indicator child_border
+		client.focused          #423d2c #615b4a #ffffff #9c885d   #423d2c
+		client.focused_inactive #363530 #403f39 #ffffff #484e50   #4a4942
+		client.unfocused        #222222 #222222 #888888 #292d2e   #222222
+		client.urgent           #c06200 #c06200 #ffffff #c06200   #c06200
+
+# bar
+	set $refresh_i3status killall -SIGUSR1 i3status
+	bar {
+		position top
+		status_command i3status
+		tray_output primary
+		colors {
+			background #141414
+			statusline #ffffff
+			separator #666666
+			focused_workspace #3d5499 #3d5499 #ffffff
+			active_workspace #212121 #212121 #ffffff
+			inactive_workspace #212121 #212121 #888888
+			urgent_workspace #c06200 #c06200 #ffffff
+			binding_mode #18ab00 #18ab00 #ffffff
+		}
+	}
+
+# preferred applications
+	set $files caja
+	set $mail evolution
+	set $www firefox
+	set $calc mate-calc
+	set $screenshot mate-screenshot --interactive
+	set $passwords keepassxc
+	set $music rhythmbox
+
+# workspace names
+	set $ws1 "1:📌"
+	set $ws2 "2:🌐"
+	set $ws3 "3:✉️"
+	set $ws4 "4"
+	set $ws5 "5"
+	set $ws6 "6"
+	set $ws7 "7"
+	set $ws8 "8"
+	set $ws9 "9"
+	set $ws10 "10:⏯"
+
+# application rules
+	# floating windows
+		for_window [instance="floating"] floating enable
+		for_window [instance="$calc"] floating enable
+		for_window [class="KeePassXC"] floating enable
+		for_window [instance="Places" class="firefox"] floating enable
+		for_window [instance="Browser" class="firefox"] floating enable
+		for_window [instance="pavucontrol"] floating enable
+		for_window [instance="evolution-alarm-notify"] floating enable
+		for_window [instance="system-config-printer"] floating enable
+		for_window [instance="blueman-manager"] floating enable
+		for_window [instance="arandr"] floating enable
+		for_window [instance="$files"] floating enable
+	# workspace assignments
+		assign [instance="$mail"] $ws3
+		assign [title="ncspot"] $ws10
+		for_window [instance="spotify"] move container to workspace $ws10
+		assign [instance="clementine"] $ws10
+		assign [instance="$music"] $ws10
+		assign [instance="zoom"] $ws3
+		assign [instance="discord"] $ws3
+		assign [instance="skype"] $ws3
+		assign [instance="microsoft teams - preview"] $ws3
+
+# lock screen
+	set $lock_seconds 900
+	set $lock_command i3lock -c 333333
+	set $lock sleep 0.3 && xset dpms force off
+	exec --no-startup-id xset s $lock_seconds $lock_seconds
+	exec --no-startup-id xset dpms $lock_seconds $lock_seconds $lock_seconds
+	exec --no-startup-id xss-lock --transfer-sleep-lock -- $lock_command --nofork
+
+# keybindings
+	# application launchers
+		bindsym Print exec $screenshot
+		bindsym $mod+Return exec i3-sensible-terminal
+		bindsym $mod+Shift+Return exec i3-sensible-terminal -name floating
+		bindsym $mod+w exec $www
+		bindsym $mod+Shift+w exec $www --private-window
+		# Focus mail client if it's running, otherwise start it
+		bindsym $mod+e workspace $ws3; exec --no-startup-id (pidof $mail && i3-msg "[instance=$mail] focus") || i3-msg exec $mail
+		# If no floating file manager windows are open, open the file manager; else, close the floating ones only
+		bindsym $mod+b exec --no-startup-id xdotool search --classname --onlyvisible $files | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW 32a "?\$0=1(open)" I3_FLOATING_WINDOW -id | grep open && i3-msg [instance=$files floating] kill || i3-msg exec $files
+		bindsym $mod+c exec $calc
+		bindsym $mod+p exec --no-startup-id $passwords
+		# Focus spotify if it's running, otherwise start it
+		bindsym $mod+y workspace $ws10; exec --no-startup-id (pidof spotify && i3-msg "[instance=spotify] focus") || spotify
+		# Focus music if it's running, otherwise start it
+		bindsym $mod+u workspace $ws10; exec --no-startup-id (pidof $music && i3-msg "[instance=$music] focus") || i3-msg exec $music
+		# Set display layout, re-apply background, prompt to save with autorandr
+		bindsym $mod+o exec arandr && ($HOME/.fehbg || 1) && autorandr --force -s "$(zenity --list --title 'Save display profile' --text 'Select a name for this display profile (or click Cancel to skip saving):' --column='Name' $(autorandr --list) 'New profile…' --editable)"
+		# Prompt to load autorandr profile
+		bindsym $mod+Shift+o exec autorandr "$(zenity --list --column='Name' $(autorandr --list) --text='Select a display profile:' --title='Load display profile')"
+		bindsym $mod+a exec pavucontrol
+	# screen lock
+		bindsym XF86ScreenSaver exec --no-startup-id $lock
+		bindsym $mod+Escape exec --no-startup-id $lock
+	# volume
+		bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
+		bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && $refresh_i3status
+		bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+		bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+	# media controls
+		set $nowplaying zenity --info --text="<b>$(playerctl metadata title | zenity-escape)</b>\n$(playerctl metadata artist | zenity-escape)" --title "Now Playing"
+		bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+		bindsym Shift+XF86AudioPlay exec $nowplaying
+		bindsym $mod+Down exec --no-startup-id playerctl play-pause
+		bindsym $mod+Shift+Down exec $nowplaying
+		bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+		bindsym $mod+Left exec --no-startup-id playerctl previous
+		bindsym XF86AudioNext exec --no-startup-id playerctl next
+		bindsym $mod+Right exec --no-startup-id playerctl next
+		bindsym XF86AudioStop exec --no-startup-id playerctl stop
+		bindsym $mod+Up exec --no-startup-id playerctl stop
+
+	# backlight
+		bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10
+		bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10
+
+	# program launcher
+		bindsym $mod+d exec --no-startup-id dmenu_run -fn "$dmenu_font"
+		bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop -d 'dmenu -fn "$dmenu_font"'
+
+	# change container layout
+		bindsym $mod+s layout stacking
+		bindsym $mod+t layout tabbed
+		bindsym $mod+i layout toggle split
+		# split
+			bindsym $mod+backslash split h
+			bindsym $mod+minus split v
+
+	# modify container
+		bindsym $mod+f fullscreen toggle
+		bindsym $mod+q kill
+		bindsym $mod+n exec --no-startup-id $i3-input -F 'title_format "%s"' -P 'New container name: '
+		bindsym $mod+Shift+n title_format "%title"
+		bindsym $mod+m exec --no-startup-id $i3-input -F 'mark --toggle %s' -l 1 -P 'Mark: '
+		bindsym $mod+Shift+space floating toggle
+
+	# change focus
+		bindsym $mod+h focus left
+		bindsym $mod+j focus down
+		bindsym $mod+k focus up
+		bindsym $mod+l focus right
+		bindsym $mod+BackSpace scratchpad show
+		bindsym F10 exec --no-startup-id $i3-input -F '[con_mark="%s"] focus' -l 1 -P 'Goto: '
+		bindsym $mod+equal focus parent
+		bindsym $mod+slash focus child
+		bindsym $mod+space focus mode_toggle
+
+	# workspace switch
+		bindsym $mod+1 workspace number $ws1
+		bindsym $mod+2 workspace number $ws2
+		bindsym $mod+3 workspace number $ws3
+		bindsym $mod+4 workspace number $ws4
+		bindsym $mod+5 workspace number $ws5
+		bindsym $mod+6 workspace number $ws6
+		bindsym $mod+7 workspace number $ws7
+		bindsym $mod+8 workspace number $ws8
+		bindsym $mod+9 workspace number $ws9
+		bindsym $mod+0 workspace number $ws10
+		bindsym F4 workspace back_and_forth
+
+	# output switch
+		bindsym $mod+bracketleft focus output left
+		bindsym $mod+bracketright focus output right
+		bindsym $mod+apostrophe focus output up
+		bindsym $mod+semicolon focus output down
+
+	# move focused container
+		bindsym $mod+Shift+h move left
+		bindsym $mod+Shift+j move down
+		bindsym $mod+Shift+k move up
+		bindsym $mod+Shift+l move right
+		bindsym $mod+Shift+BackSpace move scratchpad
+
+	# move focused container to workspace
+		bindsym $mod+Shift+1 move container to workspace number $ws1
+		bindsym $mod+Shift+2 move container to workspace number $ws2
+		bindsym $mod+Shift+3 move container to workspace number $ws3
+		bindsym $mod+Shift+4 move container to workspace number $ws4
+		bindsym $mod+Shift+5 move container to workspace number $ws5
+		bindsym $mod+Shift+6 move container to workspace number $ws6
+		bindsym $mod+Shift+7 move container to workspace number $ws7
+		bindsym $mod+Shift+8 move container to workspace number $ws8
+		bindsym $mod+Shift+9 move container to workspace number $ws9
+		bindsym $mod+Shift+0 move container to workspace number $ws10
+
+	# rename workspace
+		set $ws_prompt 'Workspace postfix (or Esc for default): '
+		bindsym $mod+Control+1 exec --no-startup-id $i3-input -F 'rename workspace to 1:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws1'
+		bindsym $mod+Control+2 exec --no-startup-id $i3-input -F 'rename workspace to 2:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws2'
+		bindsym $mod+Control+3 exec --no-startup-id $i3-input -F 'rename workspace to 3:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws3'
+		bindsym $mod+Control+4 exec --no-startup-id $i3-input -F 'rename workspace to 4:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws4'
+		bindsym $mod+Control+5 exec --no-startup-id $i3-input -F 'rename workspace to 5:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws5'
+		bindsym $mod+Control+6 exec --no-startup-id $i3-input -F 'rename workspace to 6:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws6'
+		bindsym $mod+Control+7 exec --no-startup-id $i3-input -F 'rename workspace to 7:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws7'
+		bindsym $mod+Control+8 exec --no-startup-id $i3-input -F 'rename workspace to 8:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws8'
+		bindsym $mod+Control+9 exec --no-startup-id $i3-input -F 'rename workspace to 9:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws9'
+		bindsym $mod+Control+0 exec --no-startup-id $i3-input -F 'rename workspace to 10:%s' -P $ws_prompt || i3-msg 'rename workspace to $ws10'
+
+	# move workspace
+		bindsym $mod+Shift+bracketleft move workspace to output left
+		bindsym $mod+Shift+bracketright move workspace to output right
+		bindsym $mod+Shift+apostrophe move workspace to output up
+		bindsym $mod+Shift+semicolon move workspace to output down
+
+	# control i3
+		bindsym $mod+Control+i exec --no-startup-id $i3-input
+		bindsym $mod+Control+c reload
+		bindsym $mod+Control+r restart
+		bindsym $mod+Control+e exec $i3-nagbar -t warning -m 'End this session?' -B 'Yes' 'i3-msg exit'
+
+# binding modes
+
+	set $resize_factor 3 px or 3 ppt
+	mode "resize" {
+		bindsym h resize shrink width $resize_factor
+		bindsym j resize grow height $resize_factor
+		bindsym k resize shrink height $resize_factor
+		bindsym l resize grow width $resize_factor
+
+		bindsym Return mode "default"
+		bindsym Escape mode "default"
+		bindsym $mod+r mode "default"
+	}
+	bindsym $mod+r mode "resize"
+
+	# Pseudo-vim mode
+	mode "normal" {
+		bindsym --release Control+B exec --no-startup-id xdotool key --clearmodifiers "Page_Up"
+		bindsym --release Control+F exec --no-startup-id xdotool key --clearmodifiers "Page_Down"
+		bindsym --release Control+R exec --no-startup-id xdotool key --clearmodifiers "ctrl+shift+z"
+		bindsym --release Shift+4 exec --no-startup-id xdotool key --clearmodifiers "End"
+		bindsym --release Shift+6 exec --no-startup-id xdotool key --clearmodifiers "Home"
+		bindsym --release b exec --no-startup-id xdotool key --clearmodifiers "ctrl+Left"
+		bindsym --release o exec --no-startup-id xdotool key --clearmodifiers "End" "Enter"
+		bindsym --release Shift+o exec --no-startup-id xdotool key --clearmodifiers "Home" "Return" "Up"
+		bindsym --release p exec --no-startup-id xdotool key --clearmodifiers "ctrl+v"
+		bindsym --release slash exec --no-startup-id xdotool key --clearmodifiers "alt+e" "f"
+		bindsym --release u exec --no-startup-id xdotool key --clearmodifiers "ctrl+z"
+		bindsym --release w exec --no-startup-id xdotool key --clearmodifiers "ctrl+Right"
+		bindsym --release v mode "visual"
+		
+		bindsym Escape mode "default"; exec --no-startup-id xmodmap $HOME/.local/lib/vim_keys_revert
+		bindsym $mod+Control+v mode "default"; exec --no-startup-id xmodmap $HOME/.local/lib/vim_keys_revert
+	}
+	mode "visual" {
+		bindsym --release Left exec --no-startup-id xdotool key --clearmodifiers "Shift+Left"
+		bindsym --release Up exec --no-startup-id xdotool key --clearmodifiers "Shift+Up"
+		bindsym --release Down exec --no-startup-id xdotool key --clearmodifiers "Shift+Down"
+		bindsym --release Right exec --no-startup-id xdotool key --clearmodifiers "Shift+Right"
+		bindsym --release b exec --no-startup-id xdotool key --clearmodifiers "Shift+ctrl+Left"
+		bindsym --release w exec --no-startup-id xdotool key --clearmodifiers "Shift+ctrl+Right"
+		bindsym --release Escape mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "Left"
+		bindsym --release y mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "ctrl+c" "Left"
+		bindsym --release d mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "ctrl+x" "Left"
+	}
+	bindsym $mod+Control+v mode "normal"; exec --no-startup-id xmodmap $HOME/.local/lib/vim_keys
+
+	# Unbinds keys
+	mode "passthrough" {
+		bindsym $mod+g mode "default"
+	}
+	# g for game
+	bindsym $mod+Control+g mode "passthrough"
+
+# start applications
+	exec --no-startup-id picom -b
+	exec --no-startup-id /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
+	exec --no-startup-id $HOME/.fehbg
+	exec --no-startup-id playerctld daemon
+	exec --no-startup-id numlockx on
+	exec --no-startup-id /usr/bin/autorandr -c --default default
+	exec --no-startup-id blueman-applet
+	exec --no-startup-id nm-applet
+	exec --no-startup-id /usr/lib/evolution-data-server/evolution-alarm-notify
+	exec --no-startup-id system-config-printer-applet
+	exec --no-startup-id keepassxc
