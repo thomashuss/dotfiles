@@ -60,7 +60,7 @@ rxvt-unicode xorg-xset picom unclutter mate-polkit feh
 playerctl numlockx gnome-keyring dunst redshift seahorse
 keepassxc caja evolution evolution-ews evolution-on firefox
 mate-calc mate-utils mate-user-guide xss-lock xorg-xrandr
-mate-icon-theme xclip light pyenv xorg-xmodmap xorg-setxkbmap
+mate-icon-theme xclip light xorg-xmodmap xorg-setxkbmap
 ttf-dejavu adobe-source-code-pro-fonts xcursor-vanilla-dmz
 autorandr arandr pavucontrol atril engrampa eom gvim
 rhythmbox mpv mpv-mpris xdotool zenity rsync
