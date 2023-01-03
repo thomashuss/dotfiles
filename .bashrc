@@ -9,10 +9,9 @@ PS1='[\u@\h \W]\$ '
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
-. $HOME/.profile
 
-# Disable systemctl's auto-paging feature:
-export SYSTEMD_PAGER=
+# Source my profile
+. $HOME/.profile
 
 # User specific aliases and functions
 if [ -d ~/.bashrc.d ]; then
