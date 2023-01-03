@@ -226,6 +226,7 @@ tiling_drag modifier
 		bindsym $mod+Shift+semicolon move workspace to output down
 
 	# control i3
+		bindsym $mod+Control+d exec $www /usr/share/doc/i3/userguide.html
 		bindsym $mod+Control+i exec --no-startup-id $i3-input
 		bindsym $mod+Control+c reload
 		bindsym $mod+Control+r restart

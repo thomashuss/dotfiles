@@ -226,6 +226,7 @@ Actions that change the window manager's behavior.
 |n, `1 ≤ n ≤ 9`|Prompt for postfix and rename W<sub>0</sub> to W<sub>`n`</sub> with postfix|
 |`0`|Prompt for postfix and rename W<sub>0</sub> to W<sub>`10`</sub> with postfix|
 |`c`|Reload i3 configuration|
+|`d`|Open i3 documentation in web browser|
 |`e`|Prompt to exit i3|
 |`o`|Prompt for i3 command|
 |`r`|Restart i3|
