@@ -64,6 +64,7 @@ mate-icon-theme xclip light xorg-xmodmap xorg-setxkbmap
 ttf-dejavu adobe-source-code-pro-fonts xcursor-vanilla-dmz
 autorandr arandr pavucontrol atril engrampa eom gvim
 rhythmbox mpv mpv-mpris xdotool zenity rsync
+blueman network-manager-applet
 ```
 In the AUR:
 ```
