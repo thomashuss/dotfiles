@@ -70,6 +70,7 @@ tiling_drag modifier
 		for_window [instance="blueman-manager"] floating enable
 		for_window [instance="arandr"] floating enable
 		for_window [instance="$files"] floating enable
+		for_window [instance="org.gnome.clocks"] floating enable
 	# workspace assignments
 		assign [instance="$mail"] workspace number $ws3
 		assign [title="ncspot"] workspace number $ws10
