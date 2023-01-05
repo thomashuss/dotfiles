@@ -138,7 +138,7 @@ tiling_drag modifier
 		bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10
 
 	# program launcher
-		bindsym $mod+d exec --no-startup-id dmenu_run -fn "$dmenu_font"
+		bindsym $mod+d exec --no-startup-id dmenu_run
 		bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop -d 'dmenu -fn "$dmenu_font"'
 
 	# change container layout
