@@ -1,3 +1,14 @@
+!
+! urxvt-perls
+URxvt.perl-ext-common:      default,clipboard,url-select,keyboard-select
+URxvt.url-select.launcher:  xdg-open
+URxvt.url-select.underline: true
+URxvt.keysym.M-u:           perl:url-select:select_next
+URxvt.keysym.M-Escape:      perl:keyboard-select:activate
+URxvt.keysym.M-s:           perl:keyboard-select:search
+
+!
+! Color scheme
 URxvt*font: xft:Source Code Pro:size=10:antialias=true
 URxvt*boldFont: xft:Source Code Pro:bold:size=10:antialias=true
 URxvt*letterSpace: -1
