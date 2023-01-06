@@ -41,9 +41,9 @@ files in `$DOTFILES_REPO` with those in `~`.
   - Set in `.config/fontconfig/fonts.conf`
   - Set in `.Xresources.d/urxvt`
 - GTK icon theme: MATE
-  - Set in `.gtkrc-2.0` and `.config/gtk-3.0/settings.ini`
+  - Set in `.gtkrc-2.0`, `.config/gtk-3.0/settings.ini`, `.config/gtk-4.0/settings.ini`
 - GTK animations: disabled
-  - Set in `.gtkrc-2.0` and `.config/gtk-3.0/settings.ini`
+  - Set in `.gtkrc-2.0`, `.config/gtk-3.0/settings.ini`, `.config/gtk-4.0/settings.ini`
 - Transparent applications: urxvt, code, spotify, rhythmbox, clementine, gvim
   - Set in `.config/picom.conf`
 
