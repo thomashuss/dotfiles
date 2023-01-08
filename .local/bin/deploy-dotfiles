@@ -9,7 +9,15 @@ find $DOTFILES_REPO/ -path $DOTFILES_REPO/.git -prune -o -printf "%P\n" | rsync 
 Xft.dpi: 96
 Xcursor.size: 16' > $HOME/.Xresources
 
-echo "[org/gnome/evolution/plugin/mail-notification]
+echo "[org/gnome/evolution/calendar]
+use-24hour-format=true
+
+[org/gnome/evolution/mail]
+composer-mode='plain-text'
+prompt-check-if-default-mailer=true
+prompt-on-accel-send=false
+
+[org/gnome/evolution/plugin/mail-notification]
 notify-dbus-enabled=false
 notify-only-inbox=false
 notify-sound-beep=false
