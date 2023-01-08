@@ -7,8 +7,8 @@ tiling_drag modifier
 # appearance
 	# font
 		font pango:sans 9
-		set $i3-input i3-input -f "pango: sans 9"
-		set $i3-nagbar i3-nagbar -f "pango: sans 9"
+		set $i3-input i3-input -f 'pango: sans 9'
+		set $i3-nagbar i3-nagbar -f 'pango: sans 9'
 		set $dmenu_font sans-10
 		for_window [all] title_window_icon yes
 	# color scheme
@@ -165,7 +165,6 @@ tiling_drag modifier
 		bindsym $mod+j focus down
 		bindsym $mod+k focus up
 		bindsym $mod+l focus right
-		#bindsym $mod+BackSpace [instance="^((?!$files).)*$"] scratchpad show
 		bindsym F10 exec --no-startup-id $i3-input -F '[con_mark="%s"] focus' -l 1 -P 'Goto: '
 		bindsym $mod+equal focus parent
 		bindsym $mod+slash focus child
@@ -195,7 +194,7 @@ tiling_drag modifier
 		bindsym $mod+Shift+j move down
 		bindsym $mod+Shift+k move up
 		bindsym $mod+Shift+l move right
-		#bindsym $mod+Shift+BackSpace move scratchpad
+		bindsym $mod+BackSpace exec --no-startup-id "$i3-input -F 'mark %s; move scratchpad' -l 1 -P 'Mark, then hide: '"
 
 	# move focused container to workspace
 		bindsym $mod+Shift+1 move container to workspace number $ws1

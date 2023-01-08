@@ -196,6 +196,7 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`Escape`|Lock screen|
 |`Left mouse button`|Move floating container|
 |`Right mouse button`|Resize container|
+|`Backspace`|Prompt for mark, then make C<sub>0</sub> a scratchpad|
 
 ### `$mod+Shift+...`
 
