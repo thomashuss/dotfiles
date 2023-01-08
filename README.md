@@ -65,6 +65,7 @@ ttf-dejavu adobe-source-code-pro-fonts xcursor-vanilla-dmz
 autorandr arandr pavucontrol atril engrampa eom gvim
 rhythmbox mpv mpv-mpris xdotool zenity rsync
 blueman network-manager-applet urxvt-perls
+i3lock i3status
 ```
 In the AUR:
 ```
