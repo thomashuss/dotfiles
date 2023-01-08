@@ -171,7 +171,7 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`Space`|F(floating container) toggle|
 |`Return`|L(terminal)|
 |`a`|L(`pavucontrol`) -- PulseAudio volume control|
-|`b`|Close all floating file manager windows if any are open OR L(file manager) [ideal for spatial file managers]|
+|`b`|Show/hide file manager "layer"|
 |`c`|L(calculator)|
 |`d`|L(`dmenu_run`) -- application launcher|
 |`e`|F(W<sub>`3`</sub>) and L(mail client)|
@@ -196,7 +196,6 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`Escape`|Lock screen|
 |`Left mouse button`|Move floating container|
 |`Right mouse button`|Resize container|
-|`Backspace`|Show/hide scratchpad|
 
 ### `$mod+Shift+...`
 
@@ -205,7 +204,6 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`h`,`j`,`k`,`l`|Move C<sub>0</sub> within W<sub>0</sub>|
 |n, `1 ≤ n ≤ 9`|Move C<sub>0</sub> to W<sub>`n`</sub>|
 |`0`|Move C<sub>0</sub> to W<sub>`10`</sub>|
-|`Backspace`|Move C<sub>0</sub> to scratchpad|
 |`[`|Move W<sub>0</sub> to left output|
 |`]`|Move W<sub>0</sub> to right output|
 |`'`|Move W<sub>0</sub> to above output|
@@ -275,3 +273,28 @@ the following keybindings are simulated as in vim's visual mode:
 
 While in i3 "normal" mode, `$mod+Control+v` or `Escape` will dissolve this cheap
 illusion.
+
+### File manager layer
+
+I've found that using a file manager is pretty disruptive but works
+smoothly when treated as a pop-up window, like an "open file" dialog.
+I also find the browser interface of most file managers to be slow
+and painful to navigate.  Combining the spatial browsing mode
+of my preferred file manager, Caja, and i3's scratchpad feature,
+I created the illusion of a floating "file manager layer" that sits
+on top of all other applications.  By pressing `$mod`+`b`, I can
+"toggle" the visibility of this "layer."  In reality, this is what happens:
+
+- If no floating Caja windows are open, launch Caja.
+- If at least one Caja window is open, floating, and hidden, then
+  all are hidden scratchpads, so show all Caja scratchpads.
+- If at least one Caja window is open, floating, and visible, then hide
+  all Caja scratchpads.
+
+This enables me to open/move/delete/etc. files with a rich desktop-like
+graphical interface (yes, sometimes this is superior to CLI), and save
+the state of the file manager so I can return to it later.  I can also
+tile Caja windows to "remove" them from the "layer," since all queries
+involved look for floating windows exclusively.  When I want to "clean"
+the floating "layer," `$mod`+`Shift`+`b` will close all floating Caja
+windows while keeping any tiled ones intact.
