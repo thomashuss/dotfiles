@@ -99,10 +99,10 @@ tiling_drag modifier
 		bindsym $mod+Shift+w exec $www --private-window
 		# Focus mail client if it's running, otherwise start it
 		bindsym $mod+e workspace number $ws3; exec --no-startup-id (pidof $mail && i3-msg "[instance=$mail] focus") || i3-msg exec $mail
-		# If no file manager windows are open, launch the file manager. If it's open, floating, and hidden,
+		# If no floating file manager windows are open, launch the file manager. If it's open, floating, and hidden,
 		# then it's in the scratchpad, so show it.  If it's open, floating, and visible, then move to scratchpad.
-		bindsym $mod+b exec --no-startup-id "(xdotool search --classname --onlyvisible $files | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW 32a \\"?\$0=1(open)\\" I3_FLOATING_WINDOW -id | grep open); visible=$?; i3-msg [instance=^$files$ floating] move scratchpad && test $visible != 0 && (i3-msg [instance=^$files$ floating] scratchpad show || i3-msg exec $files)"
-		bindsym $mod+Shift+b [instance=^$files$ floating] kill
+			bindsym $mod+f exec --no-startup-id "(xdotool search --classname --onlyvisible $files | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW 32a \\"?\$0=1(open)\\" I3_FLOATING_WINDOW -id | grep open); visible=$?; i3-msg [instance=^$files$ floating] move scratchpad && test $visible != 0 && (i3-msg [instance=^$files$ floating] scratchpad show || i3-msg exec $files)"
+			bindsym $mod+Shift+f [instance=^$files$ floating] kill
 		bindsym $mod+c exec $calc
 		bindsym $mod+p exec --no-startup-id $passwords
 		# Focus spotify if it's running, otherwise start it
@@ -153,7 +153,7 @@ tiling_drag modifier
 			bindsym $mod+minus split v
 
 	# modify container
-		bindsym $mod+f fullscreen toggle
+		bindsym $mod+x fullscreen toggle
 		bindsym $mod+q kill
 		bindsym $mod+n exec --no-startup-id $i3-input -F 'title_format "%s"' -P 'New container name: '
 		bindsym $mod+Shift+n title_format "%title"

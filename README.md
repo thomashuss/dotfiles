@@ -171,7 +171,7 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`Space`|F(floating container) toggle|
 |`Return`|L(terminal)|
 |`a`|L(`pavucontrol`) -- PulseAudio volume control|
-|`b`|Show/hide file manager "layer"|
+|`f`|Show/hide [file manager layer](#file-manager-layer)|
 |`c`|L(calculator)|
 |`d`|L(`dmenu_run`) -- application launcher|
 |`e`|F(W<sub>`3`</sub>) and L(mail client)|
@@ -188,7 +188,7 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`t`|Tabbed layout|
 |`s`|Stacking layout|
 |`r`|Resize mode (use hjkl to alter container's size, `Escape` to exit)|
-|`f`|Toggle C<sub>0</sub> fullscreen|
+|`x`|Toggle C<sub>0</sub> fullscreen|
 |`Left`|Previous track|
 |`Right`|Next track|
 |`Down`|Play/pause media playback|
@@ -208,6 +208,7 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`]`|Move W<sub>0</sub> to right output|
 |`'`|Move W<sub>0</sub> to above output|
 |`;`|Move W<sub>0</sub> to below output|
+|`f`|Close all floating file manager windows|
 |`w`|L(web browser) private window|
 |`Return`|L(floating terminal)|
 |`d`|L(`i3-dmenu-desktop`) -- application launcher for `.desktop` files|
@@ -282,7 +283,7 @@ I also find the browser interface of most file managers to be slow
 and painful to navigate.  Combining the spatial browsing mode
 of my preferred file manager, Caja, and i3's scratchpad feature,
 I created the illusion of a floating "file manager layer" that sits
-on top of all other applications.  By pressing `$mod`+`b`, I can
+on top of all other applications.  By pressing `$mod`+`f`, I can
 "toggle" the visibility of this "layer."  In reality, this is what happens:
 
 - If no floating Caja windows are open, launch Caja.
@@ -296,5 +297,5 @@ graphical interface (yes, sometimes this is superior to CLI), and save
 the state of the file manager so I can return to it later.  I can also
 tile Caja windows to "remove" them from the "layer," since all queries
 involved look for floating windows exclusively.  When I want to "clean"
-the floating "layer," `$mod`+`Shift`+`b` will close all floating Caja
+the floating "layer," `$mod`+`Shift`+`f` will close all floating Caja
 windows while keeping any tiled ones intact.
