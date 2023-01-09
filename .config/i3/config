@@ -284,13 +284,6 @@ tiling_drag modifier
 	}
 	bindsym $mod+Control+v mode "normal"; exec --no-startup-id xmodmap $HOME/.local/lib/vim_keys
 
-	# Unbinds keys
-	mode "passthrough" {
-		bindsym $mod+g mode "default"
-	}
-	# g for game
-	bindsym $mod+Control+g mode "passthrough"
-
 # start applications
 	exec --no-startup-id picom -b
 	exec --no-startup-id /usr/lib/mate-polkit/polkit-mate-authentication-agent-1

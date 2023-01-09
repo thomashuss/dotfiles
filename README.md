@@ -234,7 +234,6 @@ Actions that change the window manager's behavior.
 |`o`|Prompt for i3 command|
 |`r`|Restart i3|
 |`v`|[Pseudo-vim mode](#pseudo-vim-mode)|
-|`g`|Passthrough mode (unbinds all keys, `$mod+g` to revert)|
 
 ### Single keys
 
