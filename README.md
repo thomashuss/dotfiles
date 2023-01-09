@@ -217,6 +217,7 @@ Because chords of more than 2 keys are uncomfortable, these actions should be th
 |`n`|Reset C<sub>0</sub> title|
 |`Space`|Float/unfloat C<sub>0</sub>|
 |`o`|Prompt for and load `autorandr` display configuration|
+|`Up`|Prompt to switch active media player|
 |`Down`|Show popup with currently playing media title and artist|
 
 ### `$mod+Control+...`
@@ -250,7 +251,7 @@ the use of a single key.
 |`Microphone mute`|Microphone mute|
 |`Previous track`|Previous track|
 |`Play/pause media playback`|Play/pause media playback (combine with `Shift` for same behavior as `$mod+Shift+Down`)|
-|`Stop media playback`|Stop media playback|
+|`Stop media playback`|Stop media playback (combine with `Shift` for same behavior as `$mod+Shift+Up`)|
 |`Next track`|Next track|
 |`Brightness up`|Brightness up (uses `light`)|
 |`Brightness down `|Brightness down (uses `light`)|

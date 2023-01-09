@@ -125,6 +125,7 @@ tiling_drag modifier
 
 	# media controls
 		set $nowplaying zenity --info --text="<b>$(playerctl metadata title | zenity-escape)</b>\n$(playerctl metadata artist | zenity-escape)" --title "Now Playing"
+		set $selectplayer playerctl -p $(zenity --list --title="Media players" --text="Select the player to control:" --column="Player name" $(playerctl -l)) play-pause
 		bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
 		bindsym Shift+XF86AudioPlay exec $nowplaying
 		bindsym $mod+Down exec --no-startup-id playerctl play-pause
@@ -134,7 +135,9 @@ tiling_drag modifier
 		bindsym XF86AudioNext exec --no-startup-id playerctl next
 		bindsym $mod+Right exec --no-startup-id playerctl next
 		bindsym XF86AudioStop exec --no-startup-id playerctl stop
+		bindsym Shift+XF86AudioStop exec $selectplayer
 		bindsym $mod+Up exec --no-startup-id playerctl stop
+		bindsym $mod+Shift+Up exec $selectplayer
 
 	# backlight
 		bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10
