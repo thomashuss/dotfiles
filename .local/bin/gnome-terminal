@@ -1,0 +1,13 @@
+#!/bin/bash
+# This script fixes gtk-launch for terminal applications
+
+[ x"$1" = x"--" ] || { exec /usr/bin/gnome-terminal "$@"; exit 0; }
+
+shift
+
+TITLE="$(basename "$1")"
+if [ -n "$TITLE" ]; then
+	exec $TERMINAL -name "$TITLE" -e "$@"
+else
+	exec $TERMINAL -e "$@"
+fi
