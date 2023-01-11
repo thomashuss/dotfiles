@@ -72,7 +72,7 @@ tiling_drag modifier
 		for_window [instance="^arandr$"] floating enable
 		for_window [instance="^org\.gnome\.clocks$"] floating enable
 	# workspace assignments
-		assign [instance="^$mail$" window_role="E(ShellWindow|MsgComposer)"] workspace number $ws3
+		assign [instance="^$mail$" window_role="^E(ShellWindow|MsgComposer)$"] workspace number $ws3
 		assign [title="^ncspot$"] workspace number $ws10
 		assign [instance="^clementine$"] workspace number $ws10
 		assign [instance="^$music$"] workspace number $ws10
@@ -98,7 +98,7 @@ tiling_drag modifier
 		bindsym $mod+w exec $www
 		bindsym $mod+Shift+w exec $www --private-window
 		# Focus mail client if it's running, otherwise start it
-		bindsym $mod+e workspace number $ws3; exec --no-startup-id (pidof $mail && i3-msg "[instance=^$mail$ window_role=EShellWindow] focus") || i3-msg exec $mail
+		bindsym $mod+e workspace number $ws3; exec --no-startup-id (pidof $mail && i3-msg "[instance=^$mail$ window_role=^EShellWindow$] focus") || i3-msg exec $mail
 		# If no floating file manager windows are open, launch the file manager. If it's open, floating, and hidden,
 		# then it's in the scratchpad, so show it.  If it's open, floating, and visible, then move to scratchpad.
 			bindsym $mod+f exec --no-startup-id "(xdotool search --classname --onlyvisible $files | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW 32a \\"?\$0=1(open)\\" I3_FLOATING_WINDOW -id | grep open); visible=$?; i3-msg [instance=^$files$ floating] move scratchpad && test $visible != 0 && (i3-msg [instance=^$files$ floating] scratchpad show || i3-msg exec $files)"
