@@ -145,7 +145,7 @@ tiling_drag modifier
 
 	# program launcher
 		bindsym $mod+d exec --no-startup-id dmenu_run
-		bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop -d 'dmenu -fn "$dmenu_font"'
+		bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop -d 'dmenu -i -fn "$dmenu_font"'
 
 	# change container layout
 		bindsym $mod+s layout stacking
