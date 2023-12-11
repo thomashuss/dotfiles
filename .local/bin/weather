@@ -58,7 +58,7 @@ else:
 
 
 location = argv[1] if len(argv) > 1 else config['location']['icao']
-with urllib.request.urlopen(urllib.request.Request(f"https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&format=json")) as req:
+with urllib.request.urlopen(urllib.request.Request(f"https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&format=json"), timeout=10) as req:
     data = json.load(req)[0]
 
 pargs = {'sep': '', 'end': ''}
