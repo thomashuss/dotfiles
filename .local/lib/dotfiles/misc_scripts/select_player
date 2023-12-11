@@ -1,0 +1,3 @@
+#!/bin/sh
+
+d=$(playerctl -l | rofi -dmenu -p "Select media player" -l 5 -matching prefix) && playerctl play-pause -p "$d"

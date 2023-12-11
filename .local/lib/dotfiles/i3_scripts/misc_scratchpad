@@ -1,0 +1,20 @@
+#!/bin/dash
+
+ws=$(i3-msg -t get_workspaces | jq '.[] | select(.focused==true).num')
+if [ -n "$2" ]; then
+	mark=$(uuidgen | awk -vmarker="$1" -vmarks="$(i3-msg -t get_marks)" -vws="$ws" '
+	BEGIN {FS=""}
+	{
+		out=marker ws":"$1;
+		for(i=2;i<=NF;i++)
+			if(marks~out)
+				out=out$i
+			else
+				break
+		print out
+	}')
+	focus=$(xdotool getwindowfocus)
+	i3-msg "[id=$focus] mark $mark, floating enable; [con_mark=^$1$ws:.+] move scratchpad, scratchpad show; [id=$focus] focus"
+else
+	i3-msg "[con_mark=^$1$ws:.+] scratchpad show"
+fi

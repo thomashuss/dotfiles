@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/xbindkeys
+Hidden=false
+Name[en_US]=xbindkeys
+Name=xbindkeys
+Comment[en_US]=Binds keys in a DE
+Comment=Binds keys in a DE
+NotShowIn=i3;
+X-MATE-Autostart-Delay=0

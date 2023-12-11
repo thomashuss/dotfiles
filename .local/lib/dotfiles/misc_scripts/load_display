@@ -1,0 +1,3 @@
+#!/bin/sh
+
+autorandr "$(autorandr --list | rofi -dmenu -l 5 -p 'Load display configuration')"

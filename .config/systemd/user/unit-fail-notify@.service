@@ -1,0 +1,7 @@
+[Unit]
+Description=Unit Failure Notifier
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/notify-send --urgency=critical --icon=dialog-error "%I crashed!"

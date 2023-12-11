@@ -1,0 +1,119 @@
+#!/bin/python3
+from sys import argv
+import configparser
+import json
+import os
+import urllib.request
+
+# Source of sunrise algorithm: https://en.wikipedia.org/wiki/Sunrise_equation#Example_of_implementation_in_Python
+
+
+def j2ts_day_modulus(j: float | int) -> float:
+    return ((j - 2440587.5) % 1) * 86400
+
+
+def ts2j(ts: float | int) -> float:
+    return ts / 86400.0 + 2440587.5
+
+
+def dawn_dusk_calc(
+        current_timestamp: float,
+        f: float,
+        l_w: float,
+        elevation: float = 0.0,
+) -> tuple[float, float] | tuple[None, None]:
+    J_date = ts2j(current_timestamp)
+    n = ceil(J_date - (2451545.0 + 0.0009) + 69.184 / 86400.0)
+    J_ = n + 0.0009 - l_w / 360.0
+    M_degrees = fmod(357.5291 + 0.98560028 * J_, 360)
+    M_radians = radians(M_degrees)
+    C_degrees = 1.9148 * sin(M_radians) + 0.02 * \
+        sin(2 * M_radians) + 0.0003 * sin(3 * M_radians)
+    L_degrees = fmod(M_degrees + C_degrees + 180.0 + 102.9372, 360)
+    Lambda_radians = radians(L_degrees)
+    J_transit = 2451545.0 + J_ + 0.0053 * \
+        sin(M_radians) - 0.0069 * sin(2 * Lambda_radians)
+    sin_d = sin(Lambda_radians) * sin(radians(23.4397))
+    cos_d = cos(asin(sin_d))
+    some_cos = (sin(radians(-0.833 - 2.076 * sqrt(elevation) / 60.0)
+                    ) - sin(radians(f)) * sin_d) / (cos(radians(f)) * cos_d)
+    try:
+        w0_radians = acos(some_cos)
+    except ValueError:
+        return None, None
+    w0_degrees = degrees(w0_radians)
+    j_rise = J_transit - w0_degrees / 360
+    j_set = J_transit + w0_degrees / 360
+    return j2ts_day_modulus(j_rise), j2ts_day_modulus(j_set)
+
+
+config = configparser.ConfigParser()
+config_path = os.environ['HOME'] + '/.config/weather.conf'
+if os.path.isfile(config_path):
+    config.read(config_path)
+else:
+    config.read_dict({
+        'location': {'icao': 'seqm'},  # default = Quito
+        'units': {'fahrenheit': False, 'wind': 'kn'}})
+
+
+location = argv[1] if len(argv) > 1 else config['location']['icao']
+with urllib.request.urlopen(urllib.request.Request(f"https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&format=json")) as req:
+    data = json.load(req)[0]
+
+pargs = {'sep': '', 'end': ''}
+
+hazards = {'🥶': False, '❗': False, '💧': False,# '🌢': False,
+           '❄️': False, '🌫': False}
+hazards['💧'] = data.get('precip') is not None
+hazards['❄️'] = data.get('snow') is not None
+wx_string = data.get('wxString')
+if wx_string is not None:
+    hazards['🥶'] |= 'FZ' in wx_string
+    hazards['❗'] |= 'TS' in wx_string
+    hazards['💧'] |= 'RA' in wx_string
+    #hazards['🌢'] |= 'BR' in wx_string
+    hazards['❄️'] |= 'SN' in wx_string
+    hazards['🌫'] |= 'FG' in wx_string or 'HZ' in wx_string
+hazards_str = ' '.join(filter(lambda key: hazards[key], hazards.keys()))
+if len(hazards_str) > 0:
+    print(hazards_str, end=' ')
+
+if 'clouds' in data and data['clouds'] is not None and len(data['clouds']) > 0:
+    cloud = data['clouds'][-1]['cover']
+    if cloud == 'OVC':
+        print('☁️ ', **pargs)
+    elif cloud == 'OVX':
+        print('🌫️ ', **pargs)
+    else:
+        from math import acos, asin, ceil, cos, degrees, fmod, radians, sin, sqrt
+        from time import time
+        t = time()
+        latitude = data['lat']
+        longitude = data['lon']
+        elevation = data['elev']
+        dawn, dusk = dawn_dusk_calc(t, latitude, longitude, elevation)
+        t %= 86400
+        daytime = dawn is not None and dusk is not None and dawn <= t and t <= dusk
+        if cloud == 'SKC' or cloud == 'NCD' or cloud == 'CLR' or cloud == 'NSC' or cloud == 'CAVOK':
+            print('☀️ ' if daytime else '🌃 ', **pargs)
+        elif cloud == 'FEW' or cloud == 'SCT':
+            print('🌤️ ' if daytime else '✨ ', **pargs)
+        elif cloud == 'BKN':
+            print('🌥️ ' if daytime else '☁️ ', **pargs)
+
+if 'temp' in data and data['temp'] is not None:
+    if config['units']['fahrenheit']:
+        print(round(data['temp'] * 1.8 + 32), '°F', **pargs)
+    else:
+        print(data['temp'], '°C', **pargs)
+    print('  ', **pargs)
+
+if 'wspd' in data and data['wspd'] is not None:
+    if config['units']['wind'] == 'kn':
+        print(data['wspd'], 'kn', **pargs)
+    elif config['units']['wind'] == 'km':
+        print(round(data['wspd'] * 1.852), 'km/h', **pargs)
+    elif config['units']['wind'] == 'mi':
+        print(round(data['wspd'] * 1.15078), 'mph', **pargs)
+print('\n', **pargs)

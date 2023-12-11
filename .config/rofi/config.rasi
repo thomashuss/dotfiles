@@ -1,0 +1,4 @@
+configuration {
+	font: "sans 12";
+}
+@theme "/usr/share/rofi/themes/Monokai.rasi"

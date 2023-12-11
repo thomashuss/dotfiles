@@ -1,0 +1,11 @@
+#!/bin/sh
+
+picom &
+/usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
+$HOME/.fehbg &
+(sed -i '/^dry-run=$/d' $HOME/.config/autorandr/settings.ini; autorandr -c --default default) &
+blueman-applet &
+nm-applet &
+/usr/lib/evolution-data-server/evolution-alarm-notify &
+system-config-printer-applet &
+keepassxc &

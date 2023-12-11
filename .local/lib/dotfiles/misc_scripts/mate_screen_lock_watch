@@ -1,0 +1,9 @@
+#!/bin/sh
+
+dbus-monitor --session "type='signal',interface='org.mate.ScreenSaver'" |
+	while read state; do
+		case "$state" in 
+			*"boolean true"*) for f in $HOME/.local/lib/dotfiles/lock/*.sh; do "$f"; done;;
+			*"boolean false"*) for f in $HOME/.local/lib/dotfiles/unlock/*.sh; do "$f"; done;;
+		esac
+	done

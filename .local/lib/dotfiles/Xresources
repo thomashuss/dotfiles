@@ -1,0 +1,5 @@
+#include ".Xresources.d/cursor"
+
+Xft.dpi: 96
+Xcursor.size: 16
+

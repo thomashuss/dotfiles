@@ -1,0 +1,103 @@
+#!/bin/python3
+from atexit import register
+from dbus import String, Array
+from dbus.exceptions import DBusException
+from dbus.mainloop.glib import DBusGMainLoop
+from gi.repository.GLib import MainLoop
+from mpris2 import Player
+from subprocess import run
+import os
+import re
+import signal
+
+BLANK = ''
+LENGTH = 50
+PLAYING = 'Playing'
+METADATA = String('Metadata')
+STATUS = String('PlaybackStatus')
+ARTIST = String('xesam:artist')
+TITLE = String('xesam:title')
+TITLE_COLOR = '#FF6F7C'
+ARTIST_COLOR = '#BABABA'
+PAUSED_COLOR = '#707070'
+OUT_FILE = os.getenv('XDG_RUNTIME_DIR', '/tmp') + '/statusline/now_playing'
+OUT_TEMPLATE_ARTIST = "<span color='%(cpause)s'>—</span><span color='%(cartist)s'>%(artist)s</span>";
+OUT_TEMPLATE_TITLE = "<span color='%(ctitle)s'>%(title)s</span>";
+title_re = re.compile(r' ?(\(|\[)[^\)\]]*(remaster|feat(\.|uring)|\bft\b|w(ith|\/)|bonus track|b-side)[^\)\]]*(\)|\])| ?(-|;)[^-;\(|\[]*(remaster|feat(\.|uring)|\bft\b|w(ith|\/)|bonus track|b-side)[^-;]*', re.IGNORECASE)
+
+def sanitize(s):
+    s = s[:LENGTH] if len(s) > LENGTH else s
+    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace("'", '&apos;').replace('"', '&quot;')
+
+def sanitize_title(s):
+    return title_re.sub(BLANK, s)
+
+def cleanup():
+    try:
+        os.remove(OUT_FILE)
+    except FileNotFoundError:
+        ...
+
+def refresh_i3status():
+    run(['killall', '-USR1', 'i3status'])
+
+class MediaWatcher:
+    player_exists = False
+    playing = False
+    artist = BLANK
+    title = BLANK
+    out = BLANK
+
+    def __init__(self):
+        DBusGMainLoop(set_as_default=True)
+        self.player_iface = Player(dbus_interface_info={'dbus_uri': 'org.mpris.MediaPlayer2.playerctld'})
+        self.player_iface.PropertiesChanged = self.signal_handler
+        os.makedirs(os.path.dirname(OUT_FILE), exist_ok=True)
+        self.signal_handler()
+        MainLoop().run()
+
+    def signal_handler(self, _=None, data=None, __=None):
+        old_artist = self.artist
+        old_title = self.title
+        try:
+            self.playing = data[STATUS] == PLAYING if data and STATUS in data else self.player_iface.PlaybackStatus == PLAYING
+            data = data[METADATA] if data and METADATA in data else self.player_iface.Metadata
+            self.artist = data.get(ARTIST)
+            self.artist = self.artist[0] if type(self.artist) is Array and len(self.artist) > 0 else BLANK
+            self.title = data.get(TITLE, BLANK)
+            self.player_exists = True
+        except DBusException as e:
+            if 'com.github.altdesktop.playerctld.NoActivePlayer' in str(e):
+                self.artist = BLANK
+                self.title = BLANK
+                self.player_exists = False
+                self.playing = False
+        self.update_status()
+        if self.playing and (self.artist != old_artist or self.title != old_title):
+            refresh_i3status()
+
+    def update_status(self):
+        if self.player_exists:
+            out = OUT_TEMPLATE_TITLE % {'ctitle': TITLE_COLOR if self.playing else PAUSED_COLOR,
+                                    'title': sanitize(sanitize_title(self.title))}
+            if self.artist != BLANK:
+                out += OUT_TEMPLATE_ARTIST % {'cpause': PAUSED_COLOR,
+                                    'cartist': ARTIST_COLOR if self.playing else PAUSED_COLOR,
+                                    'artist': sanitize(self.artist)}
+        else:
+            out = BLANK
+        if self.out != out:
+            self.out = out
+            self.print_status()
+
+    def print_status(self):
+        if self.out == BLANK:
+            os.remove(OUT_FILE)
+        else:
+            with open(OUT_FILE, 'w') as f:
+                f.write(self.out)
+
+if __name__ == '__main__':
+    register(cleanup)
+    signal.signal(signal.SIGTERM, lambda *_: quit())
+    MediaWatcher()

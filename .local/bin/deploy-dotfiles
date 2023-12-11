@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ -z "$DOTFILES_REPO" ]; then
+	echo 'DOTFILES_REPO is not set. Aborting.'
+	exit 1
+fi
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+	echo 'XDG_RUNTIME_DIR is not set. Aborting.'
+	exit 1
+fi
+cd $DOTFILES_REPO
+[ -n "$1" ] && git pull
+files=$(find $DOTFILES_REPO/ -path $DOTFILES_REPO/.git -prune -o \( \! -name 'README\.md' -type f -printf "%P\n" \))
+sed_files=$(grep -El '/path/to/home|/path/to/xdg_runtime_dir' $(echo "$files" | grep -vE '(update|deploy)-dotfiles'))
+sed -i -e's@/path/to/home@'"$HOME"'@g' -e's@/path/to/xdg_runtime_dir@'"$XDG_RUNTIME_DIR"'@g' $sed_files
+echo "$files" | rsync --ignore-missing-args --files-from=- $DOTFILES_REPO ~
+sed -i -e's@'"$HOME"'@/path/to/home@g' -e's@'"$XDG_RUNTIME_DIR"'@/path/to/xdg_runtime_dir@g' $sed_files
+
+[ ! -f $HOME/.Xresources ] && cp $DOTFILES_REPO/.local/lib/dotfiles/Xresources $HOME/.Xresources
+[ ! -f $HOME/.config/autorandr/settings.ini ] && cp $DOTFILES_REPO/.local/lib/dotfiles/autorandr-settings.ini $HOME/.config/autorandr/settings.ini
+[ -n "$(find /sys/class/power_supply -name 'BAT*')" ] && sed -i -e's@#order += "battery all"@order += "battery all"@' ~/.config/i3status/config
+cat $DOTFILES_REPO/.local/lib/dotfiles/dconf | dconf load /
+
+systemctl --user daemon-reload
+pidof i3 && i3-msg reload
+exit 0

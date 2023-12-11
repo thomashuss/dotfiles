@@ -1,0 +1,28 @@
+#!/bin/bash
+
+print_windows() {
+	echo -en "\0prompt\x1ffolder/file\n"
+	echo -en "\0no-custom\x1ftrue\n"
+	echo -en "\0use-hot-keys\x1ftrue\n"
+	wmctrl -xl | awk -vignore="$1" '
+		$1 != ignore && $2 == "-1" && $3~/^(caja\.Caja|engrampa\.Engrampa|eom\.Eom)$/ {
+			id = $1;
+			$1=$2=$3=$4="";
+			printf("%s%cinfo%c%s\n", substr($0,5), 0, 31, id);
+		}'
+}
+
+i3q="instance=^caja$"
+if [ -n "$1" ]; then
+	case $ROFI_RETV in
+		10) xdotool windowquit "$ROFI_INFO" > /dev/null 2>&1; print_windows "$ROFI_INFO";;
+		1) coproc ( xdotool windowactivate "$ROFI_INFO"  > /dev/null 2>&1 ); exit 0;;
+		11) coproc ( i3-msg 'mode "file"' > /dev/null 2>&1 ); exit 0;;
+	esac
+else
+	if ! i3-msg ["$i3q" floating] move scratchpad, scratchpad show > /dev/null 2>&1; then
+		i3-msg "exec caja" > /dev/null 2>&1
+		xdotool search --sync --onlyvisible --classname '^caja$' > /dev/null 2>&1
+	fi
+	print_windows
+fi

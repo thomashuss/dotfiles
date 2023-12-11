@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Disable autorandr
+Comment=Disables autorandr (for DEs which handle displays)
+Type=Application
+Exec=/usr/bin/sh -c "grep -qxF 'dry-run=' $HOME/.config/autorandr/settings.ini || echo 'dry-run=' >> $HOME/.config/autorandr/settings.ini"
+NotShowIn=i3;
+X-GNOME-Autostart-Phase=Initialization

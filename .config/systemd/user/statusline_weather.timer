@@ -1,0 +1,6 @@
+[Unit]
+Description=Update weather status line hourly
+
+[Timer]
+OnCalendar=hourly
+RemainAfterElapse=no

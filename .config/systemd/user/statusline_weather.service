@@ -1,0 +1,7 @@
+[Unit]
+Description=Set weather status line
+
+[Service]
+ExecStart=/path/to/home/.local/lib/dotfiles/i3_scripts/statusline_weather
+Type=oneshot
+Environment="STARTED_BY_SYSTEMD=1"

@@ -1,0 +1,51 @@
+#!/bin/gawk -f
+# Pipe `wmctrl -l`
+# active_first   := should print active window, then stack?
+# skip_first     := should skip first window?
+# curr_workspace := search current workspace only?
+# num_windows    := maximum number of windows to print (>=1)
+# print_prefix   := prefix of printed window ids
+# print_postfix  := prefix of printed window ids
+
+BEGIN {
+	PROCINFO["sorted_in"] = "@ind_num_desc"
+	xp = "xprop -notype -root _NET_ACTIVE_WINDOW _NET_CLIENT_LIST_STACKING _NET_CURRENT_DESKTOP"
+	xp | getline xp_a
+	xp | getline xp_s
+	xp | getline xp_w
+	close(xp)
+	active = substr(xp_a, 33)
+	if (active_first)
+		print print_prefix active print_postfix
+	workspace = substr(xp_w, 24)
+	split(substr(xp_s, 39), stack_list, ", ")
+	for (idx in stack_list)
+		stack_idx[strtonum(stack_list[idx])] = idx
+}
+$2 != "-1" {
+	if (curr_workspace) {
+		if (workspace != $2)
+			next
+	}
+	idx = stack_idx[strtonum($1)]
+	if (idx)
+		out[idx] = stack_list[idx]
+}
+END {
+	printed_windows = 0
+	for (idx in out) {
+		if (printed_windows && printed_windows == num_windows)
+			break
+		if (after_active && !active_printed)
+			if (out[idx] == active)
+				active_printed = 1
+			else
+				continue
+		if (skip_first && !skipped) {
+			skipped = 1
+			continue
+		}
+		print print_prefix out[idx] print_postfix
+		printed_windows++
+	}
+}

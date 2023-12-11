@@ -1,0 +1,3 @@
+#!/bin/sh
+
+se=$(surfraw -elvi | awk 'NR==1{next}{print $1}' | rofi -dmenu -l 20 -p 'Search engine') && qe=$(zenity --entry --title="Search $se" --text='Query:') && surfraw -browser=firefox "$se" "$qe"

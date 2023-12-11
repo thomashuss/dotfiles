@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=MATE screen lock watcher
+Comment=Runs user-specified scripts on screen lock/unlock
+Type=Application
+Exec=/path/to/home/.local/lib/dotfiles/misc_scripts/mate_screen_lock_watch
+OnlyShowIn=MATE;

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+arandr
+$HOME/.fehbg & d=$(autorandr --list | rofi -dmenu -l 5 -p 'Save display configuration') && autorandr --force -s "$d"
