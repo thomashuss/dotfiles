@@ -1,9 +1,12 @@
 #!/bin/python3
+from math import acos, asin, ceil, cos, degrees, fmod, radians, sin, sqrt
+from time import time
 from sys import argv
 import configparser
 import json
 import os
 import urllib.request
+
 
 # Source of sunrise algorithm: https://en.wikipedia.org/wiki/Sunrise_equation#Example_of_implementation_in_Python
 
@@ -47,76 +50,103 @@ def dawn_dusk_calc(
     return j2ts_day_modulus(j_rise), j2ts_day_modulus(j_set)
 
 
-config = configparser.ConfigParser()
-config_path = os.environ['HOME'] + '/.config/weather.conf'
-if os.path.isfile(config_path):
-    config.read(config_path)
-else:
-    config.read_dict({
-        'location': {'icao': 'seqm'},  # default = Quito
-        'units': {'fahrenheit': False, 'wind': 'kn'}})
-
-
-location = argv[1] if len(argv) > 1 else config['location']['icao']
-with urllib.request.urlopen(urllib.request.Request(f"https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&format=json"), timeout=10) as req:
-    data = json.load(req)[0]
-
-pargs = {'sep': '', 'end': ''}
-
-hazards = {'🥶': False, '❗': False, '💧': False,# '🌢': False,
-           '❄️': False, '🌫': False}
-hazards['💧'] = data.get('precip') is not None
-hazards['❄️'] = data.get('snow') is not None
-wx_string = data.get('wxString')
-if wx_string is not None:
-    hazards['🥶'] |= 'FZ' in wx_string
-    hazards['❗'] |= 'TS' in wx_string
-    hazards['💧'] |= 'RA' in wx_string
-    #hazards['🌢'] |= 'BR' in wx_string
-    hazards['❄️'] |= 'SN' in wx_string
-    hazards['🌫'] |= 'FG' in wx_string or 'HZ' in wx_string
-hazards_str = ' '.join(filter(lambda key: hazards[key], hazards.keys()))
-if len(hazards_str) > 0:
-    print(hazards_str, end=' ')
-
-if 'clouds' in data and data['clouds'] is not None and len(data['clouds']) > 0:
-    cloud = data['clouds'][-1]['cover']
-    if cloud == 'OVC':
-        print('☁️ ', **pargs)
-    elif cloud == 'OVX':
-        print('🌫️ ', **pargs)
-    else:
-        from math import acos, asin, ceil, cos, degrees, fmod, radians, sin, sqrt
-        from time import time
-        t = time()
-        latitude = data['lat']
-        longitude = data['lon']
-        elevation = data['elev']
-        dawn, dusk = dawn_dusk_calc(t, latitude, longitude, elevation)
-        t %= 86400
-        if dawn is not None and dusk is not None:
-            daytime = dawn < t and t < dusk if dawn <= dusk else t > dawn or t < dusk
+def print_cloud(data):
+    if 'clouds' in data and data['clouds'] is not None and len(data['clouds']) > 0:
+        cloud = data['clouds'][-1]['cover']
+        if cloud == 'OVC':
+            return '☁️'
+        elif cloud == 'OVX':
+            return '🌫️'
         else:
-            daytime = True
-        if cloud == 'SKC' or cloud == 'NCD' or cloud == 'CLR' or cloud == 'NSC' or cloud == 'CAVOK':
-            print('☀️ ' if daytime else '🌃 ', **pargs)
-        elif cloud == 'FEW' or cloud == 'SCT':
-            print('🌤️ ' if daytime else '✨ ', **pargs)
-        elif cloud == 'BKN':
-            print('🌥️ ' if daytime else '☁️ ', **pargs)
-
-if 'temp' in data and data['temp'] is not None:
-    if config['units']['fahrenheit']:
-        print(round(data['temp'] * 1.8 + 32), '°F', **pargs)
+            t = time()
+            latitude = data['lat']
+            longitude = data['lon']
+            elevation = data['elev']
+            dawn, dusk = dawn_dusk_calc(t, latitude, longitude, elevation)
+            t %= 86400
+            if dawn is not None and dusk is not None:
+                daytime = dawn < t and t < dusk if dawn <= dusk else t > dawn or t < dusk
+            else:
+                daytime = True
+            if cloud == 'SKC' or cloud == 'NCD' or cloud == 'CLR' or cloud == 'NSC' or cloud == 'CAVOK':
+                return '☀️' if daytime else '🌃'
+            elif cloud == 'FEW' or cloud == 'SCT':
+                return '🌤️' if daytime else '✨'
+            elif cloud == 'BKN':
+                return '🌥️' if daytime else '☁️'
+            else:
+                return None
     else:
-        print(data['temp'], '°C', **pargs)
-    print('  ', **pargs)
+        return None
 
-if 'wspd' in data and data['wspd'] is not None:
-    if config['units']['wind'] == 'kn':
-        print(data['wspd'], 'kn', **pargs)
-    elif config['units']['wind'] == 'km':
-        print(round(data['wspd'] * 1.852), 'km/h', **pargs)
-    elif config['units']['wind'] == 'mi':
-        print(round(data['wspd'] * 1.15078), 'mph', **pargs)
-print('\n', **pargs)
+
+def print_temp(data, fahrenheit):
+    if 'temp' in data and data['temp'] is not None:
+        if fahrenheit:
+            return str(round(data['temp'] * 1.8 + 32)) + '°F'
+        else:
+            return str(data['temp']) + '°C'
+    else:
+        return None
+
+
+def print_wspd(data, unit):
+    if 'wspd' in data and data['wspd'] is not None:
+        if unit == 'kn':
+            return ' ' + str(data['wspd']) + ' kn'
+        elif unit == 'km':
+            return ' ' + str(round(data['wspd'] * 1.852)) + ' km/h'
+        elif unit == 'mi':
+            return ' ' + str(round(data['wspd'] * 1.15078)) + ' mph'
+        else:
+            return None
+    else:
+        return None
+
+
+def print_hazards(data):
+    hazards = {'🥶': False, '❗': False, '💧': False,  # '🌢': False,
+               '❄️': False, '🌫': False}
+    hazards['💧'] = data.get('precip') is not None
+    hazards['❄️'] = data.get('snow') is not None
+    wx_string = data.get('wxString')
+    if wx_string is not None:
+        hazards['🥶'] |= 'FZ' in wx_string
+        hazards['❗'] |= 'TS' in wx_string
+        hazards['💧'] |= 'RA' in wx_string
+        # hazards['🌢'] |= 'BR' in wx_string
+        hazards['❄️'] |= 'SN' in wx_string
+        hazards['🌫'] |= 'FG' in wx_string or 'HZ' in wx_string
+    hazards_str = ' '.join(filter(lambda key: hazards[key], hazards.keys()))
+    if len(hazards_str) > 0:
+        return hazards_str
+    else:
+        return None
+
+
+def get_data(icao):
+    location = argv[1] if len(argv) > 1 else icao
+    with urllib.request.urlopen(urllib.request.Request(f"https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&format=json"), timeout=10) as req:
+        return json.load(req)[0]
+
+
+def get_config():
+    config = configparser.ConfigParser()
+    config_path = os.environ['HOME'] + '/.config/weather.conf'
+    if os.path.isfile(config_path):
+        config.read(config_path)
+    else:
+        config.read_dict({
+            'location': {'icao': 'seqm'},  # default = Quito
+            'units': {'fahrenheit': False, 'wind': 'kn'}})
+    return config
+
+
+if __name__ == '__main__':
+    config = get_config()
+    data = get_data(config['location']['icao'])
+    print(*filter(lambda x: x is not None, (
+        print_hazards(data),
+        print_cloud(data),
+        print_temp(data, config['units']['fahrenheit']),
+        print_wspd(data, config['units']['wind']))))
