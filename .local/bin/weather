@@ -94,7 +94,10 @@ if 'clouds' in data and data['clouds'] is not None and len(data['clouds']) > 0:
         elevation = data['elev']
         dawn, dusk = dawn_dusk_calc(t, latitude, longitude, elevation)
         t %= 86400
-        daytime = dawn is not None and dusk is not None and dawn <= t and t <= dusk
+        if dawn is not None and dusk is not None:
+            daytime = dawn < t and t < dusk if dawn <= dusk else t > dawn or t < dusk
+        else:
+            daytime = True
         if cloud == 'SKC' or cloud == 'NCD' or cloud == 'CLR' or cloud == 'NSC' or cloud == 'CAVOK':
             print('☀️ ' if daytime else '🌃 ', **pargs)
         elif cloud == 'FEW' or cloud == 'SCT':
