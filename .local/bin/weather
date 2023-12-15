@@ -83,9 +83,9 @@ def print_cloud(data):
 def print_temp(data, fahrenheit):
     if 'temp' in data and data['temp'] is not None:
         if fahrenheit:
-            return str(round(data['temp'] * 1.8 + 32)) + '°F'
+            return f'{round(data["temp"] * 1.8 + 32)}°F'
         else:
-            return str(data['temp']) + '°C'
+            return f'{data["temp"]}°C'
     else:
         return None
 
@@ -93,11 +93,11 @@ def print_temp(data, fahrenheit):
 def print_wspd(data, unit):
     if 'wspd' in data and data['wspd'] is not None:
         if unit == 'kn':
-            return ' ' + str(data['wspd']) + ' kn'
+            return f' {data["wspd"]} kn'
         elif unit == 'km':
-            return ' ' + str(round(data['wspd'] * 1.852)) + ' km/h'
+            return f' {round(data["wspd"] * 1.852)} km/h'
         elif unit == 'mi':
-            return ' ' + str(round(data['wspd'] * 1.15078)) + ' mph'
+            return f' {round(data["wspd"] * 1.15078)} mph'
         else:
             return None
     else:
@@ -111,12 +111,12 @@ def print_hazards(data):
     hazards['❄️'] = data.get('snow') is not None
     wx_string = data.get('wxString')
     if wx_string is not None:
-        hazards['🥶'] |= 'FZ' in wx_string
-        hazards['❗'] |= 'TS' in wx_string
+        hazards['🥶'] = 'FZ' in wx_string
+        hazards['❗'] = 'TS' in wx_string
         hazards['💧'] |= 'RA' in wx_string
-        # hazards['🌢'] |= 'BR' in wx_string
+        # hazards['🌢'] = 'BR' in wx_string
         hazards['❄️'] |= 'SN' in wx_string
-        hazards['🌫'] |= 'FG' in wx_string or 'HZ' in wx_string
+        hazards['🌫'] = 'FG' in wx_string or 'HZ' in wx_string
     hazards_str = ' '.join(filter(lambda key: hazards[key], hazards.keys()))
     if len(hazards_str) > 0:
         return hazards_str
