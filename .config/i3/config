@@ -391,6 +391,8 @@ bindsym n move left;$nm
 bindsym m move down;$nm
 bindsym comma move up;$nm
 bindsym period move right;$nm
+bindsym $key_move+q $unmark_d;$blank_workspace --move $unnamed_ws;$dm
+bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse $unnamed_ws;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
 bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
@@ -481,6 +483,8 @@ bindsym n move left
 bindsym m move down
 bindsym comma move up
 bindsym period move right
+bindsym $key_move+q $unmark_d;$blank_workspace --move $unnamed_ws;$dm
+bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse $unnamed_ws;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
 bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
@@ -571,6 +575,8 @@ bindsym n move left;$dm
 bindsym m move down;$dm
 bindsym comma move up;$dm
 bindsym period move right;$dm
+bindsym $key_move+q $unmark_d;$blank_workspace --move $unnamed_ws;$dm
+bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse $unnamed_ws;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
 bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm

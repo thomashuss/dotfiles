@@ -41,5 +41,7 @@ except TypeError:
 
 if '--print' in args:
     print(new_ws)
+elif '--move' in args:
+    i3.command(f'move container to workspace number {new_ws};workspace number {new_ws}')
 else:
     i3.command(f'workspace number {new_ws}')
