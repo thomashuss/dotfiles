@@ -662,8 +662,12 @@ bindsym $smod+v split v;$dm
 set $file $HOME/.local/lib/dotfiles/i3_scripts/scratch_file
 set $file_keys -kb-remove-char-forward 'Control+d' -kb-custom-1 '[66],Delete' -kb-custom-2 'Super_L+f'
 mode "file" {
+bindsym Escape $dm
+bindsym --release Alt_L $dm
 bindsym $pmod+slash exec --no-startup-id "$file search $file_keys";$dm
-bindsym $pmod+f exec --no-startup-id "$file $file_keys";$dm
+bindsym --release $pmod+f [instance=^caja$ floating] move scratchpad;$dm
+bindsym --release Super_L [instance=^caja$ floating] move scratchpad;$dm
+bindsym --release f [instance=^caja$ floating] move scratchpad;$dm
 }
 # }}}
 # compose mode {{{
@@ -790,7 +794,7 @@ bindsym $pmod+Shift+c $launch_calc
 bindsym $pmod+d $save_display
 bindsym $pmod+Shift+d $load_display
 bindsym $pmod+e $network_control
-bindsym $pmod+f mode "file"
+bindsym $pmod+f mode "file";exec --no-startup-id "$file $file_keys"
 bindsym $pmod+j $word_count
 bindsym $pmod+m $phone_control
 bindsym $pmod+p $password_man

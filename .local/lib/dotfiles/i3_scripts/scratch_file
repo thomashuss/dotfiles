@@ -1,7 +1,6 @@
 #!/bin/dash
 
 if [ "search" = "$1" ] && shift || ! xdotool search --onlyvisible --classname '^caja$' | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW -id 2>/dev/null | grep -q '='; then
+	i3-msg 'mode "default"'
 	rofi -show rff -modes rff:$HOME/.local/lib/dotfiles/i3_scripts/rofi_focus_file -matching prefix $@
-else
-	i3-msg "[instance=^caja$ floating] move scratchpad"
 fi

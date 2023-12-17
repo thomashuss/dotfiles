@@ -17,7 +17,7 @@ if [ -n "$1" ]; then
 	case $ROFI_RETV in
 		10) xdotool windowquit "$ROFI_INFO" > /dev/null 2>&1; print_windows "$ROFI_INFO";;
 		1) coproc ( xdotool windowactivate "$ROFI_INFO"  > /dev/null 2>&1 ); exit 0;;
-		11) coproc ( i3-msg 'mode "file"' > /dev/null 2>&1 ); exit 0;;
+		11) coproc ( i3-msg "[$i3q floating] move scratchpad" > /dev/null 2>&1 ); exit 0;;
 	esac
 else
 	if ! i3-msg ["$i3q" floating] move scratchpad, scratchpad show > /dev/null 2>&1; then
