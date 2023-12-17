@@ -1,7 +1,7 @@
 # i3 config file (v4)
 
 # appearance {{{
-# windows {{{
+# borders {{{
 for_window [all] title_window_icon yes
 smart_borders on
 hide_edge_borders both
@@ -13,7 +13,7 @@ set $i3-nagbar i3-nagbar -f 'pango: sans 9'
 # }}}
 # color scheme {{{
 # class                 border  backgr. text    indicator child_border
-client.focused          #423d2c #786f54 #ffffff #9c885d   #423d2c
+client.focused          #423d2c #696149 #ffffff #9c885d   #423d2c
 client.focused_inactive #363530 #403f39 #dddddd #484e50   #4a4942
 client.unfocused        #222222 #222222 #888888 #292d2e   #222222
 client.urgent           #c06200 #c06200 #ffffff #c06200   #c06200
@@ -332,7 +332,7 @@ bindsym button6 nop
 bindsym button7 nop
 # colors {{{
 colors {
-background #1f1f1f
+background #111111
 statusline #ffffff
 separator #666666
 focused_workspace #545d78 #545d78 #ffffff
@@ -361,26 +361,25 @@ set $dm mode "default"
 # }}}
 # ergonomic binding modes {{{
 # Put every binding in each mode (except for --release bindings).
-set $nm mode "nav"
-set $em mode "ergo"
 # ergo mode {{{
-# EVERY binding in this mode (other than above) MUST end with ;$nm
-# unless it implies switching to another mode.  Container move bindings
-# end with $dm because they switch to the target workspace
-# (intentionally).  Thus, one could not feasibly perform another
+# Binding mode enabled on first press of the ergonomic key.  EVERY binding in
+# this mode MUST end with ;$hm unless it implies switching to another mode.
+# Container move bindings end with $dm because they switch to the target
+# workspace (intentionally).  Thus, one could not feasibly perform another
 # operation after moving a container.
+set $em mode "ergo"
 mode "ergo" {
 # escape {{{
 bindcode --release $ergo mode "lazy"
 # }}}
 # modify container {{{
-bindsym c kill;$nm
-bindsym $smod+c [workspace=__focused__] kill;$kill_d;$nm
-bindsym $smod+f floating toggle, sticky disable;$unmark_d;$nm
+bindsym c kill;$hm
+bindsym $smod+c [workspace=__focused__] kill;$kill_d;$hm
+bindsym $smod+f floating toggle, sticky disable;$unmark_d;$hm
 bindsym $key_move+f floating enable, sticky toggle;$unmark_d;$dm
-bindsym x fullscreen toggle;$nm
-bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d;$nm
-bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$nm
+bindsym x fullscreen toggle;$hm
+bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d;$hm
+bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$hm
 bindsym r mode "rename"
 bindsym s mode "size"
 # }}}
@@ -389,10 +388,10 @@ bindsym equal mode "compose"
 bindsym v mode "layout"
 # }}}
 # move container {{{
-bindsym n move left;$nm
-bindsym m move down;$nm
-bindsym comma move up;$nm
-bindsym period move right;$nm
+bindsym n move left;$hm
+bindsym m move down;$hm
+bindsym comma move up;$hm
+bindsym period move right;$hm
 bindsym $key_move+q $unmark_d;$blank_workspace --move $unnamed_ws;$dm
 bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse $unnamed_ws;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
@@ -416,50 +415,53 @@ bindsym $key_move+apostrophe move workspace to output up;$dm
 bindsym $key_move+semicolon move workspace to output down;$dm
 # }}}
 # focus container {{{
-bindsym u [urgent=latest] focus;$nm
-bindsym grave $notif;$nm
-bindsym h focus left;$nm
-bindsym j focus down;$nm
-bindsym k focus up;$nm
-bindsym l focus right;$nm
-bindsym f focus mode_toggle;$nm
-bindsym p focus parent;$nm
-bindsym o focus child;$nm
+bindsym u [urgent=latest] focus;$hm
+bindsym grave $notif;$hm
+bindsym h focus left;$hm
+bindsym j focus down;$hm
+bindsym k focus up;$hm
+bindsym l focus right;$hm
+bindsym f focus mode_toggle;$hm
+bindsym p focus parent;$hm
+bindsym o focus child;$hm
 # }}}
 # focus workspace {{{
-bindsym q $blank_workspace $unnamed_ws;$nm
-bindsym $smod+q $blank_workspace --reverse $unnamed_ws;$nm
-bindsym space workspace back_and_forth;$nm
-bindsym 1 workspace number $ws1;$nm
-bindsym 2 workspace number $ws2;$nm
-bindsym 3 workspace number $ws3;$nm
-bindsym 4 workspace number $ws4;$nm
-bindsym 5 workspace number $ws5;$nm
-bindsym 6 workspace number $ws6;$nm
-bindsym 7 workspace number $ws7;$nm
-bindsym 8 workspace number $ws8;$nm
-bindsym 9 workspace number $ws9;$nm
-bindsym 0 workspace number $ws10;$nm
+bindsym q $blank_workspace $unnamed_ws;$hm
+bindsym $smod+q $blank_workspace --reverse $unnamed_ws;$hm
+bindsym space workspace back_and_forth;$hm
+bindsym 1 workspace number $ws1;$hm
+bindsym 2 workspace number $ws2;$hm
+bindsym 3 workspace number $ws3;$hm
+bindsym 4 workspace number $ws4;$hm
+bindsym 5 workspace number $ws5;$hm
+bindsym 6 workspace number $ws6;$hm
+bindsym 7 workspace number $ws7;$hm
+bindsym 8 workspace number $ws8;$hm
+bindsym 9 workspace number $ws9;$hm
+bindsym 0 workspace number $ws10;$hm
 # }}}
 # focus output {{{
-bindsym bracketleft focus output left;$nm
-bindsym bracketright focus output right;$nm
-bindsym apostrophe focus output up;$nm
-bindsym semicolon focus output down;$nm
+bindsym bracketleft focus output left;$hm
+bindsym bracketright focus output right;$hm
+bindsym apostrophe focus output up;$hm
+bindsym semicolon focus output down;$hm
 # }}}
 # focus/launch application {{{
-bindsym e workspace $ws_mail;$mail;$nm
-bindsym g workspace number $ws_editor2;$office;$nm
-bindsym t workspace $ws_terminal;$terminal;$nm
-bindsym w workspace $ws_web;$www;$nm
-bindsym y workspace number $ws_media;$spotify;$nm
-bindsym BackSpace $remove_mouse;$nm
+bindsym e workspace $ws_mail;$mail;$hm
+bindsym g workspace number $ws_editor2;$office;$hm
+bindsym t workspace $ws_terminal;$terminal;$hm
+bindsym w workspace $ws_web;$www;$hm
+bindsym y workspace number $ws_media;$spotify;$hm
+bindsym BackSpace $remove_mouse;$hm
 # }}}
 }
 bindcode $ergo $em
 # }}}
-# nav mode {{{
-mode "nav" {
+# hold mode {{{
+# Binding mode enabled upon pressing a key in ergo mode.  Allows for further
+# keys to be pressed.
+mode "hold" {
+set $hm mode "hold"
 # escape {{{
 bindcode --release $ergo $dm
 bindsym Super_L $dm
@@ -552,9 +554,10 @@ bindsym BackSpace $remove_mouse
 }
 # }}}
 # lazy mode {{{
-# EVERY binding in this mode (other than above), unless it enters
-# another mode or directly precedes some other action, MUST end with
-# ;$dm
+# Binding mode enabled after releasing the ergonomic key while in ergo mode,
+# i.e. pressing and releasing the ergonomic key without pressing any other
+# keys.  EVERY binding in this mode, unless it enters another mode or directly
+# precedes some other action, MUST end with ;$dm
 mode "lazy" {
 # escape {{{
 bindsym Escape $dm
@@ -650,11 +653,11 @@ bindsym BackSpace $remove_mouse;$dm
 # layout mode {{{
 mode "layout" {
 bindcode --release $ergo mode "layout lazy"
-bindsym t layout tabbed;$nm
-bindsym s layout stacking;$nm
-bindsym v layout toggle split;$nm
-bindsym $smod+g split h;$nm
-bindsym $smod+v split v;$nm
+bindsym t layout tabbed;$hm
+bindsym s layout stacking;$hm
+bindsym v layout toggle split;$hm
+bindsym $smod+g split h;$hm
+bindsym $smod+v split v;$hm
 }
 mode "layout lazy" {
 bindsym Escape $dm
@@ -681,11 +684,11 @@ bindsym --release f [instance=^caja$ floating] move scratchpad;$dm
 # compose mode {{{
 mode "compose" {
 bindcode --release $ergo mode "compose lazy"
-bindsym equal $nm
-bindsym h split h;focus left;move right;focus right;$nm
-bindsym j split h;focus down;move up;focus up;$nm
-bindsym k split h;focus up;move down;focus down;$nm
-bindsym l split h;focus right;move left;focus left;$nm
+bindsym equal $hm
+bindsym h split h;focus left;move right;focus right;$hm
+bindsym j split h;focus down;move up;focus up;$hm
+bindsym k split h;focus up;move down;focus down;$hm
+bindsym l split h;focus right;move left;focus left;$hm
 }
 mode "compose lazy" {
 bindsym Alt_L $dm
@@ -706,17 +709,17 @@ set $unmark_d_ws_pre ws=$(i3-msg -t get_workspaces | jq '.[] | select(.focused==
 set $unmark_d_ws_esc [con_mark=^d$ws:.+] unmark, move scratchpad, scratchpad show
 mode "rename" {
 bindcode --release $ergo mode "rename lazy"
-bindsym r $nm
-bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\""$nm
-bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\""$nm
-bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\""$nm
-bindsym 4 $unmark_d_ws;rename workspace to $ws4;\\""$nm
-bindsym 5 $unmark_d_ws;rename workspace to $ws5;\\""$nm
-bindsym 6 $unmark_d_ws;rename workspace to $ws6;\\""$nm
-bindsym 7 $unmark_d_ws;rename workspace to $ws7;\\""$nm
-bindsym 8 $unmark_d_ws;rename workspace to $ws8;\\""$nm
-bindsym 9 $unmark_d_ws;rename workspace to $ws9;\\""$nm
-bindsym 0 $unmark_d_ws;rename workspace to $ws10;\\""$nm
+bindsym r $hm
+bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\""$hm
+bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\""$hm
+bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\""$hm
+bindsym 4 $unmark_d_ws;rename workspace to $ws4;\\""$hm
+bindsym 5 $unmark_d_ws;rename workspace to $ws5;\\""$hm
+bindsym 6 $unmark_d_ws;rename workspace to $ws6;\\""$hm
+bindsym 7 $unmark_d_ws;rename workspace to $ws7;\\""$hm
+bindsym 8 $unmark_d_ws;rename workspace to $ws8;\\""$hm
+bindsym 9 $unmark_d_ws;rename workspace to $ws9;\\""$hm
+bindsym 0 $unmark_d_ws;rename workspace to $ws10;\\""$hm
 }
 mode "rename lazy" {
 bindsym Alt_L $dm
@@ -741,7 +744,7 @@ bindsym 0 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_es
 set $resize_factor 3 px or 3 ppt
 mode "size" {
 bindcode --release $ergo mode "size lazy"
-bindsym s $nm
+bindsym s $hm
 bindsym h resize shrink width $resize_factor
 bindsym j resize grow height $resize_factor
 bindsym k resize shrink height $resize_factor
