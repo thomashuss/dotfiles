@@ -416,6 +416,7 @@ bindsym $key_move+apostrophe move workspace to output up;$dm
 bindsym $key_move+semicolon move workspace to output down;$dm
 # }}}
 # focus container {{{
+bindsym u [urgent=latest] focus;$nm
 bindsym grave $notif;$nm
 bindsym h focus left;$nm
 bindsym j focus down;$nm
@@ -509,6 +510,7 @@ bindsym $key_move+apostrophe move workspace to output up;$dm
 bindsym $key_move+semicolon move workspace to output down;$dm
 # }}}
 # focus container {{{
+bindsym u [urgent=latest] focus
 bindsym grave $notif
 bindsym h focus left
 bindsym j focus down
@@ -602,6 +604,7 @@ bindsym $key_move+apostrophe move workspace to output up;$dm
 bindsym $key_move+semicolon move workspace to output down;$dm
 # }}}
 # focus container {{{
+bindsym u [urgent=latest] focus;$dm
 bindsym grave $notif;$dm
 bindsym h focus left;$dm
 bindsym j focus down;$dm
