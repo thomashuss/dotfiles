@@ -355,7 +355,7 @@ set $key_move Shift
 # }}}
 # behavior {{{
 floating_modifier Mod1
-tiling_drag off
+tiling_drag modifier
 focus_wrapping no
 set $dm mode "default"
 # }}}
