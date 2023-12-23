@@ -872,8 +872,8 @@ bindsym XF86MonBrightnessUp exec --no-startup-id light -A $backlight_factor
 bindsym XF86MonBrightnessDown exec --no-startup-id light -U $backlight_factor
 # }}}
 # notification control {{{
-bindsym Control+grave $notif_close
-bindsym $smod+Control+grave $notif_hist
+bindsym $pmod+grave $notif_close
+bindsym $pmod+Shift+grave $notif_hist
 # }}}
 # mouse button actions {{{
 #bindsym --whole-window button9 $smart_kill
