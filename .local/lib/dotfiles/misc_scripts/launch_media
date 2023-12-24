@@ -1,0 +1,13 @@
+#!/bin/bash
+
+c=$(for e in spotify vlc mpv rhythmbox strawberry audacious ncspot ncmpcpp exit; do
+	type "$e" > /dev/null && echo "$e"
+done | rofi -dmenu -only-match -p media -i)
+case $c in
+	"exit") exit;;
+	"mpv") c="mpv --player-operation-mode=pseudo-gui";;
+	"ncmpcpp");&
+	"ncspot") c="mate-terminal --name $c --disable-factory -e $c";;
+	*);;
+esac
+$c & disown

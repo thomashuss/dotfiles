@@ -7,10 +7,7 @@ if [ "$c" = "exit" ]; then
 	exit
 fi
 if [ "$1" = "i3" ]; then
-	case $c in
-		"code") i3_args="--no-startup-id";;
-		*);;
-	esac
+	[ "$c" = "code" ] && i3_args="--no-startup-id"
 	i3-msg "exec $i3_args $c"
 else
 	$c & disown
