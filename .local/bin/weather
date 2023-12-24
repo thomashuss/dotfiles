@@ -8,6 +8,9 @@ import os
 import urllib.request
 
 
+i3status = False
+
+
 # Source of sunrise algorithm: https://en.wikipedia.org/wiki/Sunrise_equation#Example_of_implementation_in_Python
 
 
@@ -92,12 +95,22 @@ def print_temp(data, fahrenheit):
 
 def print_wspd(data, unit):
     if 'wspd' in data and data['wspd'] is not None:
+        if i3status:
+            if data.get('wgst', 0) > 0:
+                red = '%.2X' % int(
+                    255 * (1 - min(1, data['wspd'] / data['wgst'])))
+            else:
+                red = 'BA'
+            out = ' <span color="#{red}BABA">'.format(
+                red=red) + '{wspd}</span>'
+        else:
+            out = ' {wspd}'
         if unit == 'kn':
-            return f' {data["wspd"]} kn'
+            return out.format(wspd=f'{data["wspd"]} kn')
         elif unit == 'km':
-            return f' {round(data["wspd"] * 1.852)} km/h'
+            return out.format(wspd=f'{round(data["wspd"] * 1.852)} km/h')
         elif unit == 'mi':
-            return f' {round(data["wspd"] * 1.15078)} mph'
+            return out.format(wspd=f'{round(data["wspd"] * 1.15078)} mph')
         else:
             return None
     else:
@@ -125,8 +138,7 @@ def print_hazards(data):
 
 
 def get_data(icao):
-    location = argv[1] if len(argv) > 1 else icao
-    with urllib.request.urlopen(urllib.request.Request(f"https://aviationweather.gov/cgi-bin/data/metar.php?ids={location}&format=json"), timeout=10) as req:
+    with urllib.request.urlopen(urllib.request.Request(f"https://aviationweather.gov/cgi-bin/data/metar.php?ids={icao}&format=json"), timeout=10) as req:
         return json.load(req)[0]
 
 
@@ -146,7 +158,11 @@ def get_config():
 
 if __name__ == '__main__':
     config = get_config()
-    data = get_data(config['location']['icao'])
+    if len(argv) > 1:
+        if argv[1] == '--i3status':
+            i3status = True
+            del argv[1]
+    data = get_data(argv[1] if len(argv) > 1 else config['location']['icao'])
     print(*filter(lambda x: x is not None, (
         print_hazards(data),
         print_cloud(data),
