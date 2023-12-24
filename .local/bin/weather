@@ -96,7 +96,7 @@ def print_temp(data, fahrenheit):
 def print_wspd(data, unit):
     if 'wspd' in data and data['wspd'] is not None:
         if i3status:
-            if data.get('wgst', 0) > 0:
+            if data.get('wgst') is not None and data['wgst'] > 0:
                 red = '%.2X' % int(
                     255 * (1 - min(1, data['wspd'] / data['wgst'])))
             else:
