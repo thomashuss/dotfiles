@@ -380,8 +380,8 @@ bindcode --release $ergo mode "lazy"
 # modify container {{{
 bindsym c kill;$hm
 bindsym $smod+c [workspace=__focused__] kill;$kill_d;$hm
-bindsym $smod+f floating toggle, sticky disable;$unmark_d;$hm
-bindsym $key_move+f floating enable, sticky toggle;$unmark_d;$dm
+bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$hm
+bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle;$hm
 bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d;$hm
 bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$hm
@@ -481,8 +481,8 @@ bindsym Super_R $dm
 # modify container {{{
 bindsym c kill
 bindsym $smod+c [workspace=__focused__] kill;$kill_d
-bindsym $smod+f floating toggle, sticky disable;$unmark_d
-bindsym $key_move+f floating enable, sticky toggle;$unmark_d;$dm
+bindsym $key_move+f floating toggle, sticky disable;$unmark_d
+bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle
 bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d
 bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add
@@ -580,8 +580,8 @@ bindsym --release Alt_R $dm
 # modify container {{{
 bindsym c kill;$dm
 bindsym $smod+c [workspace=__focused__] kill;$kill_d;$dm
-bindsym $smod+f floating toggle, sticky disable;$unmark_d;$dm
-bindsym $key_move+f floating enable, sticky toggle;$unmark_d;$dm
+bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$dm
+bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle;$dm
 bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d;$dm
 bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$dm
