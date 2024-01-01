@@ -5,7 +5,7 @@ if [ -n "$1" ]; then
 else
 	pgrep -f "/bin/dash $0" | grep -v $$ | xargs -r kill &
 fi
-ids=$(wmctrl -l | $HOME/.local/lib/dotfiles/misc_scripts/window_stack -vactive_first=1)
+ids=$(wmctrl -l | $HOME/.local/lib/dotfiles/misc_scripts/window_stack -vactive_first=1 -vcurr_workspace=1)
 active=$(echo "$ids" | head -n1)
 echo "$ids" | tail -n+2 | {
 	trap 'continue' USR1
