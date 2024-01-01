@@ -5,7 +5,7 @@
 # curr_workspace := search current workspace only?
 # num_windows    := maximum number of windows to print (>=1)
 # print_prefix   := prefix of printed window ids
-# print_postfix  := prefix of printed window ids
+# print_postfix  := postfix of printed window ids
 
 BEGIN {
 	PROCINFO["sorted_in"] = "@ind_num_desc"
@@ -23,10 +23,8 @@ BEGIN {
 		stack_idx[strtonum(stack_list[idx])] = idx
 }
 $2 != "-1" {
-	if (curr_workspace) {
-		if (workspace != $2)
-			next
-	}
+	if (curr_workspace && workspace != $2)
+		next
 	idx = stack_idx[strtonum($1)]
 	if (idx)
 		out[idx] = stack_list[idx]
