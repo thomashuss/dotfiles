@@ -1,0 +1,19 @@
+#!/bin/sh
+
+vars=$(printf 'HOME\nXDG_RUNTIME_DIR')
+direction=$1
+if shift > /dev/null 2>&1; then
+	sed -i $(echo "$vars" | gawk -vdirection="$direction" '
+		{
+			generic_path = "/path/to/" tolower($0)
+			if (direction == "deploy")
+				print "-e s@" generic_path "@" ENVIRON[$0] "@"
+			else
+				print "-e s@" ENVIRON[$0] "@" generic_path "@"
+		}
+	') $@
+else
+	for var in $vars; do
+		echo '$'"$var"
+	done
+fi

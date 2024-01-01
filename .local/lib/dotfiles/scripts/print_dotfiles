@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find "$DOTFILES_REPO/" -path "$DOTFILES_REPO/.git" -prune -o \( \! -name 'README\.md' -type f -printf "%P\n" \)

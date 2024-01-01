@@ -1,20 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
-if [ -z "$DOTFILES_REPO" ]; then
-	echo 'DOTFILES_REPO is not set. Aborting.'
-	exit 1
-fi
-if [ -z "$XDG_RUNTIME_DIR" ]; then
-	echo 'XDG_RUNTIME_DIR is not set. Aborting.'
-	exit 1
-fi
-files=$(find $DOTFILES_REPO/ -path $DOTFILES_REPO/.git -prune -o \( \! -name 'README\.md' -type f -printf "%P\n" \))
-echo "$files" | rsync --ignore-missing-args --files-from=- ~ $DOTFILES_REPO
-
-cd $DOTFILES_REPO
-sed_files=$(echo "$files" | grep -vE '(update|deploy)-dotfiles')
-sed -i -e's@'"$HOME"'@/path/to/home@g' -e's@'"$XDG_RUNTIME_DIR"'@/path/to/xdg_runtime_dir@g' $sed_files
-sed -i -e's@order += "battery all"@#order += "battery all"@' $DOTFILES_REPO/.config/i3status/config
-
+for var in '$DOTFILES_REPO' $($DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths); do
+	if eval "[ -z $var ]"; then
+		echo "$var is not set.  Aborting."
+		exit 1
+	fi
+done
+files=$($DOTFILES_REPO/.local/lib/dotfiles/scripts/print_dotfiles)
+echo "$files" | rsync --ignore-missing-args --files-from=- ~ "$DOTFILES_REPO"
+cd "$DOTFILES_REPO" && $DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths update $files
+$DOTFILES_REPO/.local/lib/dotfiles/scripts/init_config update
+echo "Done."
 git status
 exit 0

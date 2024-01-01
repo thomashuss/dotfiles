@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $1 in
+	"deploy")
+		[ ! -f "$HOME/.Xresources" ] && cp "$DOTFILES_REPO/.local/lib/dotfiles/Xresources" "$HOME/.Xresources"
+		[ ! -f "$HOME/.config/autorandr/settings.ini" ] && cp "$DOTFILES_REPO/.local/lib/dotfiles/autorandr-settings.ini" "$HOME/.config/autorandr/settings.ini"
+		[ -n "$(find /sys/class/power_supply -name 'BAT*')" ] && sed -i -e's@#order += "battery all"@order += "battery all"@' ~/.config/i3status/config
+		cat "$DOTFILES_REPO/.local/lib/dotfiles/dconf" | dconf load /;;
+	"update")
+		sed -i -e's@order += "battery all"@#order += "battery all"@' "$DOTFILES_REPO/.config/i3status/config";;
+	*) echo "$1 is not a valid direction."; exit 1;;
+esac
