@@ -1,4 +1,4 @@
-# .bashrc
+#!/bin/bash
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -15,9 +15,9 @@ fi
 . $HOME/.profile
 
 # User specific aliases and functions
-if [ -d ~/.bashrc.d ]; then
+if [[ -d ~/.bashrc.d ]]; then
 	for rc in ~/.bashrc.d/*; do
-		if [ -f "$rc" ]; then
+		if [[ -f "$rc" ]]; then
 			. "$rc"
 		fi
 	done
