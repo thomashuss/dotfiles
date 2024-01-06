@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 ws=$(i3-msg -t get_workspaces | jq '.[] | select(.focused==true).num')
 if [ -n "$2" ]; then

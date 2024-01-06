@@ -1,9 +1,9 @@
-#!/bin/dash
+#!/bin/sh
 
 if [ -n "$1" ]; then
-	pgrep -f "/bin/dash $0" | grep -v $$ | xargs kill -USR1 > /dev/null 2>&1 && exit
+	pgrep -f "/bin/sh $0" | grep -v $$ | xargs kill -USR1 > /dev/null 2>&1 && exit
 else
-	pgrep -f "/bin/dash $0" | grep -v $$ | xargs -r kill &
+	pgrep -f "/bin/sh $0" | grep -v $$ | xargs -r kill &
 fi
 ids=$(wmctrl -l | $HOME/.local/lib/dotfiles/misc_scripts/window_stack -vactive_first=1 -vcurr_workspace=1)
 active=$(echo "$ids" | head -n1)

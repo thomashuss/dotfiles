@@ -58,24 +58,25 @@ sudo localectl --no-convert set-x11-keymap us "" altgr-intl caps:none
 These packages are considered the basic requirements for this setup
 to function smoothly, assuming you have a basic installation with
 PulseAudio/Pipewire, NetworkManager, and Bluetooth (optional, just
-ignore blueman).
+ignore blueman).  [Consider switching `/bin/sh` to `dash` or something
+faster than `bash`.](https://aur.archlinux.org/packages/dashbinsh)
 
 For i3, from the official Arch Linux repository:
 ```
 adobe-source-code-pro-fonts arandr atril autorandr blueman caja
-caja-image-converter caja-open-terminal caja-sendto caja-xattr-tags curl dash
-dmenu dunst engrampa eom evolution evolution-ews evolution-on feh firefox
-flameshot gnome-clocks gnome-keyring gucharmap i3-wm i3lock i3status jq
-keepassxc light mate-icon-theme mate-polkit mate-terminal mpv mpv-mpris
-network-manager-applet pavucontrol picom playerctl python-gobject python-i3ipc
-python-mpris2 qalculate-gtk redshift rofi rsync surfraw ttf-dejavu unclutter
-wmctrl xcape xclip xcursor-vanilla-dmz xdg-desktop-portal-gtk xdotool
-xorg-setxkbmap xorg-xmodmap xorg-xrandr xorg-xset xss-lock zenity
+caja-image-converter caja-open-terminal caja-sendto caja-xattr-tags curl dmenu
+dunst engrampa eom evolution evolution-ews evolution-on feh firefox flameshot
+gnome-clocks gnome-keyring gucharmap i3-wm i3lock i3status jq keepassxc light
+mate-icon-theme mate-polkit mate-terminal mpv mpv-mpris network-manager-applet
+pavucontrol picom playerctl python-gobject python-i3ipc python-mpris2
+qalculate-gtk redshift rofi rsync surfraw ttf-dejavu unclutter wmctrl xcape
+xclip xcursor-vanilla-dmz xdg-desktop-portal-gtk xdotool xorg-setxkbmap
+xorg-xmodmap xorg-xrandr xorg-xset xss-lock zenity
 ```
 For MATE, from the official Arch Linux repository:
 ```
 adobe-source-code-pro-fonts atril blueman caja caja-image-converter
-caja-open-terminal caja-sendto caja-wallpaper caja-xattr-tags dash dmenu dunst
+caja-open-terminal caja-sendto caja-wallpaper caja-xattr-tags dmenu dunst
 engrampa eom evolution evolution-ews evolution-on firefox flameshot
 gnome-keyring gucharmap keepassxc marco mate-applets mate-backgrounds
 mate-control-center mate-desktop mate-icon-theme mate-media mate-menus

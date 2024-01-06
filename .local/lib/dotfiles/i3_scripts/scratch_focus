@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 i3cmd="$1"
 i3q="$2"

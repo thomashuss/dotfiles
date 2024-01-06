@@ -64,7 +64,7 @@ binding='<Shift><Mod4>s'
 name='[MS keys] Screenshot'
 
 [org/mate/desktop/keybindings/custom102]
-action="dash -c 'wmctrl -xa mate-panel && xdotool getwindowfocus mousemove --window %1 $(dconf read /org/mate/panel/objects/notification-area/position) 0'"
+action="/bin/sh -c 'wmctrl -xa mate-panel && xdotool getwindowfocus mousemove --window %1 $(dconf read /org/mate/panel/objects/notification-area/position) 0'"
 binding='<Mod4>t'
 name='Focus notification area'
 

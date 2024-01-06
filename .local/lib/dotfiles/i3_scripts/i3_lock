@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 if ! pidof i3lock; then
 	for f in $HOME/.local/lib/dotfiles/lock/*.sh; do "$f"; done

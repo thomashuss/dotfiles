@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 eval $(xdotool getmouselocation --shell)
 if [ "$WINDOW" = "$(xdotool getwindowfocus)" ]; then
