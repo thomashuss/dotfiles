@@ -10,4 +10,4 @@ case $c in
 	"ncspot") c="mate-terminal --name $c --disable-factory -e $c";;
 	*);;
 esac
-$c & disown
+$c &

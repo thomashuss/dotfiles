@@ -10,5 +10,5 @@ if [ "$1" = "i3" ]; then
 	[ "$c" = "code" ] && i3_args="--no-startup-id"
 	i3-msg "exec $i3_args $c"
 else
-	$c & disown
+	$c &
 fi
