@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 gtk_name="--name scratch_calc"
 terminal="mate-terminal $gtk_name --disable-factory -e"

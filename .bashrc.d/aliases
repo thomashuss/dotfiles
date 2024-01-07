@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 alias ccopy="xclip -i -sel c"
 alias cpaste="xclip -o -sel c"
 alias i3-config="$EDITOR $DOTFILES_REPO/.config/i3/config"

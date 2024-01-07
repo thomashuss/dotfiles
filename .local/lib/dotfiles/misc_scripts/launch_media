@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 c=$(for e in spotify vlc mpv rhythmbox strawberry audacious ncspot ncmpcpp exit; do
 	type "$e" > /dev/null && echo "$e"
