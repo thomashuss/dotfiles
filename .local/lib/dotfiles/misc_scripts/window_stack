@@ -1,4 +1,4 @@
-#!/usr/bin/env gawk -f
+#!/usr/bin/env -S gawk -f
 # Pipe `wmctrl -l`
 # active_first   := should print active window, then stack?
 # skip_first     := should skip first window?
