@@ -1,4 +1,4 @@
-#!/usr/bin/env -S gawk -f
+#!/usr/bin/env -S awk -f
 # Pipe `wmctrl -l`
 # active_first   := should print active window, then stack?
 # skip_first     := should skip first window?
@@ -8,7 +8,6 @@
 # print_postfix  := postfix of printed window ids
 
 BEGIN {
-	PROCINFO["sorted_in"] = "@ind_num_desc"
 	xp = "xprop -notype -root _NET_ACTIVE_WINDOW _NET_CLIENT_LIST_STACKING _NET_CURRENT_DESKTOP"
 	xp | getline xp_a
 	xp | getline xp_s
@@ -18,7 +17,7 @@ BEGIN {
 	if (active_first)
 		print print_prefix active print_postfix
 	workspace = substr(xp_w, 24)
-	split(substr(xp_s, 39), stack_list, ", ")
+	stack_length = split(substr(xp_s, 39), stack_list, ", ")
 	for (idx in stack_list)
 		stack_idx[strtonum(stack_list[idx])] = idx
 }
@@ -31,19 +30,23 @@ $2 != "-1" {
 }
 END {
 	printed_windows = 0
-	for (idx in out) {
-		if (printed_windows && printed_windows == num_windows)
-			break
-		if (after_active && !active_printed)
-			if (out[idx] == active)
-				active_printed = 1
-			else
+	idx = stack_length
+	while (idx >= 1) {
+		if (out[idx]) {
+			if (printed_windows && printed_windows == num_windows)
+				break
+			if (after_active && !active_printed)
+				if (out[idx] == active)
+					active_printed = 1
+				else
+					continue
+			if (skip_first && !skipped) {
+				skipped = 1
 				continue
-		if (skip_first && !skipped) {
-			skipped = 1
-			continue
+			}
+			print print_prefix out[idx] print_postfix
+			printed_windows++
 		}
-		print print_prefix out[idx] print_postfix
-		printed_windows++
+		idx--
 	}
 }
