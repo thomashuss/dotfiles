@@ -11,6 +11,7 @@ prompt-check-if-default-mailer=true
 prompt-on-accel-send=false
 reply-style-name='quoted'
 show-preview-toolbar=false
+use-custom-font=true
 
 [org/gnome/evolution/plugin/mail-notification]
 notify-dbus-enabled=false
