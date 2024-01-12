@@ -322,6 +322,10 @@ set $weather $HOME/.local/lib/dotfiles/i3_scripts/statusline_weather
 # Run program with clipboard contents {{{
 set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F "exec --no-startup-id %s \"$(xclip -o -sel c)\"" -P 'Run with clipboard: '
 # }}}
+# misc scratchpad {{{
+set $unmark_d [con_id=__focused__ con_mark="^d[0-9]+:.+"] unmark
+set $kill_d exec --no-startup-id i3-msg "[con_mark=^d$(i3-msg -t get_workspaces | jq '.[] | select(.focused==true).num'):.+] kill"
+# }}}
 # }}}
 # bar {{{
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -350,8 +354,6 @@ binding_mode #ffff00 #ffff00 #000000
 }
 # }}}
 # keybindings {{{
-set $unmark_d [con_id=__focused__ con_mark="^d[0-9]+:.+"] unmark
-set $kill_d exec --no-startup-id i3-msg "[con_mark=^d$(i3-msg -t get_workspaces | jq '.[] | select(.focused==true).num'):.+] kill"
 # modifiers {{{
 set $ergo 66
 set $pmod Mod4
@@ -363,6 +365,7 @@ floating_modifier Mod1
 tiling_drag modifier
 focus_wrapping no
 set $dm mode "default"
+set $move_amount 100 px
 # }}}
 # ergonomic binding modes {{{
 # Put every binding in each mode (except for --release bindings).
@@ -393,10 +396,10 @@ bindsym equal mode "compose"
 bindsym v mode "layout"
 # }}}
 # move container {{{
-bindsym n move left;$hm
-bindsym m move down;$hm
-bindsym comma move up;$hm
-bindsym period move right;$hm
+bindsym n move left $move_amount;$hm
+bindsym m move down $move_amount;$hm
+bindsym comma move up $move_amount;$hm
+bindsym period move right $move_amount;$hm
 bindsym $key_move+q $unmark_d;$blank_workspace --move $unnamed_ws;$dm
 bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse $unnamed_ws;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
@@ -494,10 +497,10 @@ bindsym equal mode "compose"
 bindsym v mode "layout"
 # }}}
 # move container {{{
-bindsym n move left
-bindsym m move down
-bindsym comma move up
-bindsym period move right
+bindsym n move left $move_amount
+bindsym m move down $move_amount
+bindsym comma move up $move_amount
+bindsym period move right $move_amount
 bindsym $key_move+q $unmark_d;$blank_workspace --move $unnamed_ws;$dm
 bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse $unnamed_ws;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
@@ -593,10 +596,10 @@ bindsym equal mode "compose lazy"
 bindsym v mode "layout lazy"
 # }}}
 # move container {{{
-bindsym n move left;$dm
-bindsym m move down;$dm
-bindsym comma move up;$dm
-bindsym period move right;$dm
+bindsym n move left $move_amount;$dm
+bindsym m move down $move_amount;$dm
+bindsym comma move up $move_amount;$dm
+bindsym period move right $move_amount;$dm
 bindsym $key_move+q $unmark_d;$blank_workspace --move $unnamed_ws;$dm
 bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse $unnamed_ws;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
