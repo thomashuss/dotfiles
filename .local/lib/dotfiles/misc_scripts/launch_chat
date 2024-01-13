@@ -1,0 +1,17 @@
+#!/bin/sh
+
+TEAMS="chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default.desktop"
+if c=$({
+	if [ -f "$HOME/.local/share/applications/$TEAMS" ]; then
+		echo "teams"
+	fi
+	for e in zoom skypeforlinux discord; do
+		type "$e" > /dev/null && echo "$e"
+	done
+} | dmenu -l 10 -fn sans -p chat -i); then
+	case $c in
+		"teams") c="gtk-launch $TEAMS";;
+		*);;
+	esac
+	$c &
+fi
