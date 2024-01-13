@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 if c=$(for e in spotify vlc mpv rhythmbox strawberry audacious ncspot ncmpcpp; do
 	type "$e" > /dev/null && echo "$e"
 done | dmenu -l 10 -fn sans -p media -i); then
 	case $c in
 		"mpv") c="mpv --player-operation-mode=pseudo-gui";;
-		"ncmpcpp");&
+		"ncmpcpp") c="mate-terminal --name $c --disable-factory -e $c";;
 		"ncspot") c="mate-terminal --name $c --disable-factory -e $c";;
 		*);;
 	esac

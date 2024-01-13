@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 if c=$(for e in lowriter localc loimpress lyx code mate-terminal; do
 	type "$e" > /dev/null && echo "$e"
