@@ -71,7 +71,7 @@ mate-icon-theme mate-polkit mate-terminal mpv mpv-mpris network-manager-applet
 pavucontrol picom playerctl python-gobject python-i3ipc python-mpris2
 qalculate-gtk redshift rofi rsync surfraw ttf-dejavu unclutter wmctrl xcape
 xclip xcursor-vanilla-dmz xdg-desktop-portal-gtk xdotool xorg-setxkbmap
-xorg-xmodmap xorg-xrandr xorg-xset xss-lock zenity
+xorg-xmodmap xorg-xrandr xorg-xset xss-lock
 ```
 For MATE, from the official Arch Linux repository:
 ```
@@ -84,7 +84,7 @@ mate-panel mate-polkit mate-power-manager mate-screensaver mate-session-manager
 mate-settings-daemon mate-terminal mate-themes mate-user-guide mate-utils mozo
 mpv mpv-mpris network-manager-applet pavucontrol playerctl pluma qalculate-gtk
 redshift rofi rsync surfraw ttf-dejavu unclutter wmctrl xbindkeys xcape xclip
-xcursor-vanilla-dmz xdotool xorg-setxkbmap xorg-xmodmap xorg-xset zenity
+xcursor-vanilla-dmz xdotool xorg-setxkbmap xorg-xmodmap xorg-xset
 ```
 From the AUR:
 ```

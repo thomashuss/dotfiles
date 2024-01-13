@@ -1,3 +1,3 @@
 #!/bin/sh
 
-zenity --info --text="<b>$(playerctl metadata title | zenity-escape)</b>\n$(playerctl metadata artist | zenity-escape)" --title "Now Playing"
+notify-send --icon=audio-x-generic "$(playerctl metadata title)" "$(playerctl metadata artist)"

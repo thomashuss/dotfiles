@@ -1,3 +1,0 @@
-#!/bin/sh
-
-read to_escape && echo $to_escape | sed -e 's/\\/\\\\/g' -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
