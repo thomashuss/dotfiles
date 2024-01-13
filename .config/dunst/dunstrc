@@ -196,7 +196,7 @@
     max_icon_size = 32
 
     # Paths to default icons.
-    icon_path = /usr/share/icons/mate/16x16/status/:/usr/share/icons/mate/16x16/devices/
+    icon_path = /usr/share/icons/mate/16x16/actions/:/usr/share/icons/mate/16x16/animations/:/usr/share/icons/mate/16x16/apps/:/usr/share/icons/mate/16x16/categories/:/usr/share/icons/mate/16x16/devices/:/usr/share/icons/mate/16x16/emblems/:/usr/share/icons/mate/16x16/emotes/:/usr/share/icons/mate/16x16/mimetypes/:/usr/share/icons/mate/16x16/places/:/usr/share/icons/mate/16x16/status/
 
     ### History ###
 
@@ -229,7 +229,7 @@
     # corners.
     # The radius will be automatically lowered if it exceeds half of the
     # notification height to avoid clipping text and/or icons.
-    corner_radius = 5
+    corner_radius = 0
 
     # Ignore the dbus closeNotification message.
     # Useful to enforce the timeout set by dunst configuration. Without this
