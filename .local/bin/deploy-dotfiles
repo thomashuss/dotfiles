@@ -1,20 +1,20 @@
 #!/bin/sh
 
-for var in DOTFILES_REPO $($DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths 2>/dev/null); do
+for var in DOTFILES_REPO $("$DOTFILES_REPO"/.local/lib/dotfiles/scripts/fix_paths 2>/dev/null); do
 	if eval '[ -z $'"$var ]"; then
 		echo "$var is not set.  Aborting."
 		exit 1
 	fi
 done
 [ -n "$1" ] && cd "$DOTFILES_REPO" && git pull
-files=$($DOTFILES_REPO/.local/lib/dotfiles/scripts/print_dotfiles)
+files=$("$DOTFILES_REPO/.local/lib/dotfiles/scripts/print_dotfiles")
 echo "$files" | rsync --ignore-missing-args --files-from=- "$DOTFILES_REPO" ~
 if ! cd "$HOME"; then
 	echo "Cannot cd into HOME.  Aborting."
 	exit 1
 fi
-$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths deploy $files
-$DOTFILES_REPO/.local/lib/dotfiles/scripts/init_config deploy
+"$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" deploy $files
+"$DOTFILES_REPO/.local/lib/dotfiles/scripts/init_config" deploy
 systemctl --user daemon-reload
 pidof i3 > /dev/null 2>&1 && i3-msg reload > /dev/null 2>&1 && echo "Reloaded i3"
 echo "Done."

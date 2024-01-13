@@ -12,7 +12,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # Source my profile
-. $HOME/.profile
+. "$HOME"/.profile
 
 # User specific aliases and functions
 if [[ -d ~/.bashrc.d ]]; then

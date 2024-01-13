@@ -5,7 +5,7 @@ export MOZ_USE_XINPUT2=1
 #export QT_STYLE_OVERRIDE=Windows
 #export QT_QPA_PLATFORMTHEME=gtk3
 export GTK_THEME=Adwaita:dark
-eval $(ssh-agent)
+eval "$(ssh-agent)"
 
 xset b off
 xcape -e "Alt_L=Escape;Super_L=Control_L|H" -t 400

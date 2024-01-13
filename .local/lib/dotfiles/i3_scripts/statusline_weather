@@ -6,8 +6,8 @@ fi
 
 WEATHER_FILE="$XDG_RUNTIME_DIR/statusline/weather"
 for i in 1 2 3; do
-	if weather="$($HOME/.local/bin/weather --i3status)" && [ -n "$weather" ]; then
-		mkdir -p $XDG_RUNTIME_DIR/statusline
+	if weather="$("$HOME"/.local/bin/weather --i3status)" && [ -n "$weather" ]; then
+		mkdir -p "$XDG_RUNTIME_DIR"/statusline
 		echo "$weather" > "$WEATHER_FILE"
 		[ -z "$STARTED_BY_SYSTEMD" ] && systemctl --user start statusline_weather.timer
 		exit 0

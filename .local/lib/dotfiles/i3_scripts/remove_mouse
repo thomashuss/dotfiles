@@ -1,8 +1,8 @@
 #!/bin/sh
 
-eval $(xdotool getmouselocation --shell)
+eval "$(xdotool getmouselocation --shell)"
 if [ "$WINDOW" = "$(xdotool getwindowfocus)" ]; then
-	xdotool search --class "^i3bar$" mousemove --window %1 --polar 0 0
+	xdotool search --class ^i3bar$ mousemove --window %1 --polar 0 0
 else
 	xdotool getwindowfocus mousemove --window %1 --polar 0 0
 fi

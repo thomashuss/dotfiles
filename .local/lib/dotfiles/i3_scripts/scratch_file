@@ -1,5 +1,5 @@
 #!/bin/sh
 
 if [ "search" = "$1" ] && shift || ! xdotool search --onlyvisible --classname '^caja$' | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW -id 2>/dev/null | grep -q '=' && i3-msg 'mode "default"'; then
-	rofi -show rff -modes rff:$HOME/.local/lib/dotfiles/i3_scripts/rofi_focus_file -matching prefix $@
+	rofi -show rff -modes rff:"$HOME"/.local/lib/dotfiles/i3_scripts/rofi_focus_file -matching prefix $@
 fi

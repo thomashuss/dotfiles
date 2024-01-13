@@ -5,12 +5,12 @@ if [ -n "$1" ]; then
 else
 	pgrep -f "/bin/sh $0" | grep -v $$ | xargs -r kill &
 fi
-ids=$(wmctrl -l | $HOME/.local/lib/dotfiles/misc_scripts/window_stack -vactive_first=1 -vcurr_workspace=1)
+ids=$(wmctrl -l | "$HOME"/.local/lib/dotfiles/misc_scripts/window_stack -vactive_first=1 -vcurr_workspace=1)
 active=$(echo "$ids" | head -n1)
 echo "$ids" | tail -n+2 | {
 	trap 'continue' USR1
 	transient_for=""
-	while read id; do
+	while read -r id; do
 		xp=$(xprop -notype _NET_WM_STATE WM_TRANSIENT_FOR -id "$id")
 		if [ -z "$transient_for" ]; then
 			transient_for=$(echo "$xp" | grep -Po '(?<=^WM_TRANSIENT_FOR: window id # )[0-9a-z]*$') && [ "$id" = "$active" ] && continue
@@ -20,7 +20,7 @@ echo "$ids" | tail -n+2 | {
 		fi
 		if [ "$id" != "$active" ] && echo "$xp" | grep -Pq '^_NET_WM_STATE((?!FULLSCREEN|SKIP_PAGER).)*$'; then
 			xdotool windowactivate "$id"
-			sleep $1 > /dev/null 2>&1 & wait
+			sleep "$1" > /dev/null 2>&1 & wait
 			exit
 		fi
 	done

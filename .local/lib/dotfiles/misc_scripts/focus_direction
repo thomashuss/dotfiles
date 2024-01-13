@@ -1,6 +1,6 @@
 #!/bin/sh
 
-wmctrl -l | $HOME/.local/lib/dotfiles/misc_scripts/window_stack -vprint_prefix='getwindowgeometry --shell ' -vcurr_workspace=1 -vafter_active=1 -vskip_first=1 -vnum_windows=4 -vactive_first=1 | xdotool - | awk -vdirection="$1" '
+wmctrl -l | "$HOME"/.local/lib/dotfiles/misc_scripts/window_stack -vprint_prefix='getwindowgeometry --shell ' -vcurr_workspace=1 -vafter_active=1 -vskip_first=1 -vnum_windows=4 -vactive_first=1 | xdotool - | awk -vdirection="$1" '
 	function list_window(distance) {
 		if (min_distance == "" || distance < min_distance) {
 			min_distance = distance

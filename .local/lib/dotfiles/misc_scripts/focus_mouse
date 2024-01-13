@@ -1,4 +1,4 @@
-#!/bin/xdotool
+#!/usr/bin/env xdotool
 
 windowactivate $1
 mousemove --window $1 0 0
