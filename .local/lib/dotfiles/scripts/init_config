@@ -5,7 +5,7 @@ case $1 in
 		[ ! -f "$HOME/.Xresources" ] && cp "$DOTFILES_REPO/.local/lib/dotfiles/Xresources" "$HOME/.Xresources" && echo "Created ~/.Xresources"
 		[ ! -f "$HOME/.config/autorandr/settings.ini" ] && cp "$DOTFILES_REPO/.local/lib/dotfiles/autorandr-settings.ini" "$HOME/.config/autorandr/settings.ini" && echo "Created ~/.config/autorandr/settings.ini"
 		[ -n "$(find /sys/class/power_supply -name 'BAT*')" ] && sed -i -e's@#order += "battery all"@order += "battery all"@' "$HOME/.config/i3status/config" && echo "Battery exists, enabled battery in i3status"
-		type dconf > /dev/null 2>&1 && cat "$DOTFILES_REPO/.local/lib/dotfiles/dconf" | dconf load /;;
+		command -v dconf > /dev/null 2>&1 && cat "$DOTFILES_REPO/.local/lib/dotfiles/dconf" | dconf load /;;
 
 	"update")
 		sed -i -e's@order += "battery all"@#order += "battery all"@' "$DOTFILES_REPO/.config/i3status/config";;

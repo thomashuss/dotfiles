@@ -3,7 +3,7 @@
 gtk_name="--name scratch_calc"
 terminal="mate-terminal $gtk_name --disable-factory -e"
 if calc=$(for c in qalculate-gtk R bc calc ipython mate-calc rmaxima octave python qalc sage; do
-	type "$c" > /dev/null && echo "$c"
+	command -v "$c" > /dev/null 2>&1 && echo "$c"
 done | dmenu -l 20 -fn sans -p calculator -i); then
 	case $calc in
 		"qalculate-gtk") calc="$calc $gtk_name";;

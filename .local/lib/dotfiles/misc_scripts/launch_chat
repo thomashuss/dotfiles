@@ -6,7 +6,7 @@ if c=$({
 		echo "teams"
 	fi
 	for e in zoom skypeforlinux discord; do
-		type "$e" > /dev/null && echo "$e"
+		command -v "$e" > /dev/null 2>&1 && echo "$e"
 	done
 } | dmenu -l 10 -fn sans -p chat -i); then
 	case $c in
