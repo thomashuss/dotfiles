@@ -1,0 +1,6 @@
+#!/bin/sh
+
+file="$HOME/.config/autorandr/settings.ini"
+tmp=$(mktemp "$file.XXX")
+sed '/^dry-run=$/d' "$file" > "$tmp"
+mv "$tmp" "$file"

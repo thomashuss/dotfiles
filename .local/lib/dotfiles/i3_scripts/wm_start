@@ -2,8 +2,8 @@
 
 picom &
 /usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
-$HOME/.fehbg &
-(sed -i '/^dry-run=$/d' $HOME/.config/autorandr/settings.ini; autorandr -c --default default) &
+"$HOME/.fehbg" &
+("$HOME/.local/lib/dotfiles/scripts/enable_autorandr"; autorandr -c --default default) &
 blueman-applet &
 nm-applet &
 /usr/lib/evolution-data-server/evolution-alarm-notify &

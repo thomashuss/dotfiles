@@ -1,15 +1,22 @@
 #!/bin/sh
 
 vars=$(printf 'HOME\nXDG_RUNTIME_DIR')
-direction=$1
+direction="$1"
 if shift > /dev/null 2>&1; then
-	sed -i $(echo "$vars" | awk -vdirection="$direction" '{
+	exp=$(echo "$vars" | awk -vdirection="$direction" '{
 		generic_path = "/path/to/" tolower($0)
 		if (direction == "deploy")
-			print "-e s@" generic_path "@" ENVIRON[$0] "@"
+			print "-e s@" generic_path "@" ENVIRON[$0] "@g"
 		else
-			print "-e s@" ENVIRON[$0] "@" generic_path "@"
-	}') $@
+			print "-e s@" ENVIRON[$0] "@" generic_path "@g"
+	}')
+	ts_vars=$(echo "$exp" | awk -vORS= -vFS=@ '{if(f)print "|";f=1;print $2}')
+	for f in $(grep -El "$ts_vars" $@); do
+		tmp=$(mktemp "$f.XXX")
+		sed $exp "$f" > "$tmp"
+		mv "$tmp" "$f"
+		echo "Corrected paths in $f"
+	done
 else
 	echo "$vars"
 fi
