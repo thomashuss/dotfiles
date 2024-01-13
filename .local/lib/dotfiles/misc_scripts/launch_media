@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-c=$(for e in spotify vlc mpv rhythmbox strawberry audacious ncspot ncmpcpp exit; do
+if c=$(for e in spotify vlc mpv rhythmbox strawberry audacious ncspot ncmpcpp; do
 	type "$e" > /dev/null && echo "$e"
-done | rofi -dmenu -only-match -p media -i)
-case $c in
-	"exit") exit;;
-	"mpv") c="mpv --player-operation-mode=pseudo-gui";;
-	"ncmpcpp");&
-	"ncspot") c="mate-terminal --name $c --disable-factory -e $c";;
-	*);;
-esac
-$c &
+done | dmenu -l 10 -fn sans -p media -i); then
+	case $c in
+		"mpv") c="mpv --player-operation-mode=pseudo-gui";;
+		"ncmpcpp");&
+		"ncspot") c="mate-terminal --name $c --disable-factory -e $c";;
+		*);;
+	esac
+	$c &
+fi

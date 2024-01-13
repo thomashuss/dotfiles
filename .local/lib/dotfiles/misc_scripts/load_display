@@ -1,3 +1,5 @@
 #!/bin/sh
 
-autorandr "$(autorandr --list | rofi -dmenu -l 5 -p 'Load display configuration')"
+if d="$(autorandr --list | dmenu -fn sans -l 20 -p 'Load display configuration')"; then
+	autorandr "$d"
+fi

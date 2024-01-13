@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 
-c=$(for e in lowriter localc loimpress lyx code mate-terminal exit; do
+if c=$(for e in lowriter localc loimpress lyx code mate-terminal; do
 	type "$e" > /dev/null && echo "$e"
-done | rofi -dmenu -only-match -p editor -i)
-if [ "$c" = "exit" ]; then
-	exit
-fi
-if [ "$1" = "i3" ]; then
-	[ "$c" = "code" ] && i3_args="--no-startup-id"
-	i3-msg "exec $i3_args $c"
-else
+done | dmenu -l 10 -fn sans -p editor -i); then
 	$c &
 fi

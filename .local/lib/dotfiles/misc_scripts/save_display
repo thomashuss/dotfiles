@@ -1,4 +1,7 @@
 #!/bin/sh
 
 arandr
-$HOME/.fehbg & d=$(autorandr --list | rofi -dmenu -l 5 -p 'Save display configuration') && autorandr --force -s "$d"
+$HOME/.fehbg &
+if d=$(autorandr --list | dmenu -fn sans -l 20 -p 'Save display configuration'); then
+	autorandr --force -s "$d"
+fi

@@ -2,15 +2,15 @@
 
 gtk_name="--name scratch_calc"
 terminal="mate-terminal $gtk_name --disable-factory -e"
-calcs="qalculate-gtk R bc calc ipython mate-calc rmaxima octave python qalc sage exit"
-calc=$(for c in $calcs; do
+calcs="qalculate-gtk R bc calc ipython mate-calc rmaxima octave python qalc sage"
+if calc=$(for c in $calcs; do
 	type "$c" > /dev/null && echo "$c"
-done | rofi -dmenu -only-match -p "calculator" -i)
-case $calc in
-	"exit") exit;;
-	"qalculate-gtk");&
-	"mate-calc")
-		calc="$calc $gtk_name";;
-	*)  calc="$terminal $calc";;
-esac
-i3-msg "exec $calc"
+done | dmenu -l 20 -fn sans -p calculator -i); then
+	case $calc in
+		"qalculate-gtk");&
+		"mate-calc")
+			calc="$calc $gtk_name";;
+		*)  calc="$terminal $calc";;
+	esac
+	i3-msg "exec $calc"
+fi
