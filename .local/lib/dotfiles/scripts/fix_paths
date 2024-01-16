@@ -10,12 +10,10 @@ if shift > /dev/null 2>&1; then
 		else
 			print "-e s@" ENVIRON[$0] "@" generic_path "@g"
 	}')
-	ts_vars=$(echo "$exp" | awk -vORS= -vFS=@ '{if(f)print "|";f=1;print $2}')
-	grep -El "$ts_vars" $@ | while read -r f; do
+	grep -El "$(echo "$exp" | awk -vORS= -vFS=@ '{if(f)print "|";else f=1;print $2}')" $@ | while read -r f; do
 		echo "Correcting paths in $f"
-		tmp=$(mktemp "$f.XXX")
-		sed $exp "$f" > "$tmp"
-		mv "$tmp" "$f"
+		sed $exp "$f" > "$f.fixed"
+		mv "$f.fixed" "$f"
 	done
 else
 	echo "$vars"
