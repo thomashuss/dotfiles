@@ -188,8 +188,8 @@ set $copy_screenshot exec --no-startup-id flameshot screen -r | xclip -selection
 set $save_screenshot exec --no-startup-id flameshot screen -p "$HOME"
 # }}}
 # Show/hide scratchpad calculator or launch it if not running {{{
-set $calc exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus "exec $HOME/.local/lib/dotfiles/misc_scripts/scratch_calc" 'instance=^scratch_calc$' --classname '^scratch_calc$'
-set $launch_calc [instance="^scratch_calc$" floating] move scratchpad, scratchpad show; exec $HOME/.local/lib/dotfiles/misc_scripts/scratch_calc
+set $calc exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus "exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/scratch_calc" 'instance=^scratch_calc$' --classname '^scratch_calc$'
+set $launch_calc [instance="^scratch_calc$" floating] move scratchpad, scratchpad show; exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/scratch_calc
 # }}}
 # Show/hide password manager or launch it if not running {{{
 set $password_man exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus "exec --no-startup-id keepassxc" 'class=^KeePassXC$' --all --name --class 'KeePassXC$'
@@ -240,7 +240,7 @@ set $scratch_term exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scra
 set $launch_editor exec mate-terminal --name vim -e vim --disable-factory
 # }}}
 # Now playing media {{{
-set $now_playing exec $HOME/.local/lib/dotfiles/misc_scripts/now_playing
+set $now_playing exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/now_playing
 # }}}
 # Clear now playing line {{{
 set $clear_now_playing exec --no-startup-id "rm $XDG_RUNTIME_DIR/statusline/now_playing && killall -USR1 i3status; pkill -f $HOME/.local/lib/dotfiles/i3_scripts/statusline_now_playing || exec $HOME/.local/lib/dotfiles/i3_scripts/statusline_now_playing"
