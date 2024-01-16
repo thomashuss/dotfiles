@@ -120,15 +120,15 @@ def print_wspd(data, unit):
 def print_hazards(data):
     hazards = {'🥶': False, '❗': False, '💧': False,  # '🌢': False,
                '❄️': False, '🌫': False}
-    hazards['💧'] = data.get('precip') is not None
     hazards['❄️'] = data.get('snow') is not None
+    hazards['💧'] = not hazards['❄️'] and data.get('precip') is not None
     wx_string = data.get('wxString')
     if wx_string is not None:
         hazards['🥶'] = 'FZ' in wx_string
         hazards['❗'] = 'TS' in wx_string
-        hazards['💧'] |= 'RA' in wx_string
-        # hazards['🌢'] = 'BR' in wx_string
         hazards['❄️'] |= 'SN' in wx_string
+        hazards['💧'] = not hazards['❄️'] and (hazards['💧'] or 'RA' in wx_string)
+        # hazards['🌢'] = 'BR' in wx_string
         hazards['🌫'] = 'FG' in wx_string or 'HZ' in wx_string
     hazards_str = ' '.join(filter(lambda key: hazards[key], hazards.keys()))
     if len(hazards_str) > 0:
