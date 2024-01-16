@@ -3,7 +3,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-PS1='[\u@\h \[\e[0;33m\]\W\[\e[0m\]] \$ '
+PS1='[\u@\h \[\e[0;33m\]\W\[\e[0m\]]($?)\$ '
 set -o vi
 
 # Source global definitions
