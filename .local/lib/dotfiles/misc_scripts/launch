@@ -20,7 +20,7 @@ BEGIN {
 			print "fi" | sh
 		print "if { " $3 | sh
 	}
-	print "} > /dev/null 2>&1; then l_" $1 "='" $2 "'; list=\"$list \"'" $1 "'" | sh
+	print "} > /dev/null 2>&1; then l_" $1 "='" $2 "'; list=\"$list " $1 "\"" | sh
 	last = $1
 }
 END {
