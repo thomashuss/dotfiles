@@ -1,0 +1,33 @@
+#!/usr/bin/env -S awk -f
+# Pass the path to a tab-separated file of the format:
+# display name	executable	test command
+# Escape single quotes.
+
+BEGIN {
+	FS = "\t"
+	sh = "/bin/sh -s"
+}
+{
+	if (!$3)
+		$3 = "command -v " $1
+	if (!$2)
+		$2 = $1
+	
+	if (last == $1)
+		print "elif { " $3 | sh
+	else {
+		if (NR != 1)
+			print "fi" | sh
+		print "if { " $3 | sh
+	}
+	print "} > /dev/null 2>&1; then " $1 "='" $2 "'; list=\"$list \"'" $1 "'" | sh
+	last = $1
+}
+END {
+	if (last) {
+		print "fi" | sh
+		gsub(/\/?.*\//,"", FILENAME)
+		print "if c=$(printf '%s\\n' $list | dmenu -l 10 -fn sans -p '" FILENAME "' -i); then eval \"$(eval echo '$'\"$c\")\" & fi" | sh
+	}
+	close(sh)
+}

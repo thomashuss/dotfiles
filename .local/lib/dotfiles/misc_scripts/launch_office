@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if c=$(for e in lowriter localc loimpress lyx code mate-terminal; do
-	command -v "$e" > /dev/null 2>&1 && echo "$e"
-done | dmenu -l 10 -fn sans -p editor -i); then
-	$c &
-fi

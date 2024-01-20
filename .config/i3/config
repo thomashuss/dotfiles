@@ -225,7 +225,7 @@ set $www_alt_launch_private exec --no-startup-id chromium --incognito
 set $mail exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch "exec evolution" --classname '^evolution$'
 # }}}
 # Launch media player if not running {{{
-set $media exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch_media' --any --classname --class '^(spotify|vlc|rhythmbox|strawberry|audacious|ncspot|ncmpcpp|mpv)$'
+set $media exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/media' --any --classname --class '^(spotify|vlc|rhythmbox|strawberry|audacious|ncspot|ncmpcpp|mpv)$'
 # }}}
 # Set display layout, re-apply background, prompt to save with autorandr {{{
 set $save_display exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/save_display
@@ -287,10 +287,10 @@ set $e_read_move exec --no-startup-id xdotool key "Ctrl+k" "Ctrl+V"
 set $launch_office exec libreoffice
 # }}}
 # Launch office program if not running {{{
-set $office exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch_office' --classname '^(libreoffice|lyx|code|mate-terminal)$'"
+set $office exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office' --classname '^(libreoffice|lyx|code|mate-terminal)$'"
 # }}}
 # Launch chat program if not running {{{
-set $chat exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch_chat' --classname '^(zoom|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$'"
+set $chat exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat' --classname '^(zoom|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$'"
 # }}}
 # Launch MS Teams PWA {{{
 set $launch_teams exec --no-startup-id gtk-launch chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default.desktop

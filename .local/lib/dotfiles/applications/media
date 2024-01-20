@@ -1,0 +1,9 @@
+spotify
+ncspot	mate-terminal --name ncspot --disable-factory -e "flatpak run io.github.hrkfdn.ncspot"	test -d "$HOME/.var/app/io.github.hrkfdn.ncspot"
+ncspot	mate-terminal --name ncspot --disable-factory -e ncspot
+vlc
+mpv	mpv --player-operation-mode=pseudo-gui
+rhythmbox
+strawberry
+audacious
+ncmpcpp	mate-terminal --name ncmpcpp --disable-factory -e ncmpcpp
