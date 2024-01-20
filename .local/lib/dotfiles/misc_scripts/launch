@@ -12,7 +12,7 @@ BEGIN {
 		$3 = "command -v " $1
 	if (!$2)
 		$2 = $1
-	
+	gsub(/[^a-zA-Z0-9]/, "", $1)
 	if (last == $1)
 		print "elif { " $3 | sh
 	else {
@@ -26,7 +26,7 @@ BEGIN {
 END {
 	if (last) {
 		print "fi" | sh
-		gsub(/\/?.*\//,"", FILENAME)
+		gsub(/\/?.*\//, "", FILENAME)
 		print "if c=$(printf '%s\\n' $list | dmenu -l 10 -fn sans -p '" FILENAME "' -i); then eval \"$(eval echo '$'\"$c\")\" & fi" | sh
 	}
 	close(sh)
