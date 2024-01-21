@@ -207,7 +207,7 @@ set $network_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/l
 set $bt_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill "exec blueman-manager" 'instance=^blueman-manager$' --classname '^blueman-manager$'
 # }}}
 # Launch firefox if no browser is open on current workspace {{{
-set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch - 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed" --classname '^(Navigator|chromium)$'
+set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch - 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed" --classname '^(Navigator|chromium|netsurf-gtk3|nyxt)$'
 # }}}
 # Launch firefox {{{
 set $www_launch exec firefox
@@ -247,9 +247,6 @@ set $clear_now_playing exec --no-startup-id "rm $XDG_RUNTIME_DIR/statusline/now_
 # }}}
 # Change active player {{{
 set $select_player exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/select_player
-# }}}
-# Kill browser tab or container {{{
-set $smart_kill exec --no-startup-id xdotool getactivewindow getwindowclassname | grep -Eq 'firefox|Chromium" && xdotool key "Ctrl+w" || i3-msg kill
 # }}}
 # Traverse pages in browser {{{
 set $prev_page exec --no-startup-id xdotool key "Alt+Left"
@@ -903,8 +900,6 @@ bindsym $pmod+Shift+grave $notif_hist
 # }}}
 # }}}
 # mouse button actions {{{
-#bindsym --whole-window button9 $smart_kill
-#bindsym --whole-window button8 $prev_page
 bindsym --whole-window button9 $next_tab
 bindsym --whole-window button8 $prev_tab
 bindsym button2 kill
