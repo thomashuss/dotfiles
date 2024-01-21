@@ -1,3 +1,6 @@
+[org/gnome/desktop/interface]
+color-scheme='prefer-dark'
+
 [org/gnome/evolution/calendar]
 use-24hour-format=true
 
