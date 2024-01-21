@@ -694,12 +694,12 @@ bindsym $smod+v split v;$dm
 }
 # }}}
 # file mode {{{
-set $file $HOME/.local/lib/dotfiles/i3_scripts/scratch_file
-set $file_keys -kb-remove-char-forward 'Control+d' -kb-custom-1 '[66],Delete' -kb-custom-2 'Super_L+f'
+set $file rofi -show rff -modes rff:$HOME/.local/lib/dotfiles/i3_scripts/rofi_focus_file -matching prefix -kb-remove-char-forward Control+d -kb-custom-1 [66],Delete -kb-custom-2 Super_L+f
+set $show_file ! xdotool search --onlyvisible --classname ^caja$ | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW -id 2>/dev/null | grep -q = && i3-msg mode default
 mode "file" {
 bindsym Escape $dm
 bindsym --release Alt_L $dm
-bindsym $pmod+slash exec --no-startup-id "$file search $file_keys";$dm
+bindsym $pmod+slash exec --no-startup-id "$file";$dm
 bindsym --release $pmod+f [instance=^caja$ floating] move scratchpad;$dm
 bindsym --release Super_L [instance=^caja$ floating] move scratchpad;$dm
 bindsym --release f [instance=^caja$ floating] move scratchpad;$dm
@@ -830,7 +830,7 @@ bindsym $pmod+Shift+c $launch_calc
 bindsym $pmod+d $save_display
 bindsym $pmod+Shift+d $load_display
 bindsym $pmod+e $network_control
-bindsym $pmod+f mode "file";exec --no-startup-id "$file $file_keys"
+bindsym $pmod+f mode "file";exec --no-startup-id "$show_file && $file"
 bindsym $pmod+j $word_count
 bindsym $pmod+m $phone_control
 bindsym $pmod+p $password_man
