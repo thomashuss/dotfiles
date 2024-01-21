@@ -6,28 +6,37 @@
 BEGIN {
 	FS = "\t"
 	sh = "/bin/sh -s"
+	name_count = 0
 }
 {
 	if (!$3)
 		$3 = "command -v " $1
 	if (!$2)
 		$2 = $1
-	gsub(/[^a-zA-Z0-9]/, "_", $1)
 	if (last == $1)
 		print "elif { " $3 | sh
 	else {
+		name_count++
 		if (NR != 1)
 			print "fi" | sh
 		print "if { " $3 | sh
 	}
-	print "} > /dev/null 2>&1; then l_" $1 "='" $2 "'; list=\"$list " $1 "\"" | sh
+	print "} > /dev/null 2>&1; then e" name_count "='" $2 "'; n" name_count "='" $1 "'" | sh
 	last = $1
 }
 END {
 	if (last) {
 		print "fi" | sh
+		ORS = ""
+		print "if c=$(printf '%s\\n' " | sh
+		for (i = 1; i <= name_count; i++)
+			print "$n" i " " | sh
+		ORS = "\n"
 		gsub(/\/?.*\//, "", FILENAME)
-		print "if c=$(printf '%s\\n' $list | dmenu -l 10 -fn sans -p '" FILENAME "' -i); then eval \"$(eval echo '$l_'\"$c\")\" & fi" | sh
+		print "| dmenu -l 10 -fn sans -p '" FILENAME "' -i); then case $c in" | sh
+		for (i = 1; i <= name_count; i++)
+			print "\"$n" i "\") eval \"$e" i "\" &;;" | sh
+		print "*);; esac; fi" | sh
 	}
 	close(sh)
 }
