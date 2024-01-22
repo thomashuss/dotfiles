@@ -284,7 +284,7 @@ set $e_read_move exec --no-startup-id xdotool key "Ctrl+k" "Ctrl+V"
 set $launch_office exec libreoffice
 # }}}
 # Launch office program if not running {{{
-set $office exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office' --classname '^(libreoffice|lyx|code|mate-terminal)$'"
+set $office exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office' --classname '^(libreoffice|lyx|code|mate-terminal|chromium|crx_ocdlmjhbenodhlknglojajgokahchlkk)$'"
 # }}}
 # Launch chat program if not running {{{
 set $chat exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat' --any --class --classname '^(zoom ?|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$'"

@@ -1,6 +1,7 @@
 lowriter
 localc
 loimpress
+ms365	gtk-launch chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop	test -f "$HOME/.local/share/applications/chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop"
 lyx
 code
 mate-terminal
