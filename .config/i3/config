@@ -207,7 +207,7 @@ set $network_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/l
 set $bt_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill "exec blueman-manager" 'instance=^blueman-manager$' --classname '^blueman-manager$'
 # }}}
 # Launch firefox if no browser is open on current workspace {{{
-set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch - 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed" --classname '^(Navigator|chromium|netsurf-gtk3|nyxt)$'
+set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch_post 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed" --classname '^(Navigator|chromium|netsurf-gtk3|nyxt)$'
 # }}}
 # Launch firefox {{{
 set $www_launch exec firefox

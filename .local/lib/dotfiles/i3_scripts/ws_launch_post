@@ -1,0 +1,11 @@
+#!/bin/sh
+
+i3_cmd="$1"
+i3_post_cmd="$2"
+shift 2
+desktop=$(xdotool get_desktop)
+if ! xdotool search --desktop "$desktop" $@; then
+	i3-msg "$i3_cmd"
+	id=$(xdotool search --sync --desktop "$desktop" $@)
+	i3-msg "[id=$id] $i3_post_cmd"
+fi

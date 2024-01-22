@@ -1,18 +1,5 @@
 #!/bin/sh
 
-if [ "$1" = "-" ]; then
-	i3_cmd="$2"
-	i3_post_cmd="$3"
-	shift 3
-else
-	i3_cmd="$1"
-	shift
-fi
-desktop=$(xdotool get_desktop)
-if ! xdotool search --desktop "$desktop" $@; then
-	i3-msg "$i3_cmd"
-	if [ -n "$i3_post_cmd" ]; then
-		id=$(xdotool search --sync --desktop "$desktop" $@)
-		i3-msg "[id=$id] $i3_post_cmd"
-	fi
-fi
+i3_cmd="$1"
+shift
+xdotool search --desktop "$(xdotool get_desktop)" $@ && i3-msg "$i3_cmd"
