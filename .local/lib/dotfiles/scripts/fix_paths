@@ -10,7 +10,7 @@ if shift > /dev/null 2>&1; then
 		else
 			print "-e s@" ENVIRON[$0] "@" generic_path "@g"
 	}')
-	grep -El "$(echo "$exp" | awk -vORS= -vFS=@ '{if(f)print "|";else f=1;print $2}')" "$@" | while read -r f; do
+	grep -El "$(echo "$exp" | awk -vORS= -vFS=@ '{if(NR!=1)print "|";print $2}')" "$@" | while read -r f; do
 		echo "Correcting paths in $f"
 		sed $exp "$f" > "$f.fixed"
 		mv "$f.fixed" "$f"
