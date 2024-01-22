@@ -96,8 +96,8 @@ set $ws10po
 # floating windows {{{
 for_window [class="^KeePassXC$" title="^((?!^Unlock Database).)*$"] floating enable, sticky enable
 for_window [class="^MusE$" title="^((?!^MusE( Project)?).)*$"] floating enable
-for_window [class="^zoom$" title="^((?!^Zoom Meeting$).)*$"] floating enable
-for_window [class="^zoom$" title="^Zoom Meeting$"] floating disable
+for_window [class="^zoom$" title="^((?!^Zoom (Meeting|for Government)$).)*$"] floating enable
+for_window [class="^zoom$" title="^Zoom (Meeting|for Government)$"] floating disable
 for_window [instance="^((?!^Navigator$).)*$" class="^(firefox|Tor Browser|Pale moon)$"] floating enable, sticky enable
 for_window [title="^Picture-in-Picture$" class="^firefox$"] sticky enable
 for_window [instance="^arandr$"] floating enable
@@ -206,7 +206,7 @@ set $network_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/l
 # Launch bluetooth manager {{{
 set $bt_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill "exec blueman-manager" 'instance=^blueman-manager$' --classname '^blueman-manager$'
 # }}}
-# Launch firefox if no browser is open on current workspace {{{
+# Launch browser if no browser is open on current workspace {{{
 set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch_post 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed" --classname '^(Navigator|chromium|netsurf-gtk3|nyxt)$'
 # }}}
 # Launch firefox {{{
@@ -287,7 +287,7 @@ set $launch_office exec libreoffice
 set $office exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office' --classname '^(libreoffice|lyx|code|mate-terminal)$'"
 # }}}
 # Launch chat program if not running {{{
-set $chat exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat' --classname '^(zoom|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$'"
+set $chat exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat' --any --class --classname '^(zoom ?|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$'"
 # }}}
 # Launch MS Teams PWA {{{
 set $launch_teams exec --no-startup-id gtk-launch chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default.desktop
