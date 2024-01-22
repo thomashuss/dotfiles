@@ -3,7 +3,7 @@
 i3cmd="$1"
 i3q="$2"
 shift 2
-if xdotool search --onlyvisible $@ | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW -id 2>/dev/null | grep -q '='; then
+if xdotool search --onlyvisible "$@" | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW -id 2>/dev/null | grep -q '='; then
 	i3-msg ["$i3q" floating] kill
 else
 	i3-msg "$i3cmd"
