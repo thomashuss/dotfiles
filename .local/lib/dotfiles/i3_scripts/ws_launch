@@ -2,4 +2,4 @@
 
 i3_cmd="$1"
 shift
-xdotool search --desktop "$(xdotool get_desktop)" $@ && i3-msg "$i3_cmd"
+xdotool search --desktop "$(xdotool get_desktop)" $@ || i3-msg "$i3_cmd"
