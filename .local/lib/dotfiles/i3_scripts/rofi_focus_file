@@ -17,7 +17,7 @@ print_windows() {
 if [ -n "$1" ]; then
 	case $ROFI_RETV in
 		10) i3-msg "[id=$ROFI_INFO] kill" > /dev/null 2>&1; print_windows "$ROFI_INFO";;
-		1)  i3-msg "[id=$ROFI_INFO] focus" > /dev/null 2>&1;;
+		1)  i3-msg "[id=$ROFI_INFO] focus" > /dev/null 2>&1 &;;
 		11) i3-msg '[instance=^caja$ floating] move scratchpad' > /dev/null 2>&1;;
 	esac
 else
