@@ -1,5 +1,5 @@
 #!/bin/sh
 
-i3_cmd="$1"
-shift
-xdotool search --desktop "$(xdotool get_desktop)" "$@" || i3-msg "$i3_cmd"
+if i3-msg -t get_tree | jq '.. | if .name? == "'"$1"'" then .nodes | .. | .window_properties? // empty | if '"$2"' then "" | halt_error(1) end end | empty | halt'; then
+	i3-msg "$3"
+fi

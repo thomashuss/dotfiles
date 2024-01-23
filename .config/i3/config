@@ -23,21 +23,27 @@ client.urgent           #c06200 #c06200 #ffffff #c06200   #c06200
 set $unnamed_ws 10:1 11:2 12:3 13:4 14:5 15:6 16:7 17:8 18:9 19:10
 # chat {{{
 set $ws_chat 0:b:🗪
+set $chat exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '0:b:🗪' '(.instance | test("^(zoom ?|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$")) or (.class | test("^zoom ?$"))' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat'
 # }}}
 # mail {{{
 set $ws_mail 1:e:✉️
+set $mail exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '1:e:✉️' '.instance=="evolution"' "exec evolution"
 # }}}
 # editor {{{
 set $ws_editor 2:g:📝
+set $office exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '2:g:📝' '.instance | test("^(libreoffice|lyx|code|mate-terminal|chromium|crx_ocdlmjhbenodhlknglojajgokahchlkk)$")' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office'
 # }}}
 # terminal {{{
 set $ws_terminal 3:t:>_
+set $terminal exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '3:t:>_' '.instance=="mate-terminal"' "exec mate-terminal"
 # }}}
 # web {{{
 set $ws_web 4:w:🌐
+set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch_post '4:w:🌐' '.instance | test("^(Navigator|chromium|netsurf-gtk3|nyxt)$")' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed"
 # }}}
 # media {{{
 set $ws_media 5:y:⏯
+set $media exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '5:y:⏯' '(.instance | test("^(spotify|vlc|rhythmbox|strawberry|audacious|ncspot|ncmpcpp)$")) or .class=="mpv"' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/media'
 # }}}
 # ws1 limbo default {{{
 set $ws1pr 10
@@ -177,9 +183,6 @@ set $blank_workspace exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/b
 # Launch terminal {{{
 set $launch_terminal exec mate-terminal
 # }}}
-# Launch or focus terminal on terminal workspace {{{
-set $terminal exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch "exec mate-terminal" --classname '^mate-terminal$'
-# }}}
 # Launch screenshot utility {{{
 set $screenshot exec flameshot gui
 # }}}
@@ -206,9 +209,6 @@ set $network_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/l
 # Launch bluetooth manager {{{
 set $bt_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill "exec blueman-manager" 'instance=^blueman-manager$' --classname '^blueman-manager$'
 # }}}
-# Launch browser if no browser is open on current workspace {{{
-set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch_post 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed" --classname '^(Navigator|chromium|netsurf-gtk3|nyxt)$'
-# }}}
 # Launch firefox {{{
 set $www_launch exec firefox
 # }}}
@@ -220,12 +220,6 @@ set $www_alt_launch exec --no-startup-id chromium
 # }}}
 # Launch chromium private window {{{
 set $www_alt_launch_private exec --no-startup-id chromium --incognito
-# }}}
-# Start mail client if it's not running {{{
-set $mail exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch "exec evolution" --classname '^evolution$'
-# }}}
-# Launch media player if not running {{{
-set $media exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/media' --any --classname --class '^(spotify|vlc|rhythmbox|strawberry|audacious|ncspot|ncmpcpp|mpv)$'
 # }}}
 # Set display layout, re-apply background, prompt to save with autorandr {{{
 set $save_display exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/save_display
@@ -282,12 +276,6 @@ set $e_read_move exec --no-startup-id xdotool key "Ctrl+k" "Ctrl+V"
 # }}}
 # Launch office program {{{
 set $launch_office exec libreoffice
-# }}}
-# Launch office program if not running {{{
-set $office exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office' --classname '^(libreoffice|lyx|code|mate-terminal|chromium|crx_ocdlmjhbenodhlknglojajgokahchlkk)$'"
-# }}}
-# Launch chat program if not running {{{
-set $chat exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/ws_launch 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat' --any --class --classname '^(zoom ?|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$'"
 # }}}
 # Launch MS Teams PWA {{{
 set $launch_teams exec --no-startup-id gtk-launch chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default.desktop

@@ -1,11 +1,6 @@
 #!/bin/sh
 
-i3_cmd="$1"
-i3_post_cmd="$2"
-shift 2
-desktop=$(xdotool get_desktop)
-if ! xdotool search --desktop "$desktop" "$@"; then
-	i3-msg "$i3_cmd"
-	id=$(xdotool search --sync --desktop "$desktop" "$@")
-	i3-msg "[id=$id] $i3_post_cmd"
+if i3-msg -t get_tree | jq '.. | if .name? == "'"$1"'" then .nodes | .. | .window_properties? // empty | if '"$2"' then "" | halt_error(1) end end | empty | halt'; then
+	timeout 30s sh -c 'i3-msg "[con_id=$(i3-msg -t subscribe -m '"'"'[ "window" ]'"'"' | jq '"'"'select(.change=="new").container | if (.window_properties | '"'"'"$2"'"'"') then .id, halt end'"'"') workspace=\"$1\"] $3"' - "$1" "$2" "$4" &
+	i3-msg "$3"
 fi
