@@ -191,7 +191,7 @@ set $copy_screenshot exec --no-startup-id flameshot screen -r | xclip -selection
 set $save_screenshot exec --no-startup-id flameshot screen -p "$HOME"
 # }}}
 # Show/hide scratchpad calculator or launch it if not running {{{
-set $calc exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus "exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/scratch_calc" 'instance=^scratch_calc$' --classname '^scratch_calc$'
+set $calc exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus "exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/scratch_calc" 'instance=^scratch_calc$' --classname '^scratch_calc$'
 set $launch_calc [instance="^scratch_calc$" floating] move scratchpad, scratchpad show; exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/scratch_calc
 # }}}
 # Show/hide password manager or launch it if not running {{{
