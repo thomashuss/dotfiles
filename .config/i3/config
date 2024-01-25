@@ -102,7 +102,8 @@ for_window [instance="^((?!^Navigator$).)*$" class="^(firefox|Tor Browser|Pale m
 for_window [title="^Picture-in-Picture$" class="^firefox$"] sticky enable
 for_window [instance="^arandr$"] floating enable
 for_window [instance="^blueman-manager$"] floating enable, sticky enable
-for_window [instance="^caja$"] floating enable, sticky enable
+for_window [instance="^caja$"] floating enable
+for_window [instance="^caja$" floating] sticky enable
 for_window [instance="^carla-plugin$"] floating enable
 for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
 for_window [instance="^engrampa$"] floating enable
@@ -833,7 +834,7 @@ bindsym XF86Tools $window_switcher
 #bindsym F4 workspace back_and_forth
 bindsym Print $copy_screenshot
 bindsym Shift+Print $save_screenshot
-bindsym Pause workspace back_and_forth
+#bindsym Pause workspace back_and_forth
 #bindsym Pause kill
 #bindsym $smod+Pause [workspace=__focused__] kill;$kill_d
 # }}}
