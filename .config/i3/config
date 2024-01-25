@@ -23,27 +23,21 @@ client.urgent           #c06200 #c06200 #ffffff #c06200   #c06200
 set $unnamed_ws 10:1 11:2 12:3 13:4 14:5 15:6 16:7 17:8 18:9 19:10
 # chat {{{
 set $ws_chat 0:b:🗪
-set $chat exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '0:b:🗪' '(.instance | test("^(zoom ?|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$")) or (.class | test("^zoom ?$"))' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat'
 # }}}
 # mail {{{
 set $ws_mail 1:e:✉️
-set $mail exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '1:e:✉️' '.instance=="evolution"' "exec evolution"
 # }}}
 # editor {{{
 set $ws_editor 2:g:📝
-set $office exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '2:g:📝' '.instance | test("^(libreoffice|lyx|code|mate-terminal|chromium|crx_ocdlmjhbenodhlknglojajgokahchlkk)$")' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office'
 # }}}
 # terminal {{{
 set $ws_terminal 3:t:>_
-set $terminal exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '3:t:>_' '.instance=="mate-terminal"' "exec mate-terminal"
 # }}}
 # web {{{
 set $ws_web 4:w:🌐
-set $www exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch_post '4:w:🌐' '.instance | test("^(Navigator|chromium|netsurf-gtk3|nyxt)$")' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www' "layout tabbed"
 # }}}
 # media {{{
 set $ws_media 5:y:⏯
-set $media exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_launch '5:y:⏯' '(.instance | test("^(spotify|vlc|rhythmbox|strawberry|audacious|ncspot|ncmpcpp)$")) or .class=="mpv"' 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/media'
 # }}}
 # ws1 limbo default {{{
 set $ws1pr 10
@@ -446,12 +440,12 @@ bindsym apostrophe focus output up;$hm
 bindsym semicolon focus output down;$hm
 # }}}
 # focus/launch application {{{
-bindsym b workspace $ws_chat;$chat;$hm
-bindsym e workspace $ws_mail;$mail;$hm
-bindsym g workspace $ws_editor;$office;$hm
-bindsym t workspace $ws_terminal;$terminal;$hm
-bindsym w workspace $ws_web;$www;$hm
-bindsym y workspace $ws_media;$media;$hm
+bindsym b workspace $ws_chat;$hm
+bindsym e workspace $ws_mail;$hm
+bindsym g workspace $ws_editor;$hm
+bindsym t workspace $ws_terminal;$hm
+bindsym w workspace $ws_web;$hm
+bindsym y workspace $ws_media;$hm
 bindsym BackSpace $remove_mouse;$hm
 # }}}
 }
@@ -547,12 +541,12 @@ bindsym apostrophe focus output up
 bindsym semicolon focus output down
 # }}}
 # focus/launch application {{{
-bindsym b workspace $ws_chat;$chat
-bindsym e workspace $ws_mail;$mail
-bindsym g workspace $ws_editor;$office
-bindsym t workspace $ws_terminal;$terminal
-bindsym w workspace $ws_web;$www
-bindsym y workspace $ws_media;$media
+bindsym b workspace $ws_chat
+bindsym e workspace $ws_mail
+bindsym g workspace $ws_editor
+bindsym t workspace $ws_terminal
+bindsym w workspace $ws_web
+bindsym y workspace $ws_media
 bindsym BackSpace $remove_mouse
 # }}}
 }
@@ -647,12 +641,12 @@ bindsym apostrophe focus output up;$dm
 bindsym semicolon focus output down;$dm
 # }}}
 # focus/launch application {{{
-bindsym b workspace $ws_chat;$chat;$dm
-bindsym e workspace $ws_mail;$mail;$dm
-bindsym g workspace $ws_editor;$office;$dm
-bindsym t workspace $ws_terminal;$terminal;$dm
-bindsym w workspace $ws_web;$www;$dm
-bindsym y workspace $ws_media;$media;$dm
+bindsym b workspace $ws_chat;$dm
+bindsym e workspace $ws_mail;$dm
+bindsym g workspace $ws_editor;$dm
+bindsym t workspace $ws_terminal;$dm
+bindsym w workspace $ws_web;$dm
+bindsym y workspace $ws_media;$dm
 bindsym BackSpace $remove_mouse;$dm
 # }}}
 }
@@ -929,6 +923,7 @@ bindsym $pmod+Control+e exec $i3-nagbar -t warning -m 'End this session?' -B 'Ye
 exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/wm_start
 #exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/statusline_now_playing
 exec --no-startup-id $weather
+exec_always --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/ws_watcher
 # }}}
 
 # machine specific config

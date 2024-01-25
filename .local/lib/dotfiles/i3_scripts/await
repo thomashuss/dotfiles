@@ -1,0 +1,3 @@
+#!/bin/sh
+
+timeout 30s sh -c 'i3-msg "[con_id=$(i3-msg -t subscribe -m '"'"'[ "window" ]'"'"' | jq '"'"'select(.change=="new").container | if (.window_properties | '"'"'"$1"'"'"') then .id, halt end'"'"')] $2"' - "$1" "$2"

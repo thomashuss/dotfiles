@@ -1,2 +1,69 @@
 #!/usr/bin/env python3
-import i3ipc
+import asyncio
+import os
+import psutil
+import re
+from i3ipc import Event
+from i3ipc.aio import Connection
+from signal import SIGTERM
+
+
+LAUNCHERS = (
+    (
+        re.compile(r'^(zoom ?|skype|discord|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$'),
+        re.compile(r'^zoom ?$'),
+        'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/chat'
+    ),
+    (
+        re.compile(r'^evolution$'),
+        None,
+        'exec evolution'
+    ),
+    (
+        re.compile(r'^(libreoffice|lyx|code|mate-terminal|chromium|crx_ocdlmjhbenodhlknglojajgokahchlkk)$'),
+        None,
+        'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/office'
+    ),
+    (
+        re.compile(r'^mate-terminal$'),
+        None,
+        'exec mate-terminal'
+    ),
+    (
+        re.compile(r'^(Navigator|chromium|netsurf-gtk3|nyxt)$'),
+        None,
+        'exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/await \'.instance | test("^(Navigator|chromium|netsurf-gtk3|nyxt)$")\' \'layout tabbed\'; exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/www'
+    ),
+    (
+        re.compile(r'^(spotify|vlc|rhythmbox|strawberry|audacious|ncspot|ncmpcpp)$'),
+        re.compile(r'^mpv$'),
+        'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/media'
+    )
+)
+WS_RANGE = range(0, len(LAUNCHERS))
+
+
+async def on_workspace_focus(i3, e):
+    if e.current.num in WS_RANGE:
+        launcher = LAUNCHERS[e.current.num]
+        for container in e.current:
+            if (launcher[0] and container.window_instance and launcher[0].search(container.window_instance)) or (launcher[1] and container.window_class and launcher[1].search(container.window_class)):
+                return
+        await i3.command(launcher[2])
+
+
+async def main():
+    i3 = await Connection().connect()
+    i3.on(Event.WORKSPACE_FOCUS, on_workspace_focus)
+    await i3.main()
+
+
+if __name__ == '__main__':
+    my_pid = os.getpid()
+    try:
+        for pid in map(int, os.popen("pgrep -f '" + '.+'.join(psutil.Process(my_pid).cmdline()) + "'")):
+            if pid != my_pid:
+                os.kill(pid, SIGTERM)
+    except ValueError:
+        ...
+    asyncio.run(main())
