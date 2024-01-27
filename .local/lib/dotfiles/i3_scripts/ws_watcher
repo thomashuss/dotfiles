@@ -6,6 +6,7 @@ import re
 from i3ipc import Event
 from i3ipc.aio import Connection
 from signal import SIGTERM
+from time import sleep
 
 
 LAUNCHERS = (
@@ -49,8 +50,9 @@ async def on_workspace_focus(i3, e):
         for container in e.current:
             if (launcher[0] and container.window_instance and launcher[0].search(container.window_instance)) or (launcher[1] and container.window_class and launcher[1].search(container.window_class)):
                 return
-        for ws in i3.get_workspaces():
-            if ws.num == e.current.num and not focused:
+        sleep(0.01)
+        for ws in await i3.get_workspaces():
+            if ws.focused and ws.num != e.current.num:
                 return
         await i3.command(launcher[2])
 
