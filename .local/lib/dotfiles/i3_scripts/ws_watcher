@@ -21,7 +21,7 @@ LAUNCHERS = (
         'exec evolution'
     ),
     (
-        re.compile(r'^(libreoffice|lyx|code|mate-terminal|chromium|crx_ocdlmjhbenodhlknglojajgokahchlkk)$'),
+        re.compile(r'^(atril|libreoffice|lyx|code|mate-terminal|chromium|crx_ocdlmjhbenodhlknglojajgokahchlkk)$'),
         None,
         'exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/misc_scripts/launch" "$HOME/.local/lib/dotfiles/applications/office"'
     ),
