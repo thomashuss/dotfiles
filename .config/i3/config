@@ -714,6 +714,12 @@ set $unmark_d_ws_esc [con_mark=^d$ws:.+] unmark, move scratchpad, scratchpad sho
 mode "rename" {
 bindcode --release $ergo mode "rename lazy"
 bindsym r $hm
+bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\""$hm
+bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$hm
+bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$hm
+bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$hm
+bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$hm
+bindsym m $unmark_d_ws;rename workspace to $ws_media;\\""$hm
 bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\""$hm
 bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\""$hm
 bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\""$hm
@@ -732,6 +738,12 @@ bindcode $ergo $em
 bindsym Escape $dm
 bindsym r $dm
 bindsym c exec --no-startup-id $i3-input -F 'title_format "%s"' -P 'New container name: ' || i3-msg title_format "%title";$dm
+bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\""$dm
+bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$dm
+bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$dm
+bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$dm
+bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$dm
+bindsym m $unmark_d_ws;rename workspace to $ws_media;\\""$dm
 bindsym 1 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws1pr:1:%s' -P $ws_prompt || i3-msg \\"$unmark_d_ws_esc\\"';rename workspace to $ws1'";$dm
 bindsym 2 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws2pr:2:%s' -P $ws_prompt || i3-msg \\"$unmark_d_ws_esc\\"';rename workspace to $ws2'";$dm
 bindsym 3 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws3pr:3:%s' -P $ws_prompt || i3-msg \\"$unmark_d_ws_esc\\"';rename workspace to $ws3'";$dm
