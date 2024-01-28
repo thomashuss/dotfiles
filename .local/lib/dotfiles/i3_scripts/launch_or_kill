@@ -1,10 +1,7 @@
 #!/bin/sh
 
-i3cmd="$1"
-i3q="$2"
-shift 2
-if xdotool search --onlyvisible "$@" | xargs -r -n 1 xprop -notype I3_FLOATING_WINDOW -id 2>/dev/null | grep -q '='; then
-	i3-msg ["$i3q" floating] kill
+if i3-msg -t get_tree | jq '.. | select(.type? == "workspace" and .name != "__i3_scratch") | .floating_nodes | .. | .window_properties? | select('"$1"') | "" | halt_error(1)'; then
+	i3-msg "$3"
 else
-	i3-msg "$i3cmd"
+	i3-msg "[$2 floating] kill"
 fi

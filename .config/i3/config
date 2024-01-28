@@ -196,13 +196,13 @@ set $password_man exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scra
 set $phone_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.instance=="kdeconnect-app"' 'instance=^kdeconnect-app$' "exec kdeconnect-app"
 # }}}
 # Launch audio i/o manager {{{
-set $audio_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill "exec pavucontrol" 'instance=^pavucontrol$' --classname '^pavucontrol$'
+set $audio_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance=="pavucontrol"' 'instance=^pavucontrol$' "exec pavucontrol"
 # }}}
 # Launch network connection manager {{{
-set $network_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill "exec nm-connection-editor" 'instance=^nm-connection-editor$' --classname '^nm-connection-editor$'
+set $network_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance=="nm-connection-editor"' 'instance=^nm-connection-editor$' "exec nm-connection-editor"
 # }}}
 # Launch bluetooth manager {{{
-set $bt_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill "exec blueman-manager" 'instance=^blueman-manager$' --classname '^blueman-manager$'
+set $bt_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance=="blueman-manager"' 'instance=^blueman-manager$' "exec blueman-manager"
 # }}}
 # Launch firefox {{{
 set $www_launch exec firefox
@@ -370,7 +370,7 @@ bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$hm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle;$hm
 bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d;$hm
-bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$hm
+bindsym $key_move+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$hm
 bindsym r mode "rename"
 bindsym s mode "size"
 # }}}
@@ -471,7 +471,7 @@ bindsym $key_move+f floating toggle, sticky disable;$unmark_d
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle
 bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d
-bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add
+bindsym $key_move+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add
 bindsym r mode "rename"
 bindsym s mode "size"
 # }}}
@@ -570,7 +570,7 @@ bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$dm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle;$dm
 bindsym d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d;$dm
-bindsym $smod+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$dm
+bindsym $key_move+d exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d add;$dm
 bindsym r mode "rename lazy"
 bindsym s mode "size lazy"
 # }}}
