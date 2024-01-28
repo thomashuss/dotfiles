@@ -364,6 +364,7 @@ bindcode --release $ergo mode "lazy"
 # }}}
 # modify container {{{
 bindsym c kill;$hm
+bindsym z kill;workspace back_and_forth;$hm
 bindsym $smod+c [workspace=__focused__] kill;$kill_d;$hm
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$hm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
@@ -465,6 +466,7 @@ bindsym Super_R $dm
 # }}}
 # modify container {{{
 bindsym c kill
+bindsym z kill;workspace back_and_forth
 bindsym $smod+c [workspace=__focused__] kill;$kill_d
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
@@ -564,6 +566,7 @@ bindsym --release Alt_R $dm
 # }}}
 # modify container {{{
 bindsym c kill;$dm
+bindsym z kill;workspace back_and_forth;$dm
 bindsym $smod+c [workspace=__focused__] kill;$kill_d;$dm
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$dm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
