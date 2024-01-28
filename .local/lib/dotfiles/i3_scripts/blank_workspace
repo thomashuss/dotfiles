@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
-import sys
+from argparse import ArgumentParser
 from i3ipc import Connection
+from sys import stderr
 
-if len(sys.argv) > 1:
-    del sys.argv[0]
-    split = 0
-    while split < len(sys.argv) and sys.argv[split][0:2] == '--':
-        split += 1
-    args = sys.argv[0:split]
-    ws = sys.argv[split:]
-else:
-    print('No arguments provided.', file=sys.stderr)
-    exit(1)
+parser = ArgumentParser()
+parser.add_argument('--reverse', action='store_true')
+parser.add_argument('--move', action='store_true')
+parser.add_argument('--print', action='store_true')
+parser.add_argument('--cmd')
+parser.add_argument('--postfix')
+parser.add_argument('want', nargs='+')
+args = parser.parse_args()
+ws = args.want
 
 i3 = Connection()
 i3_ws = i3.get_workspaces()
-if '--reverse' in args:
+if args.reverse:
     i3_ws = reversed(i3_ws)
-    ws = list(reversed(ws))
+    ws = reversed(ws)
     def cmp(x, y): return x < y
 else:
     def cmp(x, y): return x > y
@@ -31,17 +31,34 @@ try:
             break
         elif n[0] == workspace.num:
             n = next(want, None)
-    new_ws = n[1] if n is not None else first[1]
+    if n is not None:
+        if args.postfix:
+            first = False
+            new_ws = n[1]
+            for i in range(0, len(new_ws)):
+                if new_ws[i] == ':':
+                    if first == True:
+                        new_ws = new_ws[:i]
+                        break
+                    else:
+                        first = True
+            new_ws = f'{new_ws}:{args.postfix}'
+        else:
+            new_ws = n[1]
+    else:
+        new_ws = first[1]
 except ValueError:
-    print('Each wanted workspace name must have a logical number followed by a colon and visible number.', file=sys.stderr)
+    print('Each wanted workspace name must have a logical number followed by a colon and visible number.', file=stderr)
     exit(1)
 except TypeError:
-    print('Improperly formatted arguments.', file=sys.stderr)
+    print('Improperly formatted arguments.', file=stderr)
     exit(1)
 
-if '--print' in args:
+if args.print:
     print(new_ws)
-elif '--move' in args:
+elif args.cmd:
+    i3.command(args.cmd.format(new_ws=new_ws))
+elif args.move:
     i3.command(f'move container to workspace number {new_ws};workspace number {new_ws}')
 else:
     i3.command(f'workspace number {new_ws}')

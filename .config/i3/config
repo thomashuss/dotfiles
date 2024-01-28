@@ -39,11 +39,10 @@ set $ws_web 4:w:🌐
 # media {{{
 set $ws_media 5:y:⏯
 # }}}
-# ws1 limbo default {{{
+# ws1 default {{{
 set $ws1pr 10
 set $ws1   10:1
 set $ws1po     
-set $ws_limbo 10:1
 exec --no-startup-id i3-msg workspace $ws1
 # }}}
 # ws2 {{{
@@ -139,11 +138,11 @@ assign [instance="^(microsoft teams - preview|crx_cifhbcnohmdccbgoicgdjpfamggdeg
 assign [instance="^discord$"] workspace $ws_chat
 assign [instance="^evolution$" window_role="^E(ShellWindow|MsgComposer)"] workspace $ws_mail
 assign [instance="^(ncspot|spotify)$"] workspace $ws_media
-#for_window [class="^((?!^(Chromium|firefox)$).)*$" workspace=$ws_web tiling tiling_from=auto] move container to workspace number $ws_limbo
-for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_web
+for_window [class="^((?!^(Chromium|firefox|Pale moon|Nyxt|Netsurf-gtk3)$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[class=\\"^((?!^(Chromium|firefox|Pale moon|Nyxt|Netsurf-gtk3)$).)*$\\" workspace=$ws_web tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
+for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
 for_window [class="^firefox$" workspace=$ws_mail] move container to workspace $ws_web
-#for_window [instance="^((?!^evolution$).)*$" workspace=$ws_mail tiling tiling_from=auto] move container to workspace number $ws_limbo
-#for_window [instance="^crx_" class="^Chromium$" workspace=$ws_web] move container to workspace number $ws_limbo
+for_window [instance="^((?!^evolution$).)*$" workspace=$ws_mail tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix mail --cmd '[instance=\\"^((?!^evolution$).)*$\\" workspace=$ws_mail tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
+for_window [instance="^crx_" class="^Chromium$" workspace=$ws_web] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[instance=\\"^crx_\\" class=\\"^Chromium$\\" workspace=$ws_web] move container to workspace {new_ws}, focus' $unnamed_ws"
 # }}}
 # window layouts {{{
 for_window [class="^Minecraft"] layout tabbed
