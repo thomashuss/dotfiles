@@ -903,9 +903,9 @@ bindsym button2 kill
 # }}}
 # microsoft keyboard {{{
 # top left 1,2,3 keys {{{
-bindsym Mod4+1 workspace number $ws7
-bindsym Mod4+2 workspace number $ws8
-bindsym Mod4+3 workspace number $ws9
+bindsym Mod4+1 workspace back_and_forth
+bindsym Mod4+2 focus mode_toggle
+bindsym Mod4+3 kill
 # }}}
 # screen snip key
 bindsym Mod4+Shift+s $screenshot
