@@ -28,4 +28,4 @@ fi
 
 launch_browser "$(xdotool getwindowfocus getwindowclassname)"
 launch_browser "$(i3-msg -t get_tree | jq -r '.. | select(.name?=="4:w:🌐") | .. | .window_properties? // empty | .class | select(test("'"$regex"'")), halt')"
-exec firefox
+exec gtk-launch "$(xdg-settings get default-web-browser)"

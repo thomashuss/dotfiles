@@ -209,12 +209,6 @@ set $www_launch exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/www_la
 # Launch browser private window {{{
 set $www_launch_private exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/www_launch p
 # }}}
-# Launch chromium {{{
-set $www_alt_launch exec --no-startup-id chromium
-# }}}
-# Launch chromium private window {{{
-set $www_alt_launch_private exec --no-startup-id chromium --incognito
-# }}}
 # Set display layout, re-apply background, prompt to save with autorandr {{{
 set $save_display exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/save_display
 # }}}
@@ -835,8 +829,6 @@ bindsym $pmod+u $charmap
 bindsym $pmod+v $audio_control
 bindsym $pmod+w $www_launch
 bindsym $pmod+Shift+w $www_launch_private
-bindsym $pmod+$smod+w $www_alt_launch
-bindsym $pmod+$smod+Shift+w $www_alt_launch_private
 bindsym $pmod+Control+w exec --no-startup-id $weather
 bindsym XF86Calculator $calc
 bindsym XF86Tools $window_switcher
@@ -926,7 +918,7 @@ bindsym $office_key+m $launch_ms365
 bindsym --release $office_key+space $click
 # }}}
 # meta {{{
-bindsym $pmod+Shift+slash exec firefox /usr/share/doc/i3/userguide.html
+bindsym $pmod+Shift+slash exec --no-startup-id gtk-launch "$(xdg-settings get default-web-browser)" /usr/share/doc/i3/userguide.html
 bindsym $pmod+Control+i exec --no-startup-id $i3-input
 bindsym $pmod+Control+c reload
 bindsym $pmod+Control+r restart
