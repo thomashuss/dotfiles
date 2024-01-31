@@ -138,7 +138,7 @@ assign [instance="^(microsoft teams - preview|crx_cifhbcnohmdccbgoicgdjpfamggdeg
 assign [instance="^discord$"] workspace $ws_chat
 assign [instance="^evolution$" window_role="^E(ShellWindow|MsgComposer)"] workspace $ws_mail
 assign [instance="^(ncspot|spotify)$"] workspace $ws_media
-for_window [class="^((?!^(Chromium|firefox|Pale moon|Nyxt|Netsurf-gtk3)$).)*$" title="^((?!^Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[class=\\"^((?!^(Chromium|firefox|Pale moon|Nyxt|Netsurf-gtk3)$).)*$\\" title=\\"^((?!^Chromium$).)*$\\" workspace=$ws_web tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
+for_window [class="^((?!^(Chromium|firefox|Pale moon|Brave-browser|Nyxt|Netsurf-gtk3)$).)*$" title="^((?!^Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[class=\\"^((?!^(Chromium|firefox|Pale moon|Brave-browser|Nyxt|Netsurf-gtk3)$).)*$\\" title=\\"^((?!^Chromium$).)*$\\" workspace=$ws_web tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
 for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
 for_window [class="^firefox$" workspace=$ws_mail] move container to workspace $ws_web
 for_window [instance="^((?!^evolution$).)*$" workspace=$ws_mail tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix mail --cmd '[instance=\\"^((?!^evolution$).)*$\\" workspace=$ws_mail tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
@@ -203,11 +203,11 @@ set $network_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/l
 # Launch bluetooth manager {{{
 set $bt_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance=="blueman-manager"' 'instance=^blueman-manager$' "exec blueman-manager"
 # }}}
-# Launch firefox {{{
-set $www_launch exec firefox
+# Launch browser {{{
+set $www_launch exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/www_launch
 # }}}
-# Launch firefox private window {{{
-set $www_launch_private exec firefox --private-window
+# Launch browser private window {{{
+set $www_launch_private exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/www_launch p
 # }}}
 # Launch chromium {{{
 set $www_alt_launch exec --no-startup-id chromium
