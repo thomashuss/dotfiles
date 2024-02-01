@@ -8,7 +8,7 @@ if [ p = "$1" ]; then
 			"Chromium") chromium --incognito &;;
 			"Brave-browser") brave --incognito &;;
 			"Pale moon") palemoon --private-window &;;
-			*);;
+			*) return 1;;
 		esac
 	}
 else
@@ -21,15 +21,17 @@ else
 			"Pale moon") palemoon &;;
 			"Nyxt") nyxt &;;
 			"Netsurf-gtk3") netsurf &;;
-			*);;
+			*) return 1;;
 		esac
 	}
 fi
 
-launch_browser "$(xdotool getwindowfocus getwindowclassname)"
-launch_browser "$(i3-msg -t get_tree | jq -r '.. | select(.name?=="4:w:🌐") | .. | .window_properties? // empty | .class | select(test("'"$regex"'")), halt')"
-if command -v gtk-launch > /dev/null 2>&1 && command -v xdg-settings > /dev/null 2>&1; then
-	gtk-launch "$(xdg-settings get default-web-browser)"
-else
-	firefox &
+if ! launch_browser "$(xdotool getwindowfocus getwindowclassname)"; then
+	if ! launch_browser "$(i3-msg -t get_tree | jq -r '.. | select(.name?=="4:w:🌐") | .. | .window_properties? // empty | .class | select(test("'"$regex"'")), halt')"; then
+		if command -v gtk-launch > /dev/null 2>&1 && command -v xdg-settings > /dev/null 2>&1; then
+			gtk-launch "$(xdg-settings get default-web-browser)" &
+		else
+			firefox &
+		fi
+	fi
 fi
