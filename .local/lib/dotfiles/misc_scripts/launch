@@ -35,7 +35,7 @@ END {
 		gsub(/\/?.*\//, "", FILENAME)
 		print "| dmenu -l 10 -fn sans -p '" FILENAME "' -i); then case $c in" | sh
 		for (i = 1; i <= name_count; i++)
-			print "\"$n" i "\") eval \"$e" i "\" &;;" | sh
+			print "\"$n" i "\") eval \"$e" i " &\";;" | sh
 		print "*);; esac; fi" | sh
 	}
 	close(sh)

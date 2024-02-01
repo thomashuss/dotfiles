@@ -1,4 +1,4 @@
-default	xdg-open http://	command -v xdg-open
+default	gtk-launch "$(xdg-settings get default-web-browser)"	command -v gtk-launch && command -v xdg-settings
 firefox
 chromium
 brave

@@ -4,10 +4,10 @@ if [ p = "$1" ]; then
 	regex='^(firefox|Chromium|Brave-browser|Pale moon)$'
 	launch_browser () {
 		case "$1" in
-			"firefox") exec firefox --private-window;;
-			"Chromium") exec chromium --incognito;;
-			"Brave-browser") exec brave --incognito;;
-			"Pale moon") exec palemoon --private-window;;
+			"firefox") firefox --private-window &;;
+			"Chromium") chromium --incognito &;;
+			"Brave-browser") brave --incognito &;;
+			"Pale moon") palemoon --private-window &;;
 			*);;
 		esac
 	}
@@ -15,12 +15,12 @@ else
 	regex='^(firefox|Chromium|Brave-browser|Pale moon|Nyxt|Netsurf-gtk3)$'
 	launch_browser () {
 		case "$1" in
-			"firefox") exec firefox;;
-			"Chromium") exec chromium;;
-			"Brave-browser") exec brave;;
-			"Pale moon") exec palemoon;;
-			"Nyxt") exec nyxt;;
-			"Netsurf-gtk3") exec netsurf;;
+			"firefox") firefox &;;
+			"Chromium") chromium &;;
+			"Brave-browser") brave &;;
+			"Pale moon") palemoon &;;
+			"Nyxt") nyxt &;;
+			"Netsurf-gtk3") netsurf &;;
 			*);;
 		esac
 	}
@@ -28,8 +28,8 @@ fi
 
 launch_browser "$(xdotool getwindowfocus getwindowclassname)"
 launch_browser "$(i3-msg -t get_tree | jq -r '.. | select(.name?=="4:w:🌐") | .. | .window_properties? // empty | .class | select(test("'"$regex"'")), halt')"
-if command -v xdg-open > /dev/null 2>&1; then
-	exec xdg-open http://
+if command -v gtk-launch > /dev/null 2>&1 && command -v xdg-settings > /dev/null 2>&1; then
+	gtk-launch "$(xdg-settings get default-web-browser)"
 else
-	exec firefox
+	firefox &
 fi
