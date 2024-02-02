@@ -3,6 +3,6 @@ localc
 loimpress
 lyx
 mate-terminal
-ms365	gtk-launch chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop	test -f "$HOME/.local/share/applications/chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop"
+ms365	desktop="$(xdotool get_desktop)"; if ! xdotool search --desktop "$desktop" --classname ^chromium$; then chromium & xdotool search --sync --desktop "$desktop" --classname ^chromium$; fi; gtk-launch chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop & id="$(timeout 30s xdotool search --sync --classname ^crx_ocdlmjhbenodhlknglojajgokahchlkk$)"; xprop -spy _NET_WM_STATE -id "$id" | { timeout 30s awk f{exit}/FOCUSED/{f=1} && xdotool windowquit "$id"; }	test -f "$HOME/.local/share/applications/chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop"
 code
 atril

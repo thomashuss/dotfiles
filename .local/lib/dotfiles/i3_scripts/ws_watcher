@@ -33,7 +33,7 @@ LAUNCHERS = (
     (
         re.compile(r'^(Navigator|chromium|netsurf-gtk3|nyxt)$'),
         None,
-        'exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/i3_scripts/await" \'.instance | test("^(Navigator|chromium|netsurf-gtk3|nyxt)$")\' \'layout tabbed\'; exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/misc_scripts/launch" "$HOME/.local/lib/dotfiles/applications/www"'
+        'exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/i3_scripts/await" new \'.instance | test("^(Navigator|chromium|netsurf-gtk3|nyxt)$")\' \'layout tabbed\'; exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/misc_scripts/launch" "$HOME/.local/lib/dotfiles/applications/www"'
     ),
     (
         re.compile(r'^(spotify|vlc|rhythmbox|strawberry|audacious|ncspot|ncmpcpp)$'),
