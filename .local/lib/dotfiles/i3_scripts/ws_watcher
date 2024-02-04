@@ -3,9 +3,9 @@ import asyncio
 import os
 import psutil
 import re
+import signal
 from i3ipc import Event
 from i3ipc.aio import Connection
-from signal import SIGUSR1, signal
 from time import sleep
 
 
@@ -44,12 +44,20 @@ LAUNCHERS = (
 WS_RANGE = range(0, len(LAUNCHERS))
 
 
-async def on_workspace_focus(i3, e):
-    if e.current.num in WS_RANGE:
-        launcher = LAUNCHERS[e.current.num]
-        for container in e.current:
+def get_launcher(ws, override=False):
+    if ws.num in WS_RANGE:
+        launcher = LAUNCHERS[ws.num]
+        if override:
+            return launcher
+        for container in ws:
             if (launcher[0] and container.window_instance and launcher[0].search(container.window_instance)) or (launcher[1] and container.window_class and launcher[1].search(container.window_class)):
-                return
+                return None
+        return launcher
+    return None
+
+
+async def on_workspace_focus(i3, e):
+    if launcher := get_launcher(e.current):
         sleep(0.01)
         for ws in await i3.get_workspaces():
             if ws.focused and ws.num != e.current.num:
@@ -57,14 +65,23 @@ async def on_workspace_focus(i3, e):
         await i3.command(launcher[2])
 
 
-async def main():
-    i3 = await Connection().connect()
-    i3.on(Event.WORKSPACE_FOCUS, on_workspace_focus)
-    def handler(_, __):
+def setup():
+    i3 = Connection()
+    def quit_handler():
         i3.main_quit()
         exit()
-    signal(SIGUSR1, handler)
-    await i3.main()
+    async def launch_handler():
+        for ws in await i3.get_workspaces():
+            if ws.focused:
+                if launcher := get_launcher(ws, True):
+                    await i3.command(launcher[2])
+                break
+    loop = asyncio.get_event_loop()
+    loop.add_signal_handler(signal.SIGINT, quit_handler)
+    loop.add_signal_handler(signal.SIGTERM, quit_handler)
+    loop.add_signal_handler(signal.SIGUSR1, lambda: asyncio.create_task(launch_handler()))
+    i3.on(Event.WORKSPACE_FOCUS, on_workspace_focus)
+    return i3
 
 
 if __name__ == '__main__':
@@ -72,7 +89,9 @@ if __name__ == '__main__':
     try:
         for pid in map(int, os.popen("pgrep -f '" + '.+'.join(psutil.Process(my_pid).cmdline()) + "'")):
             if pid != my_pid:
-                os.kill(pid, SIGUSR1)
+                os.kill(pid, signal.SIGTERM)
     except ValueError:
         ...
+    async def main():
+        await (await setup().connect()).main()
     asyncio.run(main())

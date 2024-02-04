@@ -303,6 +303,9 @@ set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F "exec --
 set $unmark_d [con_id=__focused__ con_mark="^d[0-9]+:.+"] unmark
 set $kill_d exec --no-startup-id i3-msg "[con_mark=^d$(i3-msg -t get_workspaces | jq '.[] | select(.focused==true).num'):.+] kill"
 # }}}
+# Force launch this workspace application {{{
+set $launch_this exec --no-startup-id pkill -USR1 -f '.*python3.+ws_watcher'
+# }}}
 # }}}
 # bar {{{
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -823,6 +826,7 @@ bindsym $pmod+f mode "file";exec --no-startup-id $show_file && $file
 bindsym $pmod+j $word_count
 bindsym $pmod+m $phone_control
 bindsym $pmod+p $password_man
+bindsym $pmod+q $launch_this
 bindsym $pmod+s $screenshot
 bindsym $pmod+slash workspace $ws_web;$web_search
 bindsym $pmod+t $timer
