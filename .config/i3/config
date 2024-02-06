@@ -193,7 +193,7 @@ set $launch_calc [instance="^scratch_calc$" floating] move scratchpad, scratchpa
 set $password_man exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.class=="KeePassXC"' 'class=^KeePassXC$' "exec --no-startup-id keepassxc"
 # }}}
 # Show/hide KDE Connect or launch it if not running {{{
-set $phone_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.instance=="kdeconnect-app"' 'instance=^kdeconnect-app$' "exec kdeconnect-app"
+set $phone_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.instance==\\"kdeconnect-app\\"' 'instance=^kdeconnect-app$' 'exec \\"kdeconnect-app; pkill kdeconnectd\\"'"
 # }}}
 # Launch audio i/o manager {{{
 set $audio_control exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance=="pavucontrol"' 'instance=^pavucontrol$' "exec pavucontrol"
