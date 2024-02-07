@@ -660,8 +660,8 @@ bindcode --release $ergo mode "layout lazy"
 bindsym t layout tabbed;$hm
 bindsym s layout stacking;$hm
 bindsym v layout toggle split;$hm
-bindsym $smod+g split h;$hm
-bindsym $smod+v split v;$hm
+bindsym a split h;$hm
+bindsym e split v;$hm
 }
 mode "layout lazy" {
 bindsym Escape $dm
@@ -669,8 +669,8 @@ bindcode $ergo $em
 bindsym t layout tabbed;$dm
 bindsym s layout stacking;$dm
 bindsym v layout toggle split;$dm
-bindsym $smod+g split h;$dm
-bindsym $smod+v split v;$dm
+bindsym a split h;$dm
+bindsym e split v;$dm
 }
 # }}}
 # file mode {{{
