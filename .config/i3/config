@@ -298,7 +298,7 @@ set $focus_cycle exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/foc
 set $weather $HOME/.local/lib/dotfiles/i3_scripts/statusline_weather
 # }}}
 # Run program with clipboard contents {{{
-set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F "exec --no-startup-id %s \"$(xclip -o -sel c)\"" -P 'Run with clipboard: '
+set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F 'exec --no-startup-id $HOME/.local/lib/dotfiles/misc_scripts/run_with_clipboard %s' -P 'Run with clipboard: '
 # }}}
 # misc scratchpad {{{
 set $unmark_d [con_id=__focused__ con_mark="^d[0-9]+:.+"] unmark
