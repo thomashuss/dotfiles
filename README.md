@@ -63,10 +63,10 @@ faster than `bash`.](https://aur.archlinux.org/packages/dashbinsh)
 
 For i3, from the official Arch Linux repository:
 ```
-adobe-source-code-pro-fonts arandr atril autorandr blueman caja
+acpilight adobe-source-code-pro-fonts arandr atril autorandr blueman caja
 caja-image-converter caja-open-terminal caja-sendto caja-xattr-tags curl dmenu
 dunst engrampa eom evolution evolution-ews evolution-on feh firefox flameshot
-gnome-clocks gnome-keyring gucharmap i3-wm i3lock i3status jq keepassxc light
+gnome-clocks gnome-keyring gucharmap i3-wm i3lock i3status jq keepassxc
 mate-icon-theme mate-polkit mate-terminal mpv mpv-mpris network-manager-applet
 pavucontrol picom playerctl python-gobject python-i3ipc python-mpris2
 qalculate-gtk redshift rofi rsync surfraw ttf-dejavu unclutter wmctrl xcape
