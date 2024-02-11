@@ -10,19 +10,16 @@ wmctrl -l | "$HOME"/.local/lib/dotfiles/misc_scripts/window_stack -vactive_first
 	trap 'continue' USR1
 	transient_for=""
 	while read id; do
-		xprop -notype _NET_WM_STATE WM_TRANSIENT_FOR -id "$id" | {
-			read state transient
-			if [ -z "$transient_for" ]; then
-				transient_for="$(echo "$transient" | grep -Eo '[0-9a-fx]+$')" && [ "$id" = "$active" ] && continue
-			elif [ "$transient_for" = "$id" ]; then
-				transient_for=""
-				continue
-			fi
-			if [ "$id" != "$active" ] && ! echo "$state" | grep -Eq 'FULLSCREEN|SKIP_PAGER'; then
-				xdotool windowactivate "$id"
-				sleep "$1" > /dev/null 2>&1 & wait
-				exit
-			fi
-		}
+		if [ -z "$transient_for" ]; then
+			transient_for="$(xprop -notype WM_TRANSIENT_FOR -id "$id" | grep -Eo '[0-9a-fx]+$')" && [ "$id" = "$active" ] && continue
+		elif [ "$transient_for" = "$id" ]; then
+			transient_for=""
+			continue
+		fi
+		if [ "$id" != "$active" ] && ! xprop -notype _NET_WM_STATE -id "$id" | grep -Eq 'FULLSCREEN|SKIP_PAGER'; then
+			xdotool windowactivate "$id"
+			sleep "$1" > /dev/null 2>&1 & wait
+			exit
+		fi
 	done
 }
