@@ -4,34 +4,50 @@ if [ p = "$1" ]; then
 	regex='^(firefox|Chromium|Brave-browser|Pale moon)$'
 	launch_browser () {
 		case "$1" in
-			"firefox") firefox --private-window &;;
-			"Chromium") chromium --incognito &;;
-			"Brave-browser") brave --incognito &;;
-			"Pale moon") palemoon --private-window &;;
+			"firefox") i3-msg "exec firefox --private-window";;
+			"Chromium") i3-msg "exec --no-startup-id chromium --incognito";;
+			"Brave-browser") i3-msg "exec --no-startup-id brave --incognito";;
+			"Pale moon") i3-msg "exec palemoon --private-window";;
 			*) return 1;;
 		esac
+	}
+	launch_default() {
+		if command -v xdg-settings > /dev/null 2>&1; then
+			case "$(xdg-settings get default-web-browser)" in
+				"firefox.desktop") i3-msg "exec firefox --private-window";;
+				"chromium.desktop") i3-msg "exec --no-startup-id chromium --incognito";;
+				"brave-browser.desktop") i3-msg "exec --no-startup-id brave --incognito";;
+				"palemoon.desktop") i3-msg "exec palemoon --private-window";;
+				*) return 1;;
+			esac
+		else
+			i3-msg "exec firefox --private-window"
+		fi
 	}
 else
 	regex='^(firefox|Chromium|Brave-browser|Pale moon|Nyxt|Netsurf-gtk3)$'
 	launch_browser () {
 		case "$1" in
-			"firefox") firefox &;;
-			"Chromium") chromium &;;
-			"Brave-browser") brave &;;
-			"Pale moon") palemoon &;;
-			"Nyxt") nyxt &;;
-			"Netsurf-gtk3") netsurf &;;
+			"firefox") i3-msg exec firefox;;
+			"Chromium") i3-msg "exec --no-startup-id chromium";;
+			"Brave-browser") i3-msg "exec --no-startup-id brave";;
+			"Pale moon") i3-msg exec palemoon;;
+			"Nyxt") i3-msg "exec --no-startup-id nyxt";;
+			"Netsurf-gtk3") i3-msg exec netsurf;;
 			*) return 1;;
 		esac
+	}
+	launch_default() {
+		if command -v gtk-launch > /dev/null 2>&1 && command -v xdg-settings > /dev/null 2>&1; then
+			i3-msg 'exec gtk-launch "$(xdg-settings get default-web-browser)"'
+		else
+			i3-msg exec firefox
+		fi
 	}
 fi
 
 if ! launch_browser "$(xdotool getwindowfocus getwindowclassname)"; then
 	if ! launch_browser "$(i3-msg -t get_tree | jq -r '.. | select(.name?=="4:w:🌐") | .. | .window_properties? // empty | .class | select(test("'"$regex"'")), halt')"; then
-		if command -v gtk-launch > /dev/null 2>&1 && command -v xdg-settings > /dev/null 2>&1; then
-			gtk-launch "$(xdg-settings get default-web-browser)" &
-		else
-			firefox &
-		fi
+		launch_default
 	fi
 fi
