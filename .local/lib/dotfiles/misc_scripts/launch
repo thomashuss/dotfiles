@@ -1,42 +1,32 @@
-#!/usr/bin/env -S awk -f
+#!/bin/sh
 # Pass the path to a tab-separated file of the format:
 # display name	executable	test command
-# Escape single quotes.
 
-BEGIN {
-	FS = "\t"
-	sh = "/bin/sh -s"
-	name_count = 0
-}
-{
-	if (!$3)
-		$3 = "command -v " $1
-	if (!$2)
-		$2 = $1
-	if (last == $1)
-		print "elif { " $3 | sh
-	else {
-		name_count++
-		if (NR != 1)
-			print "fi" | sh
-		print "if { " $3 | sh
-	}
-	print "} > /dev/null 2>&1; then e" name_count "='" $2 "'; n" name_count "='" $1 "'" | sh
-	last = $1
-}
-END {
-	if (last) {
-		print "fi" | sh
-		ORS = ""
-		print "if c=$(printf '%s\\n' " | sh
-		for (i = 1; i <= name_count; i++)
-			print "\"$n" i "\" " | sh
-		ORS = "\n"
-		gsub(/\/?.*\//, "", FILENAME)
-		print "| awk NF | dmenu -l 10 -fn sans -p '" FILENAME "' -i); then case \"$c\" in \"\");;" | sh
-		for (i = 1; i <= name_count; i++)
-			print "\"$n" i "\") eval \"{ $e" i "\n} &\";;" | sh
-		print "*);; esac; fi" | sh
-	}
-	close(sh)
+IFS=$(printf '\t')
+nl -nln -s"$IFS" -w1 "$1" | {
+	seq=
+	while read -r n name exec test; do
+		case $test in
+			"") if ! command -v "$name"; then continue; fi;;
+			*) if ! eval "$test"; then continue; fi;;
+		esac > /dev/null 2>&1
+		seq="$seq $n"
+		eval "name_$n="'$name'
+		eval "exec_$n=$(case $exec in
+			"") echo '$name';;
+			*) echo '$exec';;
+		esac)"
+	done
+	IFS=' '
+	if c=$(for n in $seq; do
+			eval echo '"$name_'"$n"'"'
+		done | uniq | dmenu -l 10 -fn sans -p "$(basename "$1")"); then
+		eval 'case $c in
+		"");;
+		'"$(for n in $seq; do
+			echo '"$name_'"$n"'") eval "$exec_'"$n"'" &;;'
+		done)"'
+		*);;
+		esac'
+	fi
 }
