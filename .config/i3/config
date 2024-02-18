@@ -108,6 +108,7 @@ for_window [instance="^caja$" floating] sticky enable
 for_window [instance="^carla-plugin$"] floating enable
 for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
 for_window [instance="^engrampa$"] floating enable
+for_window [instance="^engrampa$" floating] sticky enable
 for_window [instance="^eom$"] floating enable
 for_window [instance="^feh$"] floating enable
 for_window [instance="^evolution$" window_role="^ECompEditor(Event|Task|Memo)"] floating enable
@@ -681,9 +682,9 @@ mode "file" {
 bindsym Escape $dm
 bindsym --release Alt_L $dm
 bindsym $pmod+slash exec --no-startup-id $file;$dm
-bindsym --release $pmod+f [instance=^caja$ floating] move scratchpad;$dm
-bindsym --release Super_L [instance=^caja$ floating] move scratchpad;$dm
-bindsym --release f [instance=^caja$ floating] move scratchpad;$dm
+bindsym --release $pmod+f [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
+bindsym --release Super_L [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
+bindsym --release f [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
 }
 # }}}
 # compose mode {{{
