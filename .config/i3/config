@@ -344,7 +344,7 @@ set $key_move Shift
 # }}}
 # behavior {{{
 floating_modifier Mod1
-tiling_drag modifier
+tiling_drag modifier titlebar
 focus_wrapping no
 set $dm mode "default"
 set $move_amount 100 px
