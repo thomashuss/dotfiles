@@ -18,7 +18,7 @@ if [ -n "$1" ]; then
 	case $ROFI_RETV in
 		10) i3-msg "[id=$ROFI_INFO] kill" > /dev/null 2>&1; print_windows "$ROFI_INFO";;
 		1)  i3-msg "[id=$ROFI_INFO] focus" > /dev/null 2>&1 &;;
-		11) i3-msg '[instance="^(caja|engrampa)$" floating] move scratchpad' > /dev/null 2>&1;;
+		11) i3-msg '[instance="^(caja|engrampa)$" floating] move scratchpad; mode default' > /dev/null 2>&1;;
 	esac
 else
 	if ! i3-msg '[instance="^(caja|engrampa)$" floating] move scratchpad, scratchpad show' > /dev/null 2>&1; then

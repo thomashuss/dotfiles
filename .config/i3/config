@@ -676,16 +676,29 @@ bindsym e split v;$dm
 }
 # }}}
 # file mode {{{
-set $file rofi -show rff -modes rff:$HOME/.local/lib/dotfiles/i3_scripts/rofi_focus_file -matching prefix -kb-remove-char-forward Control+d -kb-custom-1 Delete -kb-custom-2 Super_L+f
-set $show_file i3-msg -t get_tree | jq '.. | select(.type? == "workspace" and .name != "__i3_scratch") | .floating_nodes | .. | .window_properties? | select(.instance=="caja") | "" | halt_error(1)' && i3-msg mode default
+set $file exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/file_mode"
 mode "file" {
-bindsym Escape $dm
-bindsym --release Alt_L $dm
-bindsym $pmod+slash exec --no-startup-id $file;$dm
-bindsym --release $pmod+f [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
-bindsym --release Super_L [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
-bindsym --release f [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
+bindsym Tab floating toggle
+bindsym button2 kill
+bindcode $ergo kill
+bindsym slash exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
+bindsym $pmod+f [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
 }
+#mode "file ergo" {
+#bindsym c kill;mode "file hold"
+#bindsym f floating toggle;mode "file hold"
+#bindcode --release $ergo mode "file lazy"
+#}
+#mode "file hold" {
+#bindsym c kill
+#bindsym f floating toggle
+#bindcode --release $ergo mode "file"
+#}
+#mode "file lazy" {
+#bindsym c kill;mode "file"
+#bindsym f floating toggle;mode "file"
+#bindcode $ergo mode "file"
+#}
 # }}}
 # compose mode {{{
 mode "compose" {
@@ -824,7 +837,7 @@ bindsym $pmod+Shift+c $launch_calc
 bindsym $pmod+d $save_display
 bindsym $pmod+Shift+d $load_display
 bindsym $pmod+e $network_control
-bindsym $pmod+f mode "file";exec --no-startup-id $show_file && $file
+bindsym $pmod+f $file
 bindsym $pmod+j $word_count
 bindsym $pmod+m $phone_control
 bindsym $pmod+p $password_man

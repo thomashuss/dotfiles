@@ -1,0 +1,30 @@
+#!/bin/sh
+
+count=$(i3-msg -t get_tree | jq '[..
+	| select(.type? == "workspace") | .floating_nodes | ..
+	| select(.window_properties?.instance == "caja")]
+	| length, ([.[] | select(.output == "__i3")]
+		| if length == 0 then "" | halt_error(1) end | empty)')
+i3-msg mode file
+i3-msg -t subscribe -m '[ "window", "mode" ]' | jq --unbuffered -r '
+if .change == "default" then .change else
+	select(.container?.window_properties.instance == "caja")
+	| if .change == "close" then -1
+	else
+		if .change == "floating" then
+			if .floating == "user_off" or .floating == "auto_off" then -1
+			else 1
+			end
+		else empty
+		end
+	end
+end' | {
+	if awk -vcount="$count" '$1 == "default" {exit 1} {
+		count += $1
+		if (count == 0)
+			exit
+	}'; then
+		i3-msg mode default
+	fi
+} &
+"$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
