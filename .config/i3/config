@@ -149,6 +149,7 @@ for_window [instance="^crx_" class="^Chromium$" workspace=$ws_web] exec --no-sta
 # }}}
 # window layouts {{{
 for_window [class="^Minecraft"] layout tabbed
+for_window [class="^dolphin-emu$"] layout tabbed
 for_window [instance="^VirtualBox Manager$"] layout tabbed
 for_window [instance="^calibre-gui$" tiling] split h,layout tabbed
 #for_window [workspace=$ws_game] layout tabbed
