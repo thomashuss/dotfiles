@@ -9,6 +9,7 @@ parser.add_argument('--move', action='store_true')
 parser.add_argument('--print', action='store_true')
 parser.add_argument('--cmd')
 parser.add_argument('--postfix')
+parser.add_argument('--use_postfix', action='store_true')
 parser.add_argument('want', nargs='+')
 args = parser.parse_args()
 ws = args.want
@@ -22,31 +23,36 @@ if args.reverse:
 else:
     def cmp(x, y): return x > y
 
+new_ws = None
 try:
     want = ((int(w[:w.index(':')]), w) for w in ws)
     n = next(want)
     first = n
     for workspace in i3_ws:
-        if n is None or cmp(workspace.num, n[0]):
+        if args.use_postfix and workspace.name[-len(args.postfix):] == args.postfix:
+            new_ws = workspace.name
+            break
+        elif n is None or cmp(workspace.num, n[0]):
             break
         elif n[0] == workspace.num:
             n = next(want, None)
-    if n is not None:
-        if args.postfix:
-            first = False
-            new_ws = n[1]
-            for i in range(0, len(new_ws)):
-                if new_ws[i] == ':':
-                    if first == True:
-                        new_ws = new_ws[:i]
-                        break
-                    else:
-                        first = True
-            new_ws = f'{new_ws}:{args.postfix}'
+    if not new_ws:
+        if n is not None:
+            if args.postfix:
+                first = False
+                new_ws = n[1]
+                for i in range(0, len(new_ws)):
+                    if new_ws[i] == ':':
+                        if first == True:
+                            new_ws = new_ws[:i]
+                            break
+                        else:
+                            first = True
+                new_ws = f'{new_ws}:{args.postfix}'
+            else:
+                new_ws = n[1]
         else:
-            new_ws = n[1]
-    else:
-        new_ws = first[1]
+            new_ws = first[1]
 except ValueError:
     print('Each wanted workspace name must have a logical number followed by a colon and visible number.', file=stderr)
     exit(1)
