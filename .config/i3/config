@@ -39,6 +39,9 @@ set $ws_web 4:w:🌐
 # media {{{
 set $ws_media 5:y:⏯
 # }}}
+# game {{{
+set $ws_game 6:z:🎮
+# }}}
 # ws1 default {{{
 set $ws1pr 10
 set $ws1   10:1
@@ -134,8 +137,9 @@ for_window [title="^Console window" class="^MultiMC$"] floating enable
 # workspace assignments {{{
 # Only for windows that need to be out of the way.
 assign [class="^Skype$"] workspace $ws_chat
-#assign [class="^Steam$"] workspace number $ws_game
-#assign [class="^Minecraft"] workspace number $ws_game
+assign [class="^Steam$"] workspace $ws_game
+assign [class="^Minecraft"] workspace $ws_game
+assign [class="^dolphin-emu$"] workspace $ws_game
 assign [class="^zoom$"] workspace $ws_chat
 assign [instance="^(microsoft teams - preview|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$"] workspace $ws_chat
 assign [instance="^discord$"] workspace $ws_chat
@@ -149,11 +153,9 @@ for_window [instance="^evolution$" floating_from=auto] move container to workspa
 for_window [instance="^crx_" class="^Chromium$" workspace=$ws_web] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --use_postfix --postfix web --cmd '[instance=\\"^crx_\\" class=\\"^Chromium$\\" workspace=$ws_web] move container to workspace {new_ws}, focus' $unnamed_ws"
 # }}}
 # window layouts {{{
-for_window [class="^Minecraft"] layout tabbed
-for_window [class="^dolphin-emu$"] layout tabbed
 for_window [instance="^VirtualBox Manager$"] layout tabbed
 for_window [instance="^calibre-gui$" tiling] split h,layout tabbed
-#for_window [workspace=$ws_game] layout tabbed
+for_window [workspace=$ws_game] layout tabbed
 for_window [workspace=$ws_mail] layout stacking
 for_window [workspace=$ws_media] layout tabbed
 # }}}
@@ -366,7 +368,6 @@ bindcode --release $ergo mode "lazy"
 # }}}
 # modify container {{{
 bindsym c kill;$hm
-bindsym z kill;workspace back_and_forth;$hm
 bindsym $smod+c [workspace=__focused__] kill;$kill_d;$hm
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$hm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
@@ -403,6 +404,7 @@ bindsym $key_move+g $unmark_d;move container to workspace $ws_editor;workspace $
 bindsym $key_move+t $unmark_d;move container to workspace $ws_terminal;workspace $ws_terminal;$dm
 bindsym $key_move+w $unmark_d;move container to workspace $ws_web;workspace $ws_web;$dm
 bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $ws_media;$dm
+bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
 # }}}
 # move workspace {{{
 bindsym $key_move+bracketleft move workspace to output left;$dm
@@ -449,6 +451,7 @@ bindsym g workspace $ws_editor;$hm
 bindsym t workspace $ws_terminal;$hm
 bindsym w workspace $ws_web;$hm
 bindsym y workspace $ws_media;$hm
+bindsym z workspace $ws_game;$hm
 bindsym BackSpace $remove_mouse;$hm
 # }}}
 }
@@ -468,7 +471,6 @@ bindsym Super_R $dm
 # }}}
 # modify container {{{
 bindsym c kill
-bindsym z kill;workspace back_and_forth
 bindsym $smod+c [workspace=__focused__] kill;$kill_d
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
@@ -505,6 +507,7 @@ bindsym $key_move+g $unmark_d;move container to workspace $ws_editor;workspace $
 bindsym $key_move+t $unmark_d;move container to workspace $ws_terminal;workspace $ws_terminal;$dm
 bindsym $key_move+w $unmark_d;move container to workspace $ws_web;workspace $ws_web;$dm
 bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $ws_media;$dm
+bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
 # }}}
 # move workspace {{{
 bindsym $key_move+bracketleft move workspace to output left;$dm
@@ -551,6 +554,7 @@ bindsym g workspace $ws_editor
 bindsym t workspace $ws_terminal
 bindsym w workspace $ws_web
 bindsym y workspace $ws_media
+bindsym z workspace $ws_game
 bindsym BackSpace $remove_mouse
 # }}}
 }
@@ -568,7 +572,6 @@ bindsym --release Alt_R $dm
 # }}}
 # modify container {{{
 bindsym c kill;$dm
-bindsym z kill;workspace back_and_forth;$dm
 bindsym $smod+c [workspace=__focused__] kill;$kill_d;$dm
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$dm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
@@ -605,6 +608,7 @@ bindsym $key_move+g $unmark_d;move container to workspace $ws_editor;workspace $
 bindsym $key_move+t $unmark_d;move container to workspace $ws_terminal;workspace $ws_terminal;$dm
 bindsym $key_move+w $unmark_d;move container to workspace $ws_web;workspace $ws_web;$dm
 bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $ws_media;$dm
+bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
 # }}}
 # move workspace {{{
 bindsym $key_move+bracketleft move workspace to output left;$dm
@@ -652,6 +656,7 @@ bindsym g workspace $ws_editor;$dm
 bindsym t workspace $ws_terminal;$dm
 bindsym w workspace $ws_web;$dm
 bindsym y workspace $ws_media;$dm
+bindsym z workspace $ws_game;$dm
 bindsym BackSpace $remove_mouse;$dm
 # }}}
 }
@@ -736,7 +741,8 @@ bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$hm
 bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$hm
 bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$hm
 bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$hm
-bindsym m $unmark_d_ws;rename workspace to $ws_media;\\""$hm
+bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$hm
+bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$hm
 bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\""$hm
 bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\""$hm
 bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\""$hm
@@ -760,7 +766,8 @@ bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$dm
 bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$dm
 bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$dm
 bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$dm
-bindsym m $unmark_d_ws;rename workspace to $ws_media;\\""$dm
+bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$dm
+bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$dm
 bindsym 1 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws1pr:1:%s' -P $ws_prompt || i3-msg \\"$unmark_d_ws_esc\\"';rename workspace to $ws1'";$dm
 bindsym 2 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws2pr:2:%s' -P $ws_prompt || i3-msg \\"$unmark_d_ws_esc\\"';rename workspace to $ws2'";$dm
 bindsym 3 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws3pr:3:%s' -P $ws_prompt || i3-msg \\"$unmark_d_ws_esc\\"';rename workspace to $ws3'";$dm

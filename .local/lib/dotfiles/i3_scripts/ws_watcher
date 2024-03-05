@@ -14,7 +14,8 @@ LAUNCHERS = (
     'exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/misc_scripts/launch" "$HOME/.local/lib/dotfiles/applications/office"',
     'exec mate-terminal',
     'exec gtk-launch "$(xdg-settings get default-web-browser)"',
-    'exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/misc_scripts/launch" "$HOME/.local/lib/dotfiles/applications/media"'
+    'exec --no-startup-id timeout 30s "$HOME/.local/lib/dotfiles/misc_scripts/launch" "$HOME/.local/lib/dotfiles/applications/media"',
+    'exec --no-startup-id rofi -show drun -disable-history -drun-categories Game'
 )
 WS_RANGE = range(0, len(LAUNCHERS))
 
@@ -48,7 +49,7 @@ def setup():
         for ws in await i3.get_workspaces():
             if ws.focused:
                 if launcher := get_launcher(ws, True):
-                    await i3.command(launcher[2])
+                    await i3.command(launcher)
                 break
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, quit_handler)
