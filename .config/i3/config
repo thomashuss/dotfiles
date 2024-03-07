@@ -110,8 +110,6 @@ for_window [instance="^caja$"] floating enable
 for_window [instance="^caja$" floating] sticky enable
 for_window [instance="^carla-plugin$"] floating enable
 for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
-for_window [instance="^engrampa$"] floating enable
-for_window [instance="^engrampa$" floating] sticky enable
 for_window [instance="^eom$"] floating enable
 for_window [instance="^feh$"] floating enable
 for_window [instance="^evolution$" window_role="^ECompEditor(Event|Task|Memo)"] floating enable
@@ -145,7 +143,8 @@ assign [instance="^(microsoft teams - preview|crx_cifhbcnohmdccbgoicgdjpfamggdeg
 assign [instance="^discord$"] workspace $ws_chat
 assign [instance="^evolution$"] workspace $ws_mail
 assign [instance="^(ncspot|spotify)$"] workspace $ws_media
-for_window [class="^((?!^(Chromium|firefox|Pale moon|Brave-browser|Nyxt|Netsurf-gtk3|Falkon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --use_postfix --postfix web --cmd '[class=\\"^((?!^(Chromium|firefox|Pale moon|Brave-browser|Nyxt|Netsurf-gtk3|Falkon)$).)*$\\" title=\\"^((?!Chromium$).)*$\\" workspace=$ws_web tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
+#for_window [class="^((?!^(Chromium|firefox|Pale moon|Brave-browser|Nyxt|Netsurf-gtk3|Falkon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --use_postfix --postfix web --cmd '[class=\\"^((?!^(Chromium|firefox|Pale moon|Brave-browser|Nyxt|Netsurf-gtk3|Falkon)$).)*$\\" title=\\"^((?!Chromium$).)*$\\" workspace=$ws_web tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
+for_window [class="^((?!^(Chromium|firefox|Pale moon|Brave-browser|Nyxt|Netsurf-gtk3|Falkon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] move right
 for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
 for_window [class="^firefox$" workspace=$ws_mail] move container to workspace $ws_web
 for_window [instance="^((?!^evolution$).)*$" workspace=$ws_mail tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --use_postfix --postfix mail --cmd '[instance=\\"^((?!^evolution$).)*$\\" workspace=$ws_mail tiling tiling_from=auto] move container to workspace {new_ws}, focus' $unnamed_ws"
@@ -684,27 +683,54 @@ bindsym e split v;$dm
 # file mode {{{
 set $file exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/file_mode"
 mode "file" {
-bindsym Tab floating toggle
 bindsym button2 kill
-bindcode $ergo kill
+bindcode $ergo mode "file ergo"
 bindsym slash exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
-bindsym $pmod+f [instance="^(caja|engrampa)$" floating] move scratchpad;$dm
+bindsym $pmod+f [instance="^caja$" floating] move scratchpad;$dm
 }
-#mode "file ergo" {
-#bindsym c kill;mode "file hold"
-#bindsym f floating toggle;mode "file hold"
-#bindcode --release $ergo mode "file lazy"
-#}
-#mode "file hold" {
-#bindsym c kill
-#bindsym f floating toggle
-#bindcode --release $ergo mode "file"
-#}
-#mode "file lazy" {
-#bindsym c kill;mode "file"
-#bindsym f floating toggle;mode "file"
-#bindcode $ergo mode "file"
-#}
+mode "file ergo" {
+bindsym h focus left;mode "file hold"
+bindsym j focus down;mode "file hold"
+bindsym k focus up;mode "file hold"
+bindsym l focus right;mode "file hold"
+bindsym n move left $move_amount;mode "file hold"
+bindsym m move down $move_amount;mode "file hold"
+bindsym comma move up $move_amount;mode "file hold"
+bindsym period move right $move_amount;mode "file hold"
+bindsym c kill;mode "file hold"
+bindsym f focus mode_toggle;mode "file hold"
+bindsym Shift+f floating toggle;mode "file hold"
+bindcode --release $ergo mode "file lazy"
+}
+mode "file hold" {
+bindsym h focus left
+bindsym j focus down
+bindsym k focus up
+bindsym l focus right
+bindsym n move left $move_amount
+bindsym m move down $move_amount
+bindsym comma move up $move_amount
+bindsym period move right $move_amount
+bindsym c kill
+bindsym f focus mode_toggle
+bindsym Shift+f floating toggle
+bindcode --release $ergo mode "file"
+}
+mode "file lazy" {
+bindsym h focus left;mode "file"
+bindsym j focus down;mode "file"
+bindsym k focus up;mode "file"
+bindsym l focus right;mode "file"
+bindsym n move left $move_amount;mode "file"
+bindsym m move down $move_amount;mode "file"
+bindsym comma move up $move_amount;mode "file"
+bindsym period move right $move_amount;mode "file"
+bindsym c kill;mode "file"
+bindsym f focus mode_toggle;mode "file"
+bindsym Shift+f floating toggle;mode "file"
+bindcode $ergo mode "file"
+bindsym --release Alt_L mode "file"
+}
 # }}}
 # compose mode {{{
 mode "compose" {
