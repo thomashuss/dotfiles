@@ -8,7 +8,7 @@ export GTK_THEME=Adwaita:dark
 eval "$(ssh-agent)"
 
 xset b off
-xcape -e "Alt_L=Escape;Super_L=Control_L|H" -t 400
+xcape -e Alt_L=Escape -t 400
 unclutter --ignore-scrolling &
 playerctld daemon
 
