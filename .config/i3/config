@@ -310,6 +310,9 @@ set $kill_d exec --no-startup-id i3-msg "[con_mark=^d$(i3-msg -t get_workspaces 
 # Force launch this workspace application {{{
 set $launch_this exec --no-startup-id pkill -USR1 -f '.*python3.+ws_watcher'
 # }}}
+# Swap workspaces {{{
+set $swap_ws exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/swap_ws"
+# }}}
 # }}}
 # bar {{{
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -405,6 +408,7 @@ bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $w
 bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
 # }}}
 # move workspace {{{
+bindsym $smod+r $swap_ws
 bindsym $key_move+bracketleft move workspace to output left;$dm
 bindsym $key_move+bracketright move workspace to output right;$dm
 bindsym $key_move+apostrophe move workspace to output up;$dm
@@ -508,6 +512,7 @@ bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $w
 bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
 # }}}
 # move workspace {{{
+bindsym $smod+r $swap_ws
 bindsym $key_move+bracketleft move workspace to output left;$dm
 bindsym $key_move+bracketright move workspace to output right;$dm
 bindsym $key_move+apostrophe move workspace to output up;$dm
@@ -609,6 +614,7 @@ bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $w
 bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
 # }}}
 # move workspace {{{
+bindsym $smod+r $swap_ws
 bindsym $key_move+bracketleft move workspace to output left;$dm
 bindsym $key_move+bracketright move workspace to output right;$dm
 bindsym $key_move+apostrophe move workspace to output up;$dm
