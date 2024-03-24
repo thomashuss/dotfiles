@@ -1,30 +1,76 @@
 #!/bin/sh
 
+FILE="$XDG_RUNTIME_DIR"/rofi_focus_file_stack
 count=$(i3-msg -t get_tree | jq '[..
 	| select(.type? == "workspace") | .floating_nodes | ..
 	| select(.window_properties?.instance == "caja")]
 	| length, ([.[] | select(.output == "__i3")]
 		| if length == 0 then "" | halt_error(1) end | empty)')
-i3-msg mode file
+mkfifo -m 600 "$FILE.in"
+mkfifo -m 600 "$FILE.out"
+tail -f "$FILE.in" | gawk -vcount="$count" -vfifo="$FILE.out" -i"$HOME"/.local/lib/dotfiles/i3_scripts/rff_deque.awk '
+BEGIN {
+	dm = "i3-msg mode default"
+	queue_size = events = 0
+}
+function to_fifo(x) {
+	print x > fifo
+}
+function flush_queue(to) {
+	if (events > 1) {
+		if (queue_size == 1) {
+			@to(queue[0])
+			queue_size = 0
+		} else {
+			i = 0
+			j = queue_size - 1
+			while (i < j) {
+				@to(queue[i])
+				i++
+			}
+			if (j >= 0) queue_size = 0
+		}
+	} else if (events == 1) {
+		queue_size = 0
+	}
+}
+{
+	if ($1 == "default") {
+		load_cache()
+		flush_queue("push")
+		save_cache()
+		exit
+	} else if ($1 == "queue") {
+		flush_queue("to_fifo")
+		print "EOF" > fifo
+		close(fifo)
+	} else if ($1 == "focus" || $1 == "new") {
+		queue[queue_size++] = $2
+		events++
+	} else if ((count += $2) == 0) {
+		system(dm); close(dm); exit
+	}
+}' & watch_pid=$!
 i3-msg -t subscribe -m '[ "window", "mode" ]' | jq --unbuffered -r '
-if .change == "default" then .change else
+if .change == "default" then .change, halt else
 	select(.container?.window_properties.instance == "caja")
-	| if .change == "close" then -1
+	| if (.change == "focus" or .change == "new")
+		and (.floating != "user_off" and .floating != "auto_off")
+		then .change + " " + (.container.window | tostring)
 	else
 		if .change == "floating" then
-			if .floating == "user_off" or .floating == "auto_off" then -1
-			else 1
+			if .floating == "user_off" or .floating == "auto_off" then .change + " -1"
+			else .change + " 1"
 			end
-		else empty
+		else
+			if .change == "close" then
+				.change + " -1"
+			else empty end
 		end
 	end
-end' | {
-	if awk -vcount="$count" '$1 == "default" {exit 1} {
-		count += $1
-		if (count == 0)
-			exit
-	}'; then
-		i3-msg mode default
-	fi
-} &
-"$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
+end' | while read -r line; do echo "$line" > "$FILE.in"; done & log_pid=$!
+i3-msg mode file
+"$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show" &
+wait "$watch_pid"
+#kill "$log_pid"  # This shouldn't ever be needed
+rm "$FILE.in" "$FILE.out"

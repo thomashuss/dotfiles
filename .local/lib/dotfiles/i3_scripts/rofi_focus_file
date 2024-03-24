@@ -1,23 +1,38 @@
 #!/bin/sh
 
 print_windows() {
-	wmctrl -xl | awk -vignore="$1" '
+	echo queue > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
+	wmctrl -xl | awk -vignore="$1" -i"$HOME"/.local/lib/dotfiles/i3_scripts/rff_deque.awk '
 		BEGIN {
+			fifo = stack_file ".out"
+		}
+		$2 == "-1" && $3 == "caja.Caja" && (id = strtonum($1)) != ignore {
+			$1=$2=$3=$4=""
+			out[id] = substr($0,5)
+			push(id)
+		}
+		END {
+			load_cache("_post")
+			while ((getline id < fifo) > 0 && id != "EOF") push_post(id)
+			close(fifo)
 			printf("%cprompt%cfolder/file\n", 0, 31)
 			printf("%cno-custom%ctrue\n", 0, 31)
 			printf("%cuse-hot-keys%ctrue\n", 0, 31)
-		}
-		$1 != ignore && $2 == "-1" && $3 == "caja.Caja" {
-			id = $1
-			$1=$2=$3=$4=""
-			printf("%s%cinfo%c%s\n", substr($0,5), 0, 31, id)
+			printf("") > stack_file
+			while (deque_head != -1) {
+				printf("%s%cinfo%c%s\n", out[deque_head], 0, 31, deque_head)
+				print deque_head >> stack_file
+				deque_head = deque[deque_head, right]
+			}
+			close(stack_file)
 		}'
 }
 
 if [ -n "$1" ]; then
 	case $ROFI_RETV in
 		10) i3-msg "[id=$ROFI_INFO] kill" > /dev/null 2>&1; print_windows "$ROFI_INFO";;
-		1)  i3-msg "[id=$ROFI_INFO] focus" > /dev/null 2>&1 &;;
+		1)  echo "focus $ROFI_INFO" > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
+			i3-msg "[id=$ROFI_INFO] focus" > /dev/null 2>&1 &;;
 		11) i3-msg '[instance="^caja$" floating] move scratchpad; mode default' > /dev/null 2>&1;;
 	esac
 else

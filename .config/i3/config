@@ -693,7 +693,7 @@ mode "file" {
 bindsym button2 kill
 bindcode $ergo mode "file ergo"
 bindsym slash exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
-bindsym $pmod+f [instance="^caja$" floating] move scratchpad;$dm
+bindsym $pmod+f [instance=^caja$ floating] move scratchpad;$dm
 bindsym $pmod+grave $notif_close
 }
 mode "file ergo" {
