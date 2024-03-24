@@ -45,9 +45,10 @@ function load_cache(push) {
 }
 function save_cache() {
 	printf("") > stack_file
-	while (deque_head != -1) {
-		print deque_head >> stack_file
-		deque_head = deque[deque_head, right]
+	p = deque_head
+	while (p != -1) {
+		print p >> stack_file
+		p = deque[p, right]
 	}
 	close(stack_file)
 }

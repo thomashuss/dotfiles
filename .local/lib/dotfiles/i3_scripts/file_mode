@@ -6,6 +6,7 @@ count=$(i3-msg -t get_tree | jq '[..
 	| select(.window_properties?.instance == "caja")]
 	| length, ([.[] | select(.output == "__i3")]
 		| if length == 0 then "" | halt_error(1) end | empty)')
+if ! [ -f "$FILE" ]; then touch "$FILE"; chmod 600 "$FILE"; fi
 mkfifo -m 600 "$FILE.in"
 mkfifo -m 600 "$FILE.out"
 tail -f "$FILE.in" | gawk -vcount="$count" -vfifo="$FILE.out" -i"$HOME"/.local/lib/dotfiles/i3_scripts/rff_deque.awk '
@@ -24,10 +25,7 @@ function flush_queue(to) {
 		} else {
 			i = 0
 			j = queue_size - 1
-			while (i < j) {
-				@to(queue[i])
-				i++
-			}
+			while (i < j) @to(queue[i++])
 			if (j >= 0) queue_size = 0
 		}
 	} else if (events == 1) {

@@ -2,7 +2,7 @@
 
 print_windows() {
 	echo queue > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
-	wmctrl -xl | awk -vignore="$1" -i"$HOME"/.local/lib/dotfiles/i3_scripts/rff_deque.awk '
+	wmctrl -xl | gawk -vignore="$1" -i"$HOME"/.local/lib/dotfiles/i3_scripts/rff_deque.awk '
 		BEGIN {
 			fifo = stack_file ".out"
 		}
