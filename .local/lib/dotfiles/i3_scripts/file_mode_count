@@ -1,0 +1,7 @@
+#!/usr/bin/env -S jq -f
+
+[..
+	| select(.type? == "workspace") | .floating_nodes | ..
+	| select(.window_properties?.instance == "caja")]
+	| length, ([.[] | select(.output == "__i3")]
+		| if length == 0 then "" | halt_error(1) end | empty)

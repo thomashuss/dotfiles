@@ -1,0 +1,23 @@
+#!/usr/bin/env -S gawk -f
+@include ".local/lib/dotfiles/misc_scripts/unique_deque.awk"
+BEGIN {
+	stack_file = ENVIRON["XDG_RUNTIME_DIR"] "/rofi_focus_file_stack"
+	fifo = stack_file ".out"
+}
+$2 == "-1" && $3 == "caja.Caja" && (id = strtonum($1)) != ignore {
+	$1=$2=$3=$4=""
+	out[id] = substr($0,5)
+	deque_push(id)
+}
+END {
+	while ((getline id < fifo) > 0 && id != "EOF")
+		if (id in out) deque_push(id)
+	close(fifo)
+	printf("%cprompt%cfolder/file\n", 0, 31)
+	printf("%cno-custom%ctrue\n", 0, 31)
+	printf("%cuse-hot-keys%ctrue\n", 0, 31)
+	while (deque_head != -1) {
+		printf("%s%cinfo%c%s\n", out[deque_head], 0, 31, deque_head)
+		deque_head = deque[deque_head, deque_right]
+	}
+}

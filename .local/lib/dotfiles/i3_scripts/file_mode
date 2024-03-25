@@ -1,79 +1,12 @@
 #!/bin/sh
 
 FILE="$XDG_RUNTIME_DIR"/rofi_focus_file_stack
-count=$(i3-msg -t get_tree | jq '[..
-	| select(.type? == "workspace") | .floating_nodes | ..
-	| select(.window_properties?.instance == "caja")]
-	| length, ([.[] | select(.output == "__i3")]
-		| if length == 0 then "" | halt_error(1) end | empty)')
 if ! [ -f "$FILE" ]; then touch "$FILE"; chmod 600 "$FILE"; fi
 mkfifo -m 600 "$FILE.in"
 mkfifo -m 600 "$FILE.out"
-tail -f "$FILE.in" | gawk -vcount="$count" -vfifo="$FILE.out" -i"$HOME"/.local/lib/dotfiles/i3_scripts/rff_deque.awk '
-BEGIN {
-	dm = "i3-msg mode default"
-	queue_size = events = 0
-	active = 2
-	load_cache()
-}
-function flush_queue() {
-	if (events > 1) {
-		if (queue_size == 1) {
-			if (deque[queue[0], active]) push(queue[0])
-			queue_size = 0
-		} else {
-			i = 0
-			j = queue_size - 1
-			while (i < j) {
-				if (deque[queue[i], active]) push(queue[i])
-				i++
-			}
-			if (j >= 0) queue_size = 0
-		}
-	} else if (events == 1) {
-		queue_size = 0
-	}
-}
-{
-	if ($1 == "default") {
-		flush_queue()
-		save_cache()
-		exit
-	} else if ($1 == "list") {
-		flush_queue()
-		p = deque_tail
-		while (p != -1) {
-			print p > fifo
-			p = deque[p, left]
-		}
-		print "EOF" > fifo
-		close(fifo)
-	} else if ($1 == "focus" || $1 == "new") {
-		queue[queue_size++] = $2
-		deque[$2, active] = 1
-		events++
-	} else if ($1 == "close") {
-		remove($2)
-		deque[$2, active] = 0
-		count--
-	} else if ((count += $2) == 0) {
-		system(dm); close(dm); exit
-	}
-}' & watch_pid=$!
-i3-msg -t subscribe -m '[ "window", "mode" ]' | jq --unbuffered -r '
-if .change == "default" then .change, halt else
-	select(.container?.window_properties.instance == "caja")
-	| if (.change == "focus" or .change == "new" or .change == "close")
-		and (.floating != "user_off" and .floating != "auto_off")
-		then .change + " " + (.container.window | tostring)
-	else
-		if .change == "floating" then
-			if .floating == "user_off" or .floating == "auto_off" then .change + " -1"
-			else .change + " 1"
-			end
-		else empty end
-	end
-end' | while read -r line; do echo "$line" > "$FILE.in"; done & log_pid=$!
+count=$(i3-msg -t get_tree | "$HOME"/.local/lib/dotfiles/i3_scripts/file_mode_count)
+tail -f "$FILE.in" | AWKPATH="$HOME" "$HOME"/.local/lib/dotfiles/i3_scripts/file_mode_watch -vcount="$count" -vfifo="$FILE.out" & watch_pid=$!
+i3-msg -t subscribe -m '[ "window", "mode" ]' | "$HOME"/.local/lib/dotfiles/i3_scripts/file_mode_log | while read -r line; do echo "$line" > "$FILE.in"; done & log_pid=$!
 i3-msg mode file
 "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show" &
 wait "$watch_pid"
