@@ -1,7 +1,7 @@
 #!/bin/sh
 
 print_windows() {
-	echo queue > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
+	echo list > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
 	wmctrl -xl | gawk -vignore="$1" -i"$HOME"/.local/lib/dotfiles/i3_scripts/rff_deque.awk '
 		BEGIN {
 			fifo = stack_file ".out"
@@ -12,19 +12,15 @@ print_windows() {
 			push(id)
 		}
 		END {
-			load_cache("_post")
 			while ((getline id < fifo) > 0 && id != "EOF") push_post(id)
 			close(fifo)
 			printf("%cprompt%cfolder/file\n", 0, 31)
 			printf("%cno-custom%ctrue\n", 0, 31)
 			printf("%cuse-hot-keys%ctrue\n", 0, 31)
-			printf("") > stack_file
 			while (deque_head != -1) {
 				printf("%s%cinfo%c%s\n", out[deque_head], 0, 31, deque_head)
-				print deque_head >> stack_file
 				deque_head = deque[deque_head, right]
 			}
-			close(stack_file)
 		}'
 }
 

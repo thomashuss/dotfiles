@@ -36,6 +36,18 @@ function push_tail(id) {
 		deque_tail = id
 	}
 }
+function remove(id) {
+	if (deque[id, left]) {
+		if (id == deque_head)
+			deque_head = deque[id, right]
+		if (id == deque_tail)
+			deque_tail = deque[id, left]
+		if (deque[id, left] != -1)
+			deque[deque[id, left], right] = deque[id, right]
+		if (deque[id, right] != -1)
+			deque[deque[id, right], left] = deque[id, left]
+	}
+}
 function push_post(id) { if (id in out) push(id) }
 function push_tail_post(id) { if (id in out) push_tail(id) }
 function load_cache(push) {

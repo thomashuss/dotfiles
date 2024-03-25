@@ -13,19 +13,21 @@ tail -f "$FILE.in" | gawk -vcount="$count" -vfifo="$FILE.out" -i"$HOME"/.local/l
 BEGIN {
 	dm = "i3-msg mode default"
 	queue_size = events = 0
+	active = 2
+	load_cache()
 }
-function to_fifo(x) {
-	print x > fifo
-}
-function flush_queue(to) {
+function flush_queue() {
 	if (events > 1) {
 		if (queue_size == 1) {
-			@to(queue[0])
+			if (deque[queue[0], active]) push(queue[0])
 			queue_size = 0
 		} else {
 			i = 0
 			j = queue_size - 1
-			while (i < j) @to(queue[i++])
+			while (i < j) {
+				if (deque[queue[i], active]) push(queue[i])
+				i++
+			}
 			if (j >= 0) queue_size = 0
 		}
 	} else if (events == 1) {
@@ -34,17 +36,26 @@ function flush_queue(to) {
 }
 {
 	if ($1 == "default") {
-		load_cache()
-		flush_queue("push")
+		flush_queue()
 		save_cache()
 		exit
-	} else if ($1 == "queue") {
-		flush_queue("to_fifo")
+	} else if ($1 == "list") {
+		flush_queue()
+		p = deque_tail
+		while (p != -1) {
+			print p > fifo
+			p = deque[p, left]
+		}
 		print "EOF" > fifo
 		close(fifo)
 	} else if ($1 == "focus" || $1 == "new") {
 		queue[queue_size++] = $2
+		deque[$2, active] = 1
 		events++
+	} else if ($1 == "close") {
+		remove($2)
+		deque[$2, active] = 0
+		count--
 	} else if ((count += $2) == 0) {
 		system(dm); close(dm); exit
 	}
@@ -52,7 +63,7 @@ function flush_queue(to) {
 i3-msg -t subscribe -m '[ "window", "mode" ]' | jq --unbuffered -r '
 if .change == "default" then .change, halt else
 	select(.container?.window_properties.instance == "caja")
-	| if (.change == "focus" or .change == "new")
+	| if (.change == "focus" or .change == "new" or .change == "close")
 		and (.floating != "user_off" and .floating != "auto_off")
 		then .change + " " + (.container.window | tostring)
 	else
@@ -60,11 +71,7 @@ if .change == "default" then .change, halt else
 			if .floating == "user_off" or .floating == "auto_off" then .change + " -1"
 			else .change + " 1"
 			end
-		else
-			if .change == "close" then
-				.change + " -1"
-			else empty end
-		end
+		else empty end
 	end
 end' | while read -r line; do echo "$line" > "$FILE.in"; done & log_pid=$!
 i3-msg mode file
