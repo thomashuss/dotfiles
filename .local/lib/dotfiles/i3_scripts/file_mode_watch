@@ -52,15 +52,18 @@ BEGIN {
 		}
 		print "EOF" > fifo
 		close(fifo)
-	} else if ($1 == "close") {
-		remove($2)
-		deque[$2, active] = 0
-		count--
 	} else if ($1 == "default") {
 		flush_queue()
 		save_cache()
 		exit
-	} else if ((count += $2) == 0) {
-		system(dm); close(dm); exit
+	} else {
+		if ($1 == "close") {
+			deque_remove($2)
+			deque[$2, active] = 0
+			count--
+		} else count += $2
+		if (count == 0) {
+			system(dm); close(dm); exit
+		}
 	}
 }

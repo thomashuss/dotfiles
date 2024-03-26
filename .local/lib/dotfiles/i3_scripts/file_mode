@@ -10,5 +10,5 @@ i3-msg -t subscribe -m '[ "window", "mode" ]' | "$HOME"/.local/lib/dotfiles/i3_s
 i3-msg mode file
 "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show" &
 wait "$watch_pid"
-#kill "$log_pid"  # This shouldn't ever be needed
+kill "$log_pid"
 rm "$FILE.in" "$FILE.out"
