@@ -3,13 +3,18 @@
 BEGIN {
 	stack_file = ENVIRON["XDG_RUNTIME_DIR"] "/rofi_focus_file_stack"
 	fifo = stack_file ".out"
+	fifo_in = stack_file ".in"
 }
 $2 == "-1" && $3 == "caja.Caja" && (id = strtonum($1)) != ignore {
 	$1=$2=$3=$4=""
 	out[id] = substr($0,5)
 	deque_push(id)
+	exist = 1
 }
 END {
+	if (!exist) exit 1
+	print "list" > fifo_in
+	close(fifo_in)
 	while ((getline id < fifo) > 0 && id != "EOF")
 		if (id in out) deque_push(id)
 	close(fifo)

@@ -1,7 +1,6 @@
 #!/bin/sh
 
 print_windows() {
-	echo list > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
 	wmctrl -xl | AWKPATH="$HOME" "$HOME"/.local/lib/dotfiles/i3_scripts/rofi_focus_file_print -vignore="$1"
 }
 
