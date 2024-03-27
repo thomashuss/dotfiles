@@ -1,7 +1,7 @@
 #!/usr/bin/env -S jq --unbuffered -r -f
 
 if .change == "default" then .change, halt else
-	select(.container?.window_properties.instance == "caja")
+	select(.container?.window_properties.instance == "caja" or any(.container?.nodes | .. | .window_properties? // empty; .instance == "caja"))
 	| if (.change == "focus" or .change == "new" or .change == "close")
 		and (.floating != "user_off" and .floating != "auto_off")
 		then .change + " " + (.container.window | tostring)
@@ -10,6 +10,9 @@ if .change == "default" then .change, halt else
 			if .floating == "user_off" or .floating == "auto_off" then .change + " -1"
 			else .change + " 1"
 			end
-		else empty end
+		else
+			if .change == "move" then .change
+			else empty end
+		end
 	end
 end

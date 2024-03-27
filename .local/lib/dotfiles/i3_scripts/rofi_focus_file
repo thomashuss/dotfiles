@@ -7,7 +7,7 @@ print_windows() {
 if [ -n "$1" ]; then
 	case $ROFI_RETV in
 		10) i3-msg "[id=$ROFI_INFO] kill" > /dev/null 2>&1; print_windows "$ROFI_INFO";;
-		1)  echo "focus $ROFI_INFO" > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
+		1)  echo "select $ROFI_INFO" > "$XDG_RUNTIME_DIR"/rofi_focus_file_stack.in
 			i3-msg "[id=$ROFI_INFO] focus" > /dev/null 2>&1 &;;
 		11) i3-msg '[instance="^caja$" floating] move scratchpad; mode default' > /dev/null 2>&1;;
 	esac
