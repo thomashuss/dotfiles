@@ -2,8 +2,12 @@
 
 FILE="$XDG_RUNTIME_DIR"/rofi_focus_file_stack
 if ! [ -f "$FILE" ]; then touch "$FILE"; chmod 600 "$FILE"; fi
-mkfifo -m 600 "$FILE.in"
-mkfifo -m 600 "$FILE.out"
+for f in "$FILE.in" "$FILE.out"; do
+	if ! mkfifo -m 600 "$f"; then
+		rm "$f"
+		mkfifo -m 600 "$f"
+	fi
+done
 count=$(i3-msg -t get_tree | "$HOME"/.local/lib/dotfiles/i3_scripts/file_mode_count)
 tail -f "$FILE.in" | AWKPATH="$HOME" "$HOME"/.local/lib/dotfiles/i3_scripts/file_mode_watch -vcount="$count" -vfifo="$FILE.out" & watch_pid=$!
 i3-msg -t subscribe -m '[ "window", "mode" ]' | "$HOME"/.local/lib/dotfiles/i3_scripts/file_mode_log | while read -r line; do echo "$line" > "$FILE.in"; done & log_pid=$!
