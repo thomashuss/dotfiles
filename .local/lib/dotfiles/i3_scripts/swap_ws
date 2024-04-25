@@ -1,0 +1,5 @@
+#!/bin/sh
+
+current=$(i3-msg -t get_workspaces | jq -r 'first(.[] | select(.focused==true).name)')
+other=$(i3-msg -t subscribe '[ "workspace" ]' | jq -r '.current.name')
+i3-msg -q "workspace $current; rename workspace to temp; workspace $other; rename workspace to $current; workspace temp; rename workspace to $other; workspace $current"

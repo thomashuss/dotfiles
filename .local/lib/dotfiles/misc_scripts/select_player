@@ -1,0 +1,3 @@
+#!/bin/sh
+
+d=$(playerctl -l | dmenu -fn sans -p "media player" -l 5 -i) && playerctl play-pause -p "$d"

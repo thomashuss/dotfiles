@@ -1,0 +1,18 @@
+#!/bin/sh
+
+case $1 in
+	"deploy")
+		find "$DOTFILES_REPO/.local/lib/dotfiles/init" -type f | sed -e"s@$DOTFILES_REPO@@" -e's@^/@@' -e's@\.local/lib/dotfiles/init/@@' | while read -r f; do
+			if [ ! -f "$HOME/$f" ]; then
+				mkdir -p "$(dirname "$HOME/$f")" && cp "$DOTFILES_REPO/.local/lib/dotfiles/init/$f" "$HOME/$f" && echo "Created ~/$f"
+			fi
+		done
+		command -v dconf > /dev/null 2>&1 && dconf load / < "$DOTFILES_REPO/.local/lib/dotfiles/dconf";;
+
+	"update");;
+
+	*)
+		echo "$1 is not a valid direction."; exit 1;;
+esac
+pidof i3 > /dev/null && i3-msg -q reload
+exit 0

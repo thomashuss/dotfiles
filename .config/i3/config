@@ -1,0 +1,946 @@
+# i3 config file (v4)
+
+# appearance {{{
+# borders {{{
+for_window [all] title_window_icon yes
+smart_borders on
+default_border pixel 3
+default_floating_border pixel
+# }}}
+# font {{{
+font pango:sans 9
+set $i3-input i3-input -f 'pango: sans 10'
+set $i3-nagbar i3-nagbar -f 'pango: sans 9'
+# }}}
+# color scheme {{{
+# class                 border  backgr. text    indicator child_border
+client.focused          #756c4e #696149 #ffffff #9c885d   #756c4e
+client.focused_inactive #363530 #403f39 #dddddd #484e50   #4a4942
+client.unfocused        #222222 #222222 #888888 #292d2e   #222222
+client.urgent           #c06200 #c06200 #ffffff #c06200   #c06200
+# }}}
+# }}}
+# workspace names {{{
+# chat {{{
+set $ws_chat b:🗪
+# }}}
+# mail {{{
+set $ws_mail e:✉️
+# }}}
+# editor {{{
+set $ws_editor g:📝
+# }}}
+# terminal {{{
+set $ws_terminal t:>_
+# }}}
+# web {{{
+set $ws_web w:🌐
+# }}}
+# media {{{
+set $ws_media y:⏯
+# }}}
+# game {{{
+set $ws_game z:🎮
+# }}}
+# ws1 {{{
+set $ws1   1
+set $ws1po
+# }}}
+# ws2 {{{
+set $ws2   2
+set $ws2po
+# }}}
+# ws3 {{{
+set $ws3   3
+set $ws3po
+# }}}
+# ws4 {{{
+set $ws4   4
+set $ws4po
+# }}}
+# ws5 {{{
+set $ws5   5
+set $ws5po
+# }}}
+# ws6 {{{
+set $ws6   6
+set $ws6po
+# }}}
+# ws7 {{{
+set $ws7   7
+set $ws7po
+# }}}
+# ws8 {{{
+set $ws8   8
+set $ws8po
+# }}}
+# ws9 {{{
+set $ws9   9
+set $ws9po
+# }}}
+# ws10 {{{
+set $ws10   10
+set $ws10po
+# }}}
+# }}}
+# application rules {{{
+# floating windows {{{
+for_window [class="^dosbox$"] floating disable
+for_window [class="^KeePassXC$" title="^((?!^Unlock Database).)*$"] floating enable, sticky enable
+for_window [class="^MusE$" title="^((?!^MusE( Project)?).)*$"] floating enable
+for_window [class="^zoom$" title="^((?!^Zoom (Meeting|for Government)$).)*$"] floating enable
+for_window [class="^zoom$" title="^Zoom (Meeting|for Government)$"] floating disable
+for_window [instance="^((?!^Navigator$).)*$" class="^([fF]irefox(-esr)?|Tor Browser|Pale moon)$"] floating enable, sticky enable
+for_window [title="^Picture-in-Picture$" class="^[fF]irefox(-esr)?$"] sticky enable
+for_window [title="^Task Manager - Chromium$"] floating enable
+for_window [instance="^arandr$"] floating enable
+for_window [instance="^blueman-manager$"] floating enable, sticky enable
+for_window [instance="^caja$"] floating enable
+for_window [instance="^caja$" floating] sticky enable
+for_window [instance="^carla-plugin$"] floating enable
+for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
+for_window [instance="^eom$"] floating enable
+for_window [instance="^feh$"] floating enable
+for_window [instance="^evolution" window_role="^ECompEditor(Event|Task|Memo)"] floating enable
+for_window [instance="^evolution-alarm-notify"] floating enable
+for_window [instance="^flameshot$"] floating enable
+for_window [instance="^floating$"] floating enable
+for_window [instance="^gnome-pomodoro$"] floating enable
+for_window [instance="^gucharmap$"] floating enable, sticky enable
+for_window [instance="^kdeconnect-app$"] floating enable, sticky enable
+for_window [instance="^ksnip$"] floating enable
+for_window [instance="^mate-dictionary$"] floating enable
+for_window [instance="^mupen64plus$"] floating disable
+for_window [instance="^nm-connection-editor$"] floating enable
+for_window [instance="^org\.gnome\.clocks$"] floating enable, sticky enable
+for_window [instance="^patch1$"] floating enable
+for_window [instance="^pavucontrol$"] floating enable, sticky enable
+for_window [instance="^scratch_calc$"] floating enable, sticky enable
+for_window [instance="^scratch_term$"] floating enable, sticky enable
+for_window [instance="^system-config-printer$"] floating enable
+for_window [title="^Console window" class="^MultiMC$"] floating enable
+# }}}
+# workspace assignments {{{
+# Only for windows that need to be out of the way.
+assign [class="^Skype$"] workspace $ws_chat
+assign [class="^Steam$"] workspace $ws_game
+assign [class="^Minecraft"] workspace $ws_game
+assign [class="^dolphin-emu$"] workspace $ws_game
+assign [class="^zoom$"] workspace $ws_chat
+assign [instance="^(microsoft teams - preview|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$"] workspace $ws_chat
+assign [instance="^discord$"] workspace $ws_chat
+assign [instance="^evolution"] workspace $ws_mail
+assign [class="^thunderbird"] workspace $ws_mail
+assign [instance="^(ncspot|spotify)$"] workspace $ws_media
+for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
+#for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[class=\\"^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$\\" title=\\"^((?!Chromium$).)*$\\" workspace=$ws_web tiling tiling_from=auto] move container to workspace {new_ws}, focus'"
+for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] move right
+for_window [class="^(Chromium|[fF]irefox(-esr)?|Pale moon)$" workspace=$ws_mail] move container to workspace $ws_web
+for_window [class="^((?!^(Evolution|thunderbird)).)*$" workspace=$ws_mail tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix mail --cmd '[class=\\"^((?!^(Evolution|thunderbird)).)*$\\" workspace=$ws_mail tiling tiling_from=auto] move container to workspace {new_ws}, focus'"
+#for_window [instance="^crx_" class="^Chromium$" workspace=$ws_web] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[instance=\\"^crx_\\" class=\\"^Chromium$\\" workspace=$ws_web] move container to workspace {new_ws}, focus'"
+# }}}
+# window layouts {{{
+for_window [class="^MusE$"] layout tabbed
+for_window [instance="^VirtualBox Manager$"] layout tabbed
+for_window [instance="^qtractor$"] layout tabbed
+for_window [instance="^calibre-gui$" tiling] split h,layout tabbed
+for_window [instance="^(Navigator|chromium)$" workspace=$ws_web] layout tabbed
+for_window [workspace=$ws_game] layout tabbed
+for_window [workspace=$ws_mail] layout stacking
+for_window [workspace=$ws_media] layout tabbed
+# }}}
+# }}}
+# lock screen {{{
+set $lock_command "$HOME/.local/lib/dotfiles/i3_scripts/i3_lock"
+exec --no-startup-id exec xss-lock --transfer-sleep-lock -- $lock_command
+# }}}
+# quasi-scripts {{{
+# Rofi launcher {{{
+set $launcher exec --no-startup-id "rofi -show combi -modi combi -combi-modi drun,run -display-combi Launch -disable-history"
+# }}}
+# Rofi window switcher {{{
+set $window_switcher exec --no-startup-id "rofi -show window -kb-remove-char-forward 'Control+d' -kb-delete-entry 'Delete' -window-close-on-delete false"
+# }}}
+# Switch to blank workspace {{{
+set $blank_workspace exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/blank_workspace
+# }}}
+# Launch terminal {{{
+set $launch_terminal exec exec mate-terminal
+# }}}
+# Launch screenshot utility {{{
+set $screenshot exec exec flameshot gui
+# }}}
+# Quietly take screenshot {{{
+set $copy_screenshot exec --no-startup-id flameshot screen -r | xclip -selection clipboard -t image/png
+set $save_screenshot exec --no-startup-id flameshot screen -p "$HOME"
+# }}}
+# Show/hide scratchpad calculator or launch it if not running {{{
+set $calc exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"scratch_calc\\"' 'instance=^scratch_calc$' 'exec --no-startup-id timeout 30s $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/scratch_calc'"
+set $launch_calc [instance="^scratch_calc$" floating] move scratchpad, scratchpad show; exec --no-startup-id "timeout 30s $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/scratch_calc"
+# }}}
+# Show/hide password manager or launch it if not running {{{
+set $password_man exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.class==\\"KeePassXC\\"' 'class=^KeePassXC$' 'exec --no-startup-id exec keepassxc'"
+# }}}
+# Show/hide KDE Connect or launch it if not running {{{
+set $phone_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"kdeconnect-app\\"' 'instance=^kdeconnect-app$' 'exec kdeconnect-app'"
+# }}}
+# Launch audio i/o manager {{{
+set $audio_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance==\\"pavucontrol\\"' 'instance=^pavucontrol$' 'exec pavucontrol'"
+# }}}
+# Launch network connection manager {{{
+set $network_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance==\\"nm-connection-editor\\"' 'instance=^nm-connection-editor$' 'exec nm-connection-editor'"
+# }}}
+# Launch bluetooth manager {{{
+set $bt_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance==\\"blueman-manager\\"' 'instance=^blueman-manager$' 'exec blueman-manager'"
+# }}}
+# Launch browser {{{
+set $www_launch exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/www_launch"
+# }}}
+# Launch browser private window {{{
+set $www_launch_private exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/www_launch p"
+# }}}
+# Show/hide scratchpad terminal or launch it if not running {{{
+set $scratch_term exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"scratch_term\\"' 'instance=^scratch_term$' 'exec \\"exec mate-terminal --name scratch_term --disable-factory\\"'"
+# }}}
+# Launch vim in terminal {{{
+set $launch_editor exec exec mate-terminal --name vim -e vim --disable-factory
+# }}}
+# Now playing media {{{
+set $now_playing exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/now_playing"
+# }}}
+# Change active player {{{
+set $select_player exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/select_player"
+# }}}
+# Traverse pages in browser {{{
+set $prev_page exec --no-startup-id xdotool key "Alt+Left"
+set $next_page exec --no-startup-id xdotool key "Alt+Right"
+# }}}
+# Cycle tabs in browser {{{
+set $next_tab exec --no-startup-id xdotool key "Ctrl+Next"
+set $prev_tab exec --no-startup-id xdotool key "Ctrl+Prior"
+# }}}
+# Find in page {{{
+set $find exec --no-startup-id xdotool key -delay 50 --clearmodifiers "Alt+e" "f"
+# }}}
+# Perform default action for notification {{{
+set $notif exec --no-startup-id "dunstctl action 0; sleep 0.1; i3-msg -q [urgent=latest] focus"
+# }}}
+# Retrieve last notification from history {{{
+set $notif_hist exec --no-startup-id dunstctl history-pop
+# }}}
+# Close notification {{{
+set $notif_close exec --no-startup-id dunstctl close
+# }}}
+# Clear notifications {{{
+set $notif_clear exec --no-startup-id dunstctl close-all
+# }}}
+# Open firefox library {{{
+set $ff_lib exec --no-startup-id xdotool key "ctrl+H"
+# }}}
+# Evolution: mark mail as read and move to folder {{{
+set $e_read_move exec --no-startup-id xdotool key "Ctrl+k" "Ctrl+V"
+# }}}
+# Launch office program {{{
+set $launch_office exec libreoffice
+# }}}
+# Launch MS Teams PWA {{{
+set $launch_teams exec --no-startup-id exec gtk-launch chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default.desktop
+# }}}
+# Launch MS 365 PWA {{{
+set $launch_ms365 exec --no-startup-id exec gtk-launch chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop
+# }}}
+# Launch character map {{{
+set $charmap exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"gucharmap\\"' 'instance=^gucharmap$' 'exec exec gucharmap'"
+# }}}
+# Word count {{{
+set $word_count exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/word_count"
+# }}}
+# Timer {{{
+set $timer exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties.instance==\\"org.gnome.clocks\\"' 'instance=^org\.gnome\.clocks$' 'exec --no-startup-id exec gnome-clocks'"
+# }}}
+# Click left mouse button {{{
+set $click exec --no-startup-id xdotool click 1
+# }}}
+# Center mouse in focused window {{{
+set $center_mouse exec --no-startup-id xdotool getwindowfocus mousemove --window %1 --polar 0 0
+# }}}
+# Focus cycle {{{
+set $focus_cycle exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/focus_stack 0.7"
+# }}}
+# Run program with clipboard contents {{{
+set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F 'exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/run_with_clipboard %s"' -P 'Run with clipboard: ' > /dev/null
+# }}}
+# Misc scratchpad {{{
+set $unmark_d [con_id=__focused__ con_mark="^d[0-9]+:.+"] unmark
+set $kill_d exec --no-startup-id i3-msg -q "[con_mark=^d$(i3-msg -t get_workspaces | jq -r 'first(.[] | select(.focused==true).name)'):.+] kill"
+set $focus_d exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d"
+set $mark_d exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad_mark d \\"$(xdotool getwindowfocus)\\""
+set $mark_d_new exec --no-startup-id "timeout 30s i3-msg -t subscribe -m '[ \\"window\\" ]' | python3 -c 'import fileinput;import json;print(next(map(lambda x:x[\\"container\\"][\\"window\\"],filter(lambda x:x[\\"change\\"]==\\"new\\",map(json.loads,fileinput.input())))))' | xargs $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad_mark d"
+# }}}
+# Force launch this workspace application {{{
+set $launch_this exec --no-startup-id pkill -USR1 -f '.*python3 '"$HOME"'/.local/lib/dotfiles/i3_scripts/ws_watcher'
+# }}}
+# Swap workspaces {{{
+set $swap_ws exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/swap_ws"
+# }}}
+# Display settings {{{
+set $display_settings exec mate-display-properties
+# }}}
+# }}}
+# bar {{{
+bar {
+i3bar_command exec i3bar --transparency
+font pango:sans 11
+position top
+mode hide
+hidden_state hide
+tray_output none
+workspace_buttons no
+# colors {{{
+colors {
+background #00000000
+focused_workspace #99864b #99864b #ffffff
+active_workspace #736538 #736538 #ffffff
+inactive_workspace #4d4326 #4d4326 #ffffff
+urgent_workspace #c06200 #c06200 #ffffff
+binding_mode #ffff00 #ffff00 #000000
+}
+# }}}
+}
+# }}}
+# keybindings {{{
+# modifiers {{{
+set $ergo 66
+set $pmod Mod4
+set $smod Mod1
+set $key_move Shift
+# }}}
+# behavior {{{
+floating_modifier Mod1
+tiling_drag modifier titlebar
+focus_wrapping no
+set $dm mode "default"
+set $move_amount 100 px
+# }}}
+# ergonomic binding modes {{{
+# Put every binding in each mode (except for --release bindings).
+# ergo mode {{{
+# Binding mode enabled on first press of the ergonomic key.  EVERY binding in
+# this mode MUST end with ;$hm unless it implies switching to another mode.
+# Container move bindings end with $dm because they switch to the target
+# workspace (intentionally).  Thus, one could not feasibly perform another
+# operation after moving a container.
+set $em mode "ergo"
+mode "ergo" {
+# escape {{{
+bindcode --release $ergo mode "lazy"
+# }}}
+# modify container {{{
+bindsym c kill;$hm
+bindsym $smod+c [workspace=__focused__] kill;$kill_d;$hm
+bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$hm
+bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
+bindsym x fullscreen toggle;$hm
+bindsym d $focus_d;$hm
+bindsym $key_move+d $mark_d;$hm
+bindsym $smod+d $mark_d_new;$hm
+bindsym r mode "rename"
+bindsym s mode "size"
+# }}}
+# change layout {{{
+bindsym equal mode "compose"
+bindsym v mode "layout"
+# }}}
+# move container {{{
+bindsym n move left $move_amount;$hm
+bindsym m move down $move_amount;$hm
+bindsym comma move up $move_amount;$hm
+bindsym period move right $move_amount;$hm
+bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
+bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
+bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
+bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
+bindsym $key_move+4 $unmark_d;move container to workspace number $ws4;workspace number $ws4;$dm
+bindsym $key_move+5 $unmark_d;move container to workspace number $ws5;workspace number $ws5;$dm
+bindsym $key_move+6 $unmark_d;move container to workspace number $ws6;workspace number $ws6;$dm
+bindsym $key_move+7 $unmark_d;move container to workspace number $ws7;workspace number $ws7;$dm
+bindsym $key_move+8 $unmark_d;move container to workspace number $ws8;workspace number $ws8;$dm
+bindsym $key_move+9 $unmark_d;move container to workspace number $ws9;workspace number $ws9;$dm
+bindsym $key_move+0 $unmark_d;move container to workspace number $ws10;workspace number $ws10;$dm
+bindsym $key_move+b $unmark_d;move container to workspace $ws_chat;workspace $ws_chat;$dm
+bindsym $key_move+e $unmark_d;move container to workspace $ws_mail;workspace $ws_mail;$dm
+bindsym $key_move+g $unmark_d;move container to workspace $ws_editor;workspace $ws_editor;$dm
+bindsym $key_move+t $unmark_d;move container to workspace $ws_terminal;workspace $ws_terminal;$dm
+bindsym $key_move+w $unmark_d;move container to workspace $ws_web;workspace $ws_web;$dm
+bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $ws_media;$dm
+bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
+# }}}
+# move workspace {{{
+bindsym $smod+r $swap_ws
+bindsym $key_move+bracketleft move workspace to output left;$dm
+bindsym $key_move+bracketright move workspace to output right;$dm
+bindsym $key_move+apostrophe move workspace to output up;$dm
+bindsym $key_move+semicolon move workspace to output down;$dm
+# }}}
+# focus container {{{
+bindsym u [urgent=latest] focus;$hm
+bindsym grave $notif;$hm
+bindsym h focus left;$hm
+bindsym j focus down;$hm
+bindsym k focus up;$hm
+bindsym l focus right;$hm
+bindsym f focus mode_toggle;$hm
+bindsym p focus parent;$hm
+bindsym o focus child;$hm
+# }}}
+# focus workspace {{{
+bindsym q $blank_workspace;$hm
+bindsym $smod+q $blank_workspace --reverse;$hm
+bindsym space workspace back_and_forth;$hm
+bindsym 1 workspace number $ws1;$hm
+bindsym 2 workspace number $ws2;$hm
+bindsym 3 workspace number $ws3;$hm
+bindsym 4 workspace number $ws4;$hm
+bindsym 5 workspace number $ws5;$hm
+bindsym 6 workspace number $ws6;$hm
+bindsym 7 workspace number $ws7;$hm
+bindsym 8 workspace number $ws8;$hm
+bindsym 9 workspace number $ws9;$hm
+bindsym 0 workspace number $ws10;$hm
+# }}}
+# focus output {{{
+bindsym bracketleft focus output left;$hm
+bindsym bracketright focus output right;$hm
+bindsym apostrophe focus output up;$hm
+bindsym semicolon focus output down;$hm
+# }}}
+# focus/launch application {{{
+bindsym b workspace $ws_chat;$hm
+bindsym e workspace $ws_mail;$hm
+bindsym g workspace $ws_editor;$hm
+bindsym t workspace $ws_terminal;$hm
+bindsym w workspace $ws_web;$hm
+bindsym y workspace $ws_media;$hm
+bindsym z workspace $ws_game;$hm
+# }}}
+}
+bindcode $ergo $em
+# }}}
+# hold mode {{{
+# Binding mode enabled upon pressing a key in ergo mode.  Allows for further
+# keys to be pressed.
+mode "hold" {
+set $hm mode "hold"
+# escape {{{
+bindcode --release $ergo $dm
+bindsym Super_L $dm
+bindsym Super_R $dm
+#bindsym Alt_L $dm
+#bindsym Alt_R $dm
+# }}}
+# modify container {{{
+bindsym c kill
+bindsym $smod+c [workspace=__focused__] kill;$kill_d
+bindsym $key_move+f floating toggle, sticky disable;$unmark_d
+bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
+bindsym x fullscreen toggle
+bindsym d $focus_d
+bindsym $key_move+d $mark_d
+bindsym $smod+d $mark_d_new
+bindsym r mode "rename"
+bindsym s mode "size"
+# }}}
+# change layout {{{
+bindsym equal mode "compose"
+bindsym v mode "layout"
+# }}}
+# move container {{{
+bindsym n move left $move_amount
+bindsym m move down $move_amount
+bindsym comma move up $move_amount
+bindsym period move right $move_amount
+bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
+bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
+bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
+bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
+bindsym $key_move+4 $unmark_d;move container to workspace number $ws4;workspace number $ws4;$dm
+bindsym $key_move+5 $unmark_d;move container to workspace number $ws5;workspace number $ws5;$dm
+bindsym $key_move+6 $unmark_d;move container to workspace number $ws6;workspace number $ws6;$dm
+bindsym $key_move+7 $unmark_d;move container to workspace number $ws7;workspace number $ws7;$dm
+bindsym $key_move+8 $unmark_d;move container to workspace number $ws8;workspace number $ws8;$dm
+bindsym $key_move+9 $unmark_d;move container to workspace number $ws9;workspace number $ws9;$dm
+bindsym $key_move+0 $unmark_d;move container to workspace number $ws10;workspace number $ws10;$dm
+bindsym $key_move+b $unmark_d;move container to workspace $ws_chat;workspace $ws_chat;$dm
+bindsym $key_move+e $unmark_d;move container to workspace $ws_mail;workspace $ws_mail;$dm
+bindsym $key_move+g $unmark_d;move container to workspace $ws_editor;workspace $ws_editor;$dm
+bindsym $key_move+t $unmark_d;move container to workspace $ws_terminal;workspace $ws_terminal;$dm
+bindsym $key_move+w $unmark_d;move container to workspace $ws_web;workspace $ws_web;$dm
+bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $ws_media;$dm
+bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
+# }}}
+# move workspace {{{
+bindsym $smod+r $swap_ws
+bindsym $key_move+bracketleft move workspace to output left;$dm
+bindsym $key_move+bracketright move workspace to output right;$dm
+bindsym $key_move+apostrophe move workspace to output up;$dm
+bindsym $key_move+semicolon move workspace to output down;$dm
+# }}}
+# focus container {{{
+bindsym u [urgent=latest] focus
+bindsym grave $notif
+bindsym h focus left
+bindsym j focus down
+bindsym k focus up
+bindsym l focus right
+bindsym f focus mode_toggle
+bindsym p focus parent
+bindsym o focus child
+# }}}
+# focus workspace {{{
+bindsym q $blank_workspace
+bindsym $smod+q $blank_workspace --reverse
+bindsym space workspace back_and_forth
+bindsym 1 workspace number $ws1
+bindsym 2 workspace number $ws2
+bindsym 3 workspace number $ws3
+bindsym 4 workspace number $ws4
+bindsym 5 workspace number $ws5
+bindsym 6 workspace number $ws6
+bindsym 7 workspace number $ws7
+bindsym 8 workspace number $ws8
+bindsym 9 workspace number $ws9
+bindsym 0 workspace number $ws10
+# }}}
+# focus output {{{
+bindsym bracketleft focus output left
+bindsym bracketright focus output right
+bindsym apostrophe focus output up
+bindsym semicolon focus output down
+# }}}
+# focus/launch application {{{
+bindsym b workspace $ws_chat
+bindsym e workspace $ws_mail
+bindsym g workspace $ws_editor
+bindsym t workspace $ws_terminal
+bindsym w workspace $ws_web
+bindsym y workspace $ws_media
+bindsym z workspace $ws_game
+# }}}
+}
+# }}}
+# lazy mode {{{
+# Binding mode enabled after releasing the ergonomic key while in ergo mode,
+# i.e. pressing and releasing the ergonomic key without pressing any other
+# keys.  EVERY binding in this mode, unless it enters another mode or directly
+# precedes some other action, MUST end with ;$dm
+mode "lazy" {
+# escape {{{
+bindsym Escape $dm
+bindsym --release Alt_L $dm
+bindsym --release Alt_R $dm
+# }}}
+# modify container {{{
+bindsym c kill;$dm
+bindsym $smod+c [workspace=__focused__] kill;$kill_d;$dm
+bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$dm
+bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
+bindsym x fullscreen toggle;$dm
+bindsym d $focus_d;$dm
+bindsym $key_move+d $mark_d;$dm
+bindsym $smod+d $mark_d_new;$dm
+bindsym r mode "rename lazy"
+bindsym s mode "size lazy"
+# }}}
+# change layout {{{
+bindsym equal mode "compose lazy"
+bindsym v mode "layout lazy"
+# }}}
+# move container {{{
+bindsym n move left $move_amount;$dm
+bindsym m move down $move_amount;$dm
+bindsym comma move up $move_amount;$dm
+bindsym period move right $move_amount;$dm
+bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
+bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
+bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
+bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
+bindsym $key_move+4 $unmark_d;move container to workspace number $ws4;workspace number $ws4;$dm
+bindsym $key_move+5 $unmark_d;move container to workspace number $ws5;workspace number $ws5;$dm
+bindsym $key_move+6 $unmark_d;move container to workspace number $ws6;workspace number $ws6;$dm
+bindsym $key_move+7 $unmark_d;move container to workspace number $ws7;workspace number $ws7;$dm
+bindsym $key_move+8 $unmark_d;move container to workspace number $ws8;workspace number $ws8;$dm
+bindsym $key_move+9 $unmark_d;move container to workspace number $ws9;workspace number $ws9;$dm
+bindsym $key_move+0 $unmark_d;move container to workspace number $ws10;workspace number $ws10;$dm
+bindsym $key_move+b $unmark_d;move container to workspace $ws_chat;workspace $ws_chat;$dm
+bindsym $key_move+e $unmark_d;move container to workspace $ws_mail;workspace $ws_mail;$dm
+bindsym $key_move+g $unmark_d;move container to workspace $ws_editor;workspace $ws_editor;$dm
+bindsym $key_move+t $unmark_d;move container to workspace $ws_terminal;workspace $ws_terminal;$dm
+bindsym $key_move+w $unmark_d;move container to workspace $ws_web;workspace $ws_web;$dm
+bindsym $key_move+y $unmark_d;move container to workspace $ws_media;workspace $ws_media;$dm
+bindsym $key_move+z $unmark_d;move container to workspace $ws_game;workspace $ws_game;$dm
+# }}}
+# move workspace {{{
+bindsym $smod+r $swap_ws
+bindsym $key_move+bracketleft move workspace to output left;$dm
+bindsym $key_move+bracketright move workspace to output right;$dm
+bindsym $key_move+apostrophe move workspace to output up;$dm
+bindsym $key_move+semicolon move workspace to output down;$dm
+# }}}
+# focus container {{{
+bindsym u [urgent=latest] focus;$dm
+bindsym grave $notif;$dm
+bindsym h focus left;$dm
+bindsym j focus down;$dm
+bindsym k focus up;$dm
+bindsym l focus right;$dm
+bindsym f focus mode_toggle;$dm
+bindsym p focus parent
+bindsym o focus child
+# }}}
+# focus workspace {{{
+bindsym q $blank_workspace;$dm
+bindsym $smod+q $blank_workspace --reverse;$dm
+bindcode $ergo $window_switcher;$dm
+bindsym space workspace back_and_forth;$dm
+bindsym 1 workspace number $ws1;$dm
+bindsym 2 workspace number $ws2;$dm
+bindsym 3 workspace number $ws3;$dm
+bindsym 4 workspace number $ws4;$dm
+bindsym 5 workspace number $ws5;$dm
+bindsym 6 workspace number $ws6;$dm
+bindsym 7 workspace number $ws7;$dm
+bindsym 8 workspace number $ws8;$dm
+bindsym 9 workspace number $ws9;$dm
+bindsym 0 workspace number $ws10;$dm
+# }}}
+# focus output {{{
+bindsym bracketleft focus output left;$dm
+bindsym bracketright focus output right;$dm
+bindsym apostrophe focus output up;$dm
+bindsym semicolon focus output down;$dm
+# }}}
+# focus/launch application {{{
+bindsym b workspace $ws_chat;$dm
+bindsym e workspace $ws_mail;$dm
+bindsym g workspace $ws_editor;$dm
+bindsym t workspace $ws_terminal;$dm
+bindsym w workspace $ws_web;$dm
+bindsym y workspace $ws_media;$dm
+bindsym z workspace $ws_game;$dm
+# }}}
+}
+# }}}
+# }}}
+# binding modes {{{
+# layout mode {{{
+mode "layout" {
+bindcode --release $ergo mode "layout lazy"
+bindsym t layout tabbed;$hm
+bindsym s layout stacking;$hm
+bindsym v layout toggle split;$hm
+bindsym a split h;$hm
+bindsym e split v;$hm
+}
+mode "layout lazy" {
+bindsym Escape $dm
+bindcode $ergo $em
+bindsym t layout tabbed;$dm
+bindsym s layout stacking;$dm
+bindsym v layout toggle split;$dm
+bindsym a split h;$dm
+bindsym e split v;$dm
+}
+# }}}
+# file mode {{{
+set $file exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/file_mode"
+mode "file" {
+bindsym button2 kill
+bindcode $ergo mode "file ergo"
+bindsym slash exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
+bindsym $pmod+f exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_hide"
+bindsym $pmod+grave $notif_close
+}
+mode "file ergo" {
+bindsym h focus left;mode "file hold"
+bindsym j focus down;mode "file hold"
+bindsym k focus up;mode "file hold"
+bindsym l focus right;mode "file hold"
+bindsym n move left $move_amount;mode "file hold"
+bindsym m move down $move_amount;mode "file hold"
+bindsym comma move up $move_amount;mode "file hold"
+bindsym period move right $move_amount;mode "file hold"
+bindsym c kill;mode "file hold"
+bindsym f focus mode_toggle;mode "file hold"
+bindsym Shift+f floating toggle;mode "file hold"
+bindsym $smod+d $mark_d_new;mode "file hold"
+bindcode --release $ergo mode "file lazy"
+}
+mode "file hold" {
+bindsym h focus left
+bindsym j focus down
+bindsym k focus up
+bindsym l focus right
+bindsym n move left $move_amount
+bindsym m move down $move_amount
+bindsym comma move up $move_amount
+bindsym period move right $move_amount
+bindsym c kill
+bindsym f focus mode_toggle
+bindsym Shift+f floating toggle
+bindsym $smod+d $mark_d_new
+bindcode --release $ergo mode "file"
+}
+mode "file lazy" {
+bindsym h focus left;mode "file"
+bindsym j focus down;mode "file"
+bindsym k focus up;mode "file"
+bindsym l focus right;mode "file"
+bindsym n move left $move_amount;mode "file"
+bindsym m move down $move_amount;mode "file"
+bindsym comma move up $move_amount;mode "file"
+bindsym period move right $move_amount;mode "file"
+bindsym c kill;mode "file"
+bindsym f focus mode_toggle;mode "file"
+bindsym Shift+f floating toggle;mode "file"
+bindsym $smod+d $mark_d_new;mode "file"
+bindcode $ergo mode "file"
+bindsym --release Alt_L mode "file"
+}
+# }}}
+# compose mode {{{
+mode "compose" {
+bindcode --release $ergo mode "compose lazy"
+bindsym equal $hm
+bindsym h split h;focus left;move right;focus right;$hm
+bindsym j split h;focus down;move up;focus up;$hm
+bindsym k split h;focus up;move down;focus down;$hm
+bindsym l split h;focus right;move left;focus left;$hm
+}
+mode "compose lazy" {
+bindsym Alt_L $dm
+bindsym Alt_R $dm
+bindsym Escape $dm
+bindcode $ergo $em
+bindsym equal $dm
+bindsym h split h;focus left;move right;focus right;$dm
+bindsym j split h;focus down;move up;focus up;$dm
+bindsym k split h;focus up;move down;focus down;$dm
+bindsym l split h;focus right;move left;focus left;$dm
+}
+# }}}
+# rename mode {{{
+set $ws_prompt 'Workspace postfix (or Esc for default): '
+set $unmark_d_ws exec --no-startup-id "i3-msg -q \\"[con_mark=^d$(i3-msg -t get_workspaces | jq -r 'first(.[] | select(.focused==true).name)'):.+] unmark, move scratchpad, scratchpad show
+set $unmark_d_ws_pre ws=$(i3-msg -t get_workspaces | jq -r 'first(.[] | select(.focused==true).name)')
+set $unmark_d_ws_esc [con_mark=^d$ws:.+] unmark, move scratchpad, scratchpad show
+mode "rename" {
+bindcode --release $ergo mode "rename lazy"
+bindsym r $hm
+bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\""$hm
+bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$hm
+bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$hm
+bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$hm
+bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$hm
+bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$hm
+bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$hm
+bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\""$hm
+bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\""$hm
+bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\""$hm
+bindsym 4 $unmark_d_ws;rename workspace to $ws4;\\""$hm
+bindsym 5 $unmark_d_ws;rename workspace to $ws5;\\""$hm
+bindsym 6 $unmark_d_ws;rename workspace to $ws6;\\""$hm
+bindsym 7 $unmark_d_ws;rename workspace to $ws7;\\""$hm
+bindsym 8 $unmark_d_ws;rename workspace to $ws8;\\""$hm
+bindsym 9 $unmark_d_ws;rename workspace to $ws9;\\""$hm
+bindsym 0 $unmark_d_ws;rename workspace to $ws10;\\""$hm
+}
+mode "rename lazy" {
+bindsym Alt_L $dm
+bindsym Alt_R $dm
+bindcode $ergo $em
+bindsym Escape $dm
+bindsym r $dm
+bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\""$dm
+bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$dm
+bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$dm
+bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$dm
+bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$dm
+bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$dm
+bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$dm
+bindsym 1 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 1:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws1'";$dm
+bindsym 2 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 2:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws2'";$dm
+bindsym 3 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 3:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws3'";$dm
+bindsym 4 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 4:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws4'";$dm
+bindsym 5 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 5:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws5'";$dm
+bindsym 6 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 6:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws6'";$dm
+bindsym 7 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 7:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws7'";$dm
+bindsym 8 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 8:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws8'";$dm
+bindsym 9 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 9:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws9'";$dm
+bindsym 0 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 10:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws10'";$dm
+}
+# }}}
+# size mode {{{
+set $resize_factor 3 px or 3 ppt
+mode "size" {
+bindcode --release $ergo mode "size lazy"
+bindsym s $hm
+bindsym h resize shrink width $resize_factor
+bindsym j resize grow height $resize_factor
+bindsym k resize shrink height $resize_factor
+bindsym l resize grow width $resize_factor
+}
+mode "size lazy" {
+bindsym Alt_L $dm
+bindsym Alt_R $dm
+bindcode $ergo $em
+bindsym Escape $dm
+bindsym s $dm
+bindsym h resize shrink width $resize_factor
+bindsym j resize grow height $resize_factor
+bindsym k resize shrink height $resize_factor
+bindsym l resize grow width $resize_factor
+}
+# }}}
+# pseudo-vim mode {{{
+mode "normal" {
+bindsym --release Control+B exec --no-startup-id xdotool key --clearmodifiers "Page_Up"
+bindsym --release Control+F exec --no-startup-id xdotool key --clearmodifiers "Page_Down"
+bindsym --release Control+R exec --no-startup-id xdotool key --clearmodifiers "ctrl+shift+z"
+bindsym --release Shift+4 exec --no-startup-id xdotool key --clearmodifiers "End"
+bindsym --release Shift+6 exec --no-startup-id xdotool key --clearmodifiers "Home"
+bindsym --release b exec --no-startup-id xdotool key --clearmodifiers "ctrl+Left"
+bindsym --release o exec --no-startup-id xdotool key --clearmodifiers "End" "Enter"
+bindsym --release Shift+o exec --no-startup-id xdotool key --clearmodifiers "Home" "Return" "Up"
+bindsym --release p exec --no-startup-id xdotool key --clearmodifiers "ctrl+v"
+bindsym --release slash exec --no-startup-id xdotool key --clearmodifiers "alt+e" "f"
+bindsym --release u exec --no-startup-id xdotool key --clearmodifiers "ctrl+z"
+bindsym --release w exec --no-startup-id xdotool key --clearmodifiers "ctrl+Right"
+bindsym --release v mode "visual"
+
+bindsym Escape $dm; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys_revert"
+bindsym $pmod+Shift+e $dm; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys_revert"
+}
+mode "visual" {
+bindsym --release Left exec --no-startup-id xdotool key --clearmodifiers "Shift+Left"
+bindsym --release Up exec --no-startup-id xdotool key --clearmodifiers "Shift+Up"
+bindsym --release Down exec --no-startup-id xdotool key --clearmodifiers "Shift+Down"
+bindsym --release Right exec --no-startup-id xdotool key --clearmodifiers "Shift+Right"
+bindsym --release b exec --no-startup-id xdotool key --clearmodifiers "Shift+ctrl+Left"
+bindsym --release w exec --no-startup-id xdotool key --clearmodifiers "Shift+ctrl+Right"
+bindsym --release Escape mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "Left"
+bindsym --release y mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "ctrl+c" "Left"
+bindsym --release d mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "ctrl+x" "Left"
+}
+bindsym $pmod+Shift+e mode "normal"; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys"
+# }}}
+# }}}
+# launch application {{{
+bindsym $pmod+BackSpace $scratch_term
+bindsym $pmod+Return $launch_terminal
+bindsym $pmod+a $launcher
+bindsym $pmod+Shift+a $clipboard_run
+bindsym $pmod+b $bt_control
+bindsym $pmod+c $calc
+bindsym $pmod+Shift+c $launch_calc
+bindsym $pmod+d $display_settings
+bindsym $pmod+e $network_control
+bindsym $pmod+f $file
+bindsym $pmod+j $word_count
+bindsym $pmod+m $phone_control
+bindsym $pmod+p $password_man
+bindsym $pmod+q $launch_this
+bindsym $pmod+s $screenshot
+bindsym $pmod+t $timer
+bindsym $pmod+u $charmap
+bindsym $pmod+v $audio_control
+bindsym $pmod+w $www_launch
+bindsym $pmod+Shift+w $www_launch_private
+bindsym XF86Calculator $calc
+# }}}
+# one-key actions {{{
+#bindsym F10 $launcher
+#bindsym F9 kill
+#bindsym $smod+F9 [workspace=__focused__] kill;$kill_d
+#bindsym F4 workspace back_and_forth
+bindsym Print $copy_screenshot
+bindsym Shift+Print $save_screenshot
+#bindsym Pause workspace back_and_forth
+#bindsym Pause kill
+#bindsym $smod+Pause [workspace=__focused__] kill;$kill_d
+# }}}
+# focus/move with numpad {{{
+bindsym KP_Left focus left
+bindsym KP_Down focus down
+bindsym KP_Up focus up
+bindsym KP_Right focus right
+bindsym Shift+KP_Left move left
+bindsym Shift+KP_Down move down
+bindsym Shift+KP_Up move up
+bindsym Shift+KP_Right move right
+# }}}
+# screen lock {{{
+bindsym XF86ScreenSaver exec --no-startup-id $lock_command
+bindsym $pmod+Escape exec --no-startup-id $lock_command
+# }}}
+# control {{{
+# media control {{{
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym $pmod+space exec --no-startup-id playerctl play-pause
+bindsym $pmod+n $now_playing
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym $pmod+comma exec --no-startup-id playerctl previous
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym $pmod+period exec --no-startup-id playerctl next
+bindsym XF86AudioStop exec --no-startup-id playerctl stop
+bindsym $pmod+Shift+n $select_player
+# }}}
+# notification control {{{
+bindsym $pmod+grave $notif_close
+bindsym $pmod+Shift+grave $notif_hist
+# }}}
+# }}}
+# mouse button actions {{{
+bindsym --whole-window button9 $next_tab
+bindsym --whole-window button8 $prev_tab
+bindsym button2 kill
+# }}}
+# microsoft keyboard {{{
+# top left 1,2,3 keys {{{
+bindsym Mod4+1 workspace back_and_forth
+bindsym Mod4+2 focus mode_toggle
+bindsym Mod4+3 kill
+# }}}
+# screen snip key
+bindsym Mod4+Shift+s $screenshot
+# screen lock key
+bindsym Mod4+l exec --no-startup-id $lock_command
+# search key
+bindsym Mod4+Shift+XF86TouchpadToggle nop
+# MS Office keys {{{
+set $office_key Mod4+Mod1+Shift+Control
+bindsym $office_key+n $launch_editor
+bindsym $office_key+o $launch_office
+bindsym $office_key+t $launch_teams
+bindsym $office_key+m $launch_ms365
+# }}}
+# emoji key
+bindsym --release $office_key+space $click
+# }}}
+# meta {{{
+bindsym $pmod+Shift+slash exec --no-startup-id exec gtk-launch "$(xdg-settings get default-web-browser)" /usr/share/doc/i3*/userguide.html
+bindsym $pmod+Control+i exec --no-startup-id $i3-input > /dev/null
+bindsym $pmod+Control+c reload
+bindsym $pmod+Control+r restart
+bindsym $pmod+Control+e exec $i3-nagbar -t warning -m 'End this session?' -B 'Yes' 'loginctl kill-session "" || i3-msg exit'
+# }}}
+# }}}
+# start programs {{{
+exec --no-startup-id exec picom 2> /dev/null
+exec_always --no-startup-id "pkill -f '.*python3 '$HOME'/.local/lib/dotfiles/i3_scripts/ws_watcher'; exec $HOME/.local/lib/dotfiles/i3_scripts/ws_watcher"
+# }}}
+# machine specific config
+include `hostname`
+# vim: set foldmethod=marker foldmarker={{{,}}}:

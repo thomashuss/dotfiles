@@ -1,0 +1,46 @@
+#!/bin/sh
+# Pass the path to a tab-separated file of the format:
+# display name	executable	test command
+
+prompt() {
+	IFS=' '
+	if c=$(for n in $seq; do
+			eval echo '"$name_'"$n"'"'
+		done | uniq | dmenu -l 10 -fn sans -p "$fname"); then
+		eval 'case $c in
+		"");;
+		'"$(for n in $seq; do
+			echo '"$name_'"$n"'") eval "{
+				$exec_'"$n"'
+			} &";;'
+		done)"'
+		*);;
+		esac'
+	fi
+}
+fname=$(basename "$1")
+cache=/tmp/launch_"$fname"."$USER"
+if [ -n "$(find "$cache" -newer "$1" 2> /dev/null)" ]; then
+	. "$cache"
+	prompt
+else
+	IFS=$(printf '\t')
+	nl -nln -s"$IFS" -w1 "$1" | {
+		seq=
+		while read -r n name exec test; do
+			case $test in
+				"") if ! command -v "$name"; then continue; fi;;
+				*) if ! eval "$test"; then continue; fi;;
+			esac > /dev/null 2>&1
+			seq="$seq $n"
+			eval "name_$n="'$name'
+			case $exec in
+				"") eval "exec_$n="'$name';;
+				*) eval "exec_$n="'$exec';;
+			esac
+		done
+		set | grep -E '^(seq|(name|exec)_[0-9]+|test_[^=]+)=' > "$cache"
+		chmod 600 "$cache"
+		prompt
+	}
+fi

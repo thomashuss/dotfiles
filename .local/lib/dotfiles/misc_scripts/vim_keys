@@ -1,0 +1,2 @@
+#!/bin/sh
+xmodmap -pke | grep '= [hjkl] ' | tee /tmp/vim_keys_revert | awk -vFS== '{k=substr($2,2,1);if(k=="h")print $1"= Left";else if(k=="j")print $1"= Down";else if(k=="k")print $1"= Up";else if(k=="l")print $1"= Right"}' | xmodmap -

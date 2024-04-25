@@ -1,0 +1,2 @@
+#!/bin/sh
+exec rofi -modi drun -show drun -disable-history -drun-categories Game

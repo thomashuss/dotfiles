@@ -1,0 +1,2 @@
+#!/bin/sh
+awk -vdistro="$(uname -a)" '$0=="```"&&s&&d{if(f){exit}else{f=1;next}}s&&d&&f{gsub(" ", "\n");print;next}$1~/#/&&$2=="Software"{s=1;next}$1~/#/&&distro~$2{d=1;next}' "$DOTFILES_REPO/README.md"

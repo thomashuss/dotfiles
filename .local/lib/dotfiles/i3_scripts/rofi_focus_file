@@ -1,0 +1,22 @@
+#!/bin/sh
+
+FILE=/tmp/rofi_focus_file_stack."$USER"
+print_windows() {
+	wmctrl -xl | "$HOME"/.local/lib/dotfiles/i3_scripts/rofi_focus_file_print -vignore="$1"
+}
+if [ -n "$1" ]; then
+	case $ROFI_RETV in
+		10) i3-msg "[id=$ROFI_INFO] kill" > /dev/null 2>&1; print_windows "$ROFI_INFO";;
+		1)  new_stack=$(awk -vselect="$ROFI_INFO" 'BEGIN { print select } $0 != select { print }' "$FILE")
+			echo "$new_stack" > "$FILE"
+			i3-msg "[id=$ROFI_INFO] focus" > /dev/null 2>&1 &;;
+		11) i3-msg "exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_hide" > /dev/null 2>&1;;
+	esac
+else
+	if ! i3-msg '[instance="^caja$" floating] move scratchpad, scratchpad show, sticky enable' > /dev/null 2>&1; then
+		i3-msg 'exec "exec caja --no-desktop $HOME"' > /dev/null 2>&1
+		xdotool search --sync --onlyvisible --classname '^caja$' > /dev/null 2>&1
+	fi
+	print_windows
+fi
+exit 0

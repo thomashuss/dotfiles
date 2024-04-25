@@ -1,0 +1,12 @@
+" General Settings
+set configversion 2.0
+set newtab about:blank
+set leavegithubalone false
+
+" Firefox settings
+
+setpref services.sync.addons.ignoreUserEnabledChanges true  " Do not sync addon state
+setpref dom.serviceWorkers.enabled false  " Disable service workers
+"setpref javascript.options.wasm false  " Disable WebAssembly
+setpref browser.compactmode.show true  " Enable compact density
+setpref widget.disable-swipe-tracker true  " Disable horizontal scroll to go back and forward

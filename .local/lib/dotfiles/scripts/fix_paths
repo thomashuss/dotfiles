@@ -1,0 +1,16 @@
+#!/bin/sh
+# This script is almost pointless, but it originally processed more variables
+direction="$1"
+shift
+exp=$(printf 'HOME' | awk -vdirection="$direction" '{
+	generic_path = "/path/to/" tolower($0)
+	if (direction == "deploy")
+		print "-es@" generic_path "@" ENVIRON[$0] "@g"
+	else
+		print "-es@" ENVIRON[$0] "@" generic_path "@g"
+}')
+grep -El "$(echo "$exp" | awk -vORS= -vFS=@ '{if(NR!=1)print "|";print $2}')" "$@" | while read -r f; do
+	echo "Correcting paths in $f"
+	{ echo "$exp"; echo "$f"; } | xargs sed > "$f.fixed"
+	mv "$f.fixed" "$f"
+done

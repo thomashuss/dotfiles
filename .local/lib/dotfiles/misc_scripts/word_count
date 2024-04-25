@@ -1,0 +1,3 @@
+#!/bin/sh
+
+c=$(xclip -o) && notify-send --icon=txt "Word count" "$(echo "$c" | wc -w)"

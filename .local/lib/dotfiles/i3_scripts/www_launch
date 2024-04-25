@@ -1,0 +1,59 @@
+#!/bin/sh
+
+try_firefox() {
+	for f in firefox firefox-esr; do
+		if command -v "$f" > /dev/null 2>&1; then
+			i3-msg -q "exec exec $f $@"
+			break
+		fi
+	done
+}
+if [ p = "$1" ]; then
+	regex='^([fF]irefox(-esr)?|Chromium|Pale moon)$'
+	launch_browser () {
+		case "$1" in
+			"firefox"*) try_firefox --private-window;;
+			"Firefox"*) try_firefox --private-window;;
+			"Chromium") i3-msg -q "exec --no-startup-id exec chromium --incognito";;
+			"Pale moon") i3-msg -q "exec exec palemoon --private-window";;
+			*) return 1;;
+		esac
+	}
+	launch_default() {
+		if command -v xdg-settings > /dev/null 2>&1; then
+			case "$(xdg-settings get default-web-browser)" in
+				"firefox.desktop") try_firefox --private-window;;
+				"firefox-esr.desktop") try_firefox --private-window;;
+				"chromium.desktop") i3-msg -q "exec --no-startup-id exec chromium --incognito";;
+				"palemoon.desktop") i3-msg -q "exec exec palemoon --private-window";;
+				*) return 1;;
+			esac
+		else
+			try_firefox --private-window
+		fi
+	}
+else
+	regex='^([fF]irefox(-esr)?|Chromium|Pale moon)$'
+	launch_browser () {
+		case "$1" in
+			"firefox"*) try_firefox;;
+			"Firefox"*) try_firefox;;
+			"Chromium") i3-msg -q "exec --no-startup-id exec chromium";;
+			"Pale moon") i3-msg -q "exec exec palemoon";;
+			*) return 1;;
+		esac
+	}
+	launch_default() {
+		if command -v gtk-launch > /dev/null 2>&1 && command -v xdg-settings > /dev/null 2>&1; then
+			i3-msg -q 'exec --no-startup-id exec gtk-launch "$(xdg-settings get default-web-browser)"'
+		else
+			try_firefox
+		fi
+	}
+fi
+
+if ! launch_browser "$(xprop WM_CLASS -id "$(xdotool getwindowfocus)" | perl -wln -e '/(?<=", ")[^"]+(?="$)/ and print $&;')"; then
+	if ! launch_browser "$(i3-msg -t get_tree | jq -r 'first(.. | select(.type? == "workspace" and (.name|test("^w"))) | .. | .window_properties? // empty | .class | select(test("'"$regex"'")))')"; then
+		launch_default
+	fi
+fi

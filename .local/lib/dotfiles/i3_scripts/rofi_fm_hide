@@ -1,0 +1,3 @@
+#!/bin/sh
+i3-msg '[instance="^caja$" floating] move scratchpad; mode default' > /dev/null 2>&1
+i3-msg -t get_tree | jq '.. | select(.type?=="workspace" and .name=="__i3_scratch") | .floating_nodes | .. | select(.window_properties?.instance=="caja") | .window' | xargs -n1 xprop -f _NET_WM_STATE 32a -set _NET_WM_STATE _NET_WM_STATE_SKIP_TASKBAR -id

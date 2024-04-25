@@ -1,0 +1,12 @@
+qalculate-gtk	qalculate-gtk --name scratch_calc
+sage	mate-terminal --name scratch_calc --disable-factory -e sage
+maxima	mate-terminal --name scratch_calc --disable-factory -e rmaxima	command -v rmaxima && command -v rlwrap
+maxima	mate-terminal --name scratch_calc --disable-factory -e maxima
+python	mate-terminal --name scratch_calc --disable-factory -e ipython	command -v ipython
+python	mate-terminal --name scratch_calc --disable-factory -e python3	command -v python3
+octave	mate-terminal --name scratch_calc --disable-factory -e octave
+R	mate-terminal --name scratch_calc --disable-factory -e R
+bc	mate-terminal --name scratch_calc --disable-factory -e bc
+calc	mate-terminal --name scratch_calc --disable-factory -e calc
+qalc	mate-terminal --name scratch_calc --disable-factory -e qalc
+mate-calc	mate-calc --name scratch_calc

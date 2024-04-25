@@ -1,0 +1,9 @@
+#!/bin/sh
+desktop="$(xdotool get_desktop)"
+if ! xdotool search --desktop "$desktop" --classname ^chromium$; then
+	chromium &
+	xdotool search --sync --desktop "$desktop" --classname ^chromium$
+fi
+gtk-launch chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop &
+id="$(timeout 30s xdotool search --sync --classname ^crx_ocdlmjhbenodhlknglojajgokahchlkk$)"
+timeout 30s xprop -spy _NET_WM_STATE -id "$id" | { grep -q FOCUSED$ && grep -q \ $ && wmctrl -ic "$id"; }

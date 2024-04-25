@@ -1,0 +1,77 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+	output_format = "i3bar"
+	colors = true
+	color_good = "#70FFB9"
+	color_bad = "#FF6F7C"
+	color_degraded = "#EBCF47"
+	interval = 5
+	markup = pango
+}
+
+#order += "ipv6"
+#order += "wireless _first_"
+#order += "ethernet _first_"
+#order += "battery all"
+#order += "disk /"
+#order += "load"
+order += "memory"
+order += "volume master"
+order += "tztime local"
+
+wireless _first_ {
+	format_up = "W: (%quality at %essid) %ip"
+	format_down = ""
+}
+
+ethernet _first_ {
+	format_up = "E: %ip (%speed)"
+	format_down = "E: down"
+}
+
+battery all {
+	format = "<span color='#70FFB9'>%status</span> <b>%percentage</b> %remaining 🔌 <span color='#BABABA'><i>%emptytime</i></span>"
+	format_down = ""
+	status_chr = "⚡ CHR"
+	status_bat = "🔋 BAT"
+	status_unk = "? UNK"
+	status_full = "☻ FULL"
+	last_full_capacity = true
+	integer_battery_capacity = true
+	low_threshold = 70
+	threshold_type = time
+}
+
+disk "/" {
+	format = "🖴  %avail"
+}
+
+load {
+	format = "🖥 %1min"
+}
+
+memory {
+	#format = "🖥 %available"
+	format = ""
+	threshold_degraded = "1G"
+	format_degraded = "MEMORY &lt; %available"
+}
+
+tztime local {
+	format = "<b>%a</b> %b <span color='#70FFB9'>%d</span> <span color='#6F6FFF'>%Y</span>  <span weight='bold' color='#6FDEFF'>%H</span>:<span color='#EBCF47'>%M</span>:<span color='#FF6F7C'>%S</span>"
+}
+
+volume master {
+	format = "<span color='#FF6F7C'>🔊 %devicename:</span> <b>%volume</b>"
+	format_muted = "<span color='#707070'><s>%devicename: %volume</s></span>"
+	device = "default"
+	mixer = "Master"
+	mixer_idx = 0
+}

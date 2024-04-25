@@ -1,0 +1,2 @@
+#!/bin/sh
+exec rofi -show rff -modi "rff:$HOME/.local/lib/dotfiles/i3_scripts/rofi_focus_file" -matching regex -kb-remove-char-forward Control+d -kb-custom-1 [66] -kb-custom-2 Super_L+f
