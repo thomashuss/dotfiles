@@ -147,7 +147,7 @@ exec --no-startup-id exec xss-lock --transfer-sleep-lock -- $lock_command
 # }}}
 # quasi-scripts {{{
 # Rofi launcher {{{
-set $launcher exec --no-startup-id "rofi -show combi -modi combi -combi-modi drun,run -display-combi Launch -disable-history"
+set $launcher exec --no-startup-id "[ \\"$(shuf -n 1 -i 1-1000)\\" -gt 900 ] && c='-drun-reload-desktop-cache'; rofi -show combi -modi combi -combi-modi drun,run -display-combi Launch -disable-history -drun-use-desktop-cache \\"$c\\""
 # }}}
 # Rofi window switcher {{{
 set $window_switcher exec --no-startup-id "rofi -show window -kb-remove-char-forward 'Control+d' -kb-delete-entry 'Delete' -window-close-on-delete false"
