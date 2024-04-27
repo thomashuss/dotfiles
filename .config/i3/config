@@ -925,7 +925,7 @@ bindsym $pmod+Shift+slash exec --no-startup-id exec gtk-launch "$(xdg-settings g
 bindsym $pmod+Control+i exec --no-startup-id $i3-input > /dev/null
 bindsym $pmod+Control+c reload
 bindsym $pmod+Control+r restart
-bindsym $pmod+Control+e exec $i3-nagbar -t warning -m 'End this session?' -B 'Yes' 'loginctl kill-session "" || i3-msg exit'
+#bindsym $pmod+Control+e exec $i3-nagbar -t warning -m 'End this session?' -B 'Yes' 'loginctl kill-session "" || i3-msg exit'
 # }}}
 # }}}
 # start programs {{{
