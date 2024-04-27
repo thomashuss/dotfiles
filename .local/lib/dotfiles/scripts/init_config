@@ -14,5 +14,5 @@ case $1 in
 	*)
 		echo "$1 is not a valid direction."; exit 1;;
 esac
-pidof i3 > /dev/null && i3-msg -q reload
+pgrep ^i3$ > /dev/null && i3-msg -q reload
 exit 0
