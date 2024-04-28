@@ -387,6 +387,12 @@
 #    msg_urgency = critical
 #    fullscreen = show
 
+[onedrive_nag]
+	summary = "OneDrive"
+	body = "WARNING: Your onedrive client version is now obsolete and unsupported. Please upgrade your client version."
+	skip_display = yes
+	history_ignore = yes
+
 #[espeak]
 #    summary = "*"
 #    script = dunst_espeak.sh
