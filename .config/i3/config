@@ -267,7 +267,7 @@ set $unmark_d [con_id=__focused__ con_mark="^d[0-9]+:.+"] unmark
 set $kill_d exec --no-startup-id i3-msg -q "[con_mark=^d$(i3-msg -t get_workspaces | jq -r 'first(.[] | select(.focused==true).name)'):.+] kill"
 set $focus_d exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d"
 set $mark_d exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad_mark d \\"$(xdotool getwindowfocus)\\""
-set $mark_d_new exec --no-startup-id "timeout 30s i3-msg -t subscribe -m '[ \\"window\\" ]' | python3 -c 'import fileinput;import json;print(next(map(lambda x:x[\\"container\\"][\\"window\\"],filter(lambda x:x[\\"change\\"]==\\"new\\",map(json.loads,fileinput.input())))))' | xargs $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad_mark d"
+set $mark_d_new exec --no-startup-id "timeout 30s python3 -c 'from i3ipc import Connection,Event;i3=Connection();i3.on(Event.WINDOW_NEW,lambda i3,e:(i3.command(f\\"exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad_mark d {e.container.window}\\"),i3.main_quit()));i3.main()'"
 # }}}
 # Force launch this workspace application {{{
 set $launch_this exec --no-startup-id pkill -USR1 -f '.*python3 '"$HOME"'/.local/lib/dotfiles/i3_scripts/ws_watcher'
