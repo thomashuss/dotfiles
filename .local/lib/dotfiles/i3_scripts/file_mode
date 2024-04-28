@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if i3-msg -t subscribe -m '[ "window", "mode" ]' | jq -n --arg start "$(i3-msg -t get_tree | jq '[..
+i3-msg -t subscribe -m '[ "window", "mode" ]' | { jq -n --arg start "$(i3-msg -t get_tree | jq '[..
 	| select(.type? == "workspace") | .floating_nodes | ..
 	| select(.window_properties?.instance == "caja")]
 	| length')" 'reduce inputs as $s(($start|tonumber);
@@ -13,8 +13,6 @@ if i3-msg -t subscribe -m '[ "window", "mode" ]' | jq -n --arg start "$(i3-msg -
 				if .-1 == 0 then halt else .-1 end
 			else if ($s.change == "floating"
 				and $s.floating != "user_off" and $s.floating != "auto_off") then .+1
-				else . end end else . end end)'; then
-	i3-msg -q mode default
-fi &
+				else . end end else . end end)' && i3-msg -q mode default; } &
 i3-msg -q mode file
 "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"

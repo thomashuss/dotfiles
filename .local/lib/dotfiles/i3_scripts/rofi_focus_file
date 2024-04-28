@@ -14,8 +14,7 @@ if [ -n "$1" ]; then
 	esac
 else
 	if ! i3-msg '[instance="^caja$" floating] move scratchpad, scratchpad show, sticky enable' > /dev/null 2>&1; then
-		i3-msg 'exec "exec caja --no-desktop $HOME"' > /dev/null 2>&1
-		xdotool search --sync --onlyvisible --classname '^caja$' > /dev/null 2>&1
+		timeout 30s python3 -c 'from i3ipc import Connection,Event;i3=Connection();i3.on(Event.WINDOW_NEW,lambda i3,e:i3.main_quit() if e.container.window_instance=="caja" else None);i3.command("exec \"exec caja --no-desktop $HOME\"");i3.main()'
 	fi
 	print_windows
 fi
