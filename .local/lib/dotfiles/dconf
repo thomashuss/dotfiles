@@ -1,8 +1,12 @@
 [org/gnome/desktop/interface]
 color-scheme='prefer-dark'
 cursor-theme='DMZ-White'
+document-font-name='Sans 11'
 enable-animations=false
+font-name='Sans 10'
 icon-theme='mate'
+monospace-font-name='Monospace 10'
+overlay-scrolling=false
 
 [org/gnome/evolution/calendar]
 use-24hour-format=true
@@ -60,10 +64,16 @@ enable-delete=true
 show-desktop-icons=false
 
 [org/mate/desktop/interface]
+buttons-have-icons=true
+document-font-name='Sans 11'
 enable-animations=false
+font-name='Sans 10'
 gtk-enable-animations=false
 gtk-theme='Adwaita-dark'
 icon-theme='mate'
+menus-have-icons=true
+monospace-font-name='Monospace 10'
+overlay-scrolling=false
 
 [org/mate/desktop/peripherals/mouse]
 cursor-theme='DMZ-White'
