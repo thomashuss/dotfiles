@@ -1,5 +1,6 @@
 [org/gnome/desktop/interface]
 color-scheme='prefer-dark'
+cursor-theme='DMZ-White'
 enable-animations=false
 icon-theme='mate'
 
@@ -42,6 +43,9 @@ disable-disconnected-notifications=true
 disable-vpn-notifications=true
 suppress-wireless-networks-available=true
 
+[org/mate/atril/default]
+show-sidebar=false
+
 [org/mate/caja/icon-view]
 labels-beside-icons=true
 
@@ -60,6 +64,9 @@ enable-animations=false
 gtk-enable-animations=false
 gtk-theme='Adwaita-dark'
 icon-theme='mate'
+
+[org/mate/desktop/peripherals/mouse]
+cursor-theme='DMZ-White'
 
 [org/mate/desktop/session]
 required-components-list=['windowmanager', 'panel']
