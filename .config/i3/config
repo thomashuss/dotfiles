@@ -72,6 +72,10 @@ set $ws9 9
 # ws10 {{{
 set $ws10 10
 # }}}
+# floating only {{{
+set $ws_float 0
+for_window [workspace=$ws_float] floating enable
+# }}}
 # }}}
 # window rules {{{
 # floating windows {{{
@@ -350,6 +354,7 @@ bindsym comma move up $move_amount;$hm
 bindsym period move right $move_amount;$hm
 bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
 bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+grave $unmark_d;move container to workspace number $ws_float;workspace number $ws_float;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
 bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
@@ -377,7 +382,7 @@ bindsym $key_move+semicolon move workspace to output down;$dm
 # }}}
 # focus container {{{
 bindsym u [urgent=latest] focus;$hm
-bindsym grave $notif;$hm
+bindsym Tab $notif;$hm
 bindsym h focus left;$hm
 bindsym j focus down;$hm
 bindsym k focus up;$hm
@@ -390,6 +395,7 @@ bindsym o focus child;$hm
 bindsym q $blank_workspace;$hm
 bindsym $smod+q $blank_workspace --reverse;$hm
 bindsym space workspace back_and_forth;$hm
+bindsym grave workspace number $ws_float;$hm
 bindsym 1 workspace number $ws1;$hm
 bindsym 2 workspace number $ws2;$hm
 bindsym 3 workspace number $ws3;$hm
@@ -454,6 +460,7 @@ bindsym comma move up $move_amount
 bindsym period move right $move_amount
 bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
 bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+grave $unmark_d;move container to workspace number $ws_float;workspace number $ws_float;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
 bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
@@ -481,7 +488,7 @@ bindsym $key_move+semicolon move workspace to output down;$dm
 # }}}
 # focus container {{{
 bindsym u [urgent=latest] focus
-bindsym grave $notif
+bindsym Tab $notif
 bindsym h focus left
 bindsym j focus down
 bindsym k focus up
@@ -494,6 +501,7 @@ bindsym o focus child
 bindsym q $blank_workspace
 bindsym $smod+q $blank_workspace --reverse
 bindsym space workspace back_and_forth
+bindsym grave workspace number $ws_float
 bindsym 1 workspace number $ws1
 bindsym 2 workspace number $ws2
 bindsym 3 workspace number $ws3
@@ -556,6 +564,7 @@ bindsym comma move up $move_amount;$dm
 bindsym period move right $move_amount;$dm
 bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
 bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+grave $unmark_d;move container to workspace number $ws_float;workspace number $ws_float;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
 bindsym $key_move+3 $unmark_d;move container to workspace number $ws3;workspace number $ws3;$dm
@@ -583,7 +592,7 @@ bindsym $key_move+semicolon move workspace to output down;$dm
 # }}}
 # focus container {{{
 bindsym u [urgent=latest] focus;$dm
-bindsym grave $notif;$dm
+bindsym Tab $notif;$dm
 bindsym h focus left;$dm
 bindsym j focus down;$dm
 bindsym k focus up;$dm
@@ -597,6 +606,7 @@ bindsym q $blank_workspace;$dm
 bindsym $smod+q $blank_workspace --reverse;$dm
 bindcode $ergo $window_switcher;$dm
 bindsym space workspace back_and_forth;$dm
+bindsym grave workspace number $ws_float;$dm
 bindsym 1 workspace number $ws1;$dm
 bindsym 2 workspace number $ws2;$dm
 bindsym 3 workspace number $ws3;$dm
@@ -653,7 +663,7 @@ bindsym button2 kill
 bindcode $ergo mode "file ergo"
 bindsym slash exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
 bindsym $pmod+f exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_hide"
-bindsym $pmod+grave $notif_close
+bindsym $pmod+Tab $notif_close
 }
 mode "file ergo" {
 bindsym h focus left;mode "file hold"
@@ -738,6 +748,7 @@ bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$hm
 bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$hm
 bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$hm
 bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$hm
+bindsym grave $unmark_d_ws;rename workspace to $ws_float;\\""$hm
 bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\""$hm
 bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\""$hm
 bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\""$hm
@@ -762,6 +773,7 @@ bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$dm
 bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$dm
 bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$dm
 bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$dm
+bindsym grave exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws_float:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws_float'";$dm
 bindsym 1 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 1:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws1'";$dm
 bindsym 2 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 2:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws2'";$dm
 bindsym 3 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 3:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws3'";$dm
@@ -890,8 +902,8 @@ bindsym XF86AudioStop exec --no-startup-id playerctl stop
 bindsym $pmod+Shift+n $select_player
 # }}}
 # notification control {{{
-bindsym $pmod+grave $notif_close
-bindsym $pmod+Shift+grave $notif_hist
+bindsym $pmod+Tab $notif_close
+bindsym $pmod+Shift+Tab $notif_hist
 # }}}
 # }}}
 # mouse button actions {{{
