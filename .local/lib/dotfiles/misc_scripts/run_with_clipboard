@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 shopt -s expand_aliases
-. "$HOME"/.bashrc.d/aliases
+. "$HOME"/.bash_aliases
 eval "$@ $(xclip -o -sel c)"
