@@ -92,7 +92,9 @@ sidebar=false
 
 [org/mate/power-manager]
 action-critical-battery='shutdown'
+action-critical-ups='shutdown'
 action-low-ups='interactive'
+action-sleep-type-ac='suspend'
 action-sleep-type-battery='suspend'
 backlight-battery-reduce=false
 button-hibernate='nothing'
@@ -100,8 +102,14 @@ button-lid-ac='suspend'
 button-lid-battery='suspend'
 button-power='interactive'
 button-suspend='suspend'
+enable-sound=false
+idle-dim-ac=false
 idle-dim-battery=false
 kbd-backlight-battery-reduce=false
+lock-blank-screen=false
+lock-hibernate=false
+lock-suspend=false
+lock-use-screensaver=false
 percentage-action=5
 percentage-critical=10
 percentage-low=20
