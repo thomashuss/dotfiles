@@ -219,7 +219,7 @@ set $prev_tab exec --no-startup-id xdotool key "Ctrl+Prior"
 set $find exec --no-startup-id xdotool key -delay 50 --clearmodifiers "Alt+e" "f"
 # }}}
 # Perform default action for notification {{{
-set $notif exec --no-startup-id "dunstctl action 0; sleep 0.1; i3-msg -q [urgent=latest] focus"
+set $notif exec --no-startup-id "dunstctl action 0; sleep 0.1; i3-msg -q [urgent=latest] focus 2> /dev/null"
 # }}}
 # Retrieve last notification from history {{{
 set $notif_hist exec --no-startup-id dunstctl history-pop
@@ -741,24 +741,24 @@ set $unmark_d_ws_esc [con_mark=^d$ws:.+] unmark, move scratchpad, scratchpad sho
 mode "rename" {
 bindcode --release $ergo mode "rename lazy"
 bindsym r $hm
-bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\""$hm
-bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$hm
-bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$hm
-bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$hm
-bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$hm
-bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$hm
-bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$hm
-bindsym grave $unmark_d_ws;rename workspace to $ws_float;\\""$hm
-bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\""$hm
-bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\""$hm
-bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\""$hm
-bindsym 4 $unmark_d_ws;rename workspace to $ws4;\\""$hm
-bindsym 5 $unmark_d_ws;rename workspace to $ws5;\\""$hm
-bindsym 6 $unmark_d_ws;rename workspace to $ws6;\\""$hm
-bindsym 7 $unmark_d_ws;rename workspace to $ws7;\\""$hm
-bindsym 8 $unmark_d_ws;rename workspace to $ws8;\\""$hm
-bindsym 9 $unmark_d_ws;rename workspace to $ws9;\\""$hm
-bindsym 0 $unmark_d_ws;rename workspace to $ws10;\\""$hm
+bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\" 2> /dev/null"$hm
+bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\" 2> /dev/null"$hm
+bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\" 2> /dev/null"$hm
+bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\" 2> /dev/null"$hm
+bindsym w $unmark_d_ws;rename workspace to $ws_web;\\" 2> /dev/null"$hm
+bindsym y $unmark_d_ws;rename workspace to $ws_media;\\" 2> /dev/null"$hm
+bindsym z $unmark_d_ws;rename workspace to $ws_game;\\" 2> /dev/null"$hm
+bindsym grave $unmark_d_ws;rename workspace to $ws_float;\\" 2> /dev/null"$hm
+bindsym 1 $unmark_d_ws;rename workspace to $ws1;\\" 2> /dev/null"$hm
+bindsym 2 $unmark_d_ws;rename workspace to $ws2;\\" 2> /dev/null"$hm
+bindsym 3 $unmark_d_ws;rename workspace to $ws3;\\" 2> /dev/null"$hm
+bindsym 4 $unmark_d_ws;rename workspace to $ws4;\\" 2> /dev/null"$hm
+bindsym 5 $unmark_d_ws;rename workspace to $ws5;\\" 2> /dev/null"$hm
+bindsym 6 $unmark_d_ws;rename workspace to $ws6;\\" 2> /dev/null"$hm
+bindsym 7 $unmark_d_ws;rename workspace to $ws7;\\" 2> /dev/null"$hm
+bindsym 8 $unmark_d_ws;rename workspace to $ws8;\\" 2> /dev/null"$hm
+bindsym 9 $unmark_d_ws;rename workspace to $ws9;\\" 2> /dev/null"$hm
+bindsym 0 $unmark_d_ws;rename workspace to $ws10;\\" 2> /dev/null"$hm
 }
 mode "rename lazy" {
 bindsym Alt_L $dm
@@ -766,24 +766,24 @@ bindsym Alt_R $dm
 bindcode $ergo $em
 bindsym Escape $dm
 bindsym r $dm
-bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\""$dm
-bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\""$dm
-bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\""$dm
-bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\""$dm
-bindsym w $unmark_d_ws;rename workspace to $ws_web;\\""$dm
-bindsym y $unmark_d_ws;rename workspace to $ws_media;\\""$dm
-bindsym z $unmark_d_ws;rename workspace to $ws_game;\\""$dm
-bindsym grave exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws_float:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws_float'";$dm
-bindsym 1 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 1:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws1'";$dm
-bindsym 2 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 2:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws2'";$dm
-bindsym 3 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 3:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws3'";$dm
-bindsym 4 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 4:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws4'";$dm
-bindsym 5 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 5:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws5'";$dm
-bindsym 6 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 6:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws6'";$dm
-bindsym 7 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 7:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws7'";$dm
-bindsym 8 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 8:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws8'";$dm
-bindsym 9 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 9:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws9'";$dm
-bindsym 0 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 10:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws10'";$dm
+bindsym b $unmark_d_ws;rename workspace to $ws_chat;\\" 2> /dev/null"$dm
+bindsym e $unmark_d_ws;rename workspace to $ws_mail;\\" 2> /dev/null"$dm
+bindsym g $unmark_d_ws;rename workspace to $ws_editor;\\" 2> /dev/null"$dm
+bindsym t $unmark_d_ws;rename workspace to $ws_terminal;\\" 2> /dev/null"$dm
+bindsym w $unmark_d_ws;rename workspace to $ws_web;\\" 2> /dev/null"$dm
+bindsym y $unmark_d_ws;rename workspace to $ws_media;\\" 2> /dev/null"$dm
+bindsym z $unmark_d_ws;rename workspace to $ws_game;\\" 2> /dev/null"$dm
+bindsym grave exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to $ws_float:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws_float' 2> /dev/null";$dm
+bindsym 1 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 1:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws1' 2> /dev/null";$dm
+bindsym 2 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 2:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws2' 2> /dev/null";$dm
+bindsym 3 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 3:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws3' 2> /dev/null";$dm
+bindsym 4 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 4:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws4' 2> /dev/null";$dm
+bindsym 5 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 5:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws5' 2> /dev/null";$dm
+bindsym 6 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 6:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws6' 2> /dev/null";$dm
+bindsym 7 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 7:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws7' 2> /dev/null";$dm
+bindsym 8 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 8:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws8' 2> /dev/null";$dm
+bindsym 9 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 9:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws9' 2> /dev/null";$dm
+bindsym 0 exec --no-startup-id "$unmark_d_ws_pre;$i3-input -F \\"$unmark_d_ws_esc\\"';rename workspace to 10:%s' -P $ws_prompt > /dev/null || i3-msg -q \\"$unmark_d_ws_esc\\"';rename workspace to $ws10' 2> /dev/null";$dm
 }
 # }}}
 # size mode {{{
