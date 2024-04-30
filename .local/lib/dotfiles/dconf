@@ -90,6 +90,23 @@ windowmanager='i3'
 image-collection=false
 sidebar=false
 
+[org/mate/power-manager]
+action-critical-battery='shutdown'
+action-low-ups='interactive'
+action-sleep-type-battery='suspend'
+backlight-battery-reduce=false
+button-hibernate='nothing'
+button-lid-ac='suspend'
+button-lid-battery='suspend'
+button-power='interactive'
+button-suspend='suspend'
+idle-dim-battery=false
+kbd-backlight-battery-reduce=false
+percentage-action=5
+percentage-critical=10
+percentage-low=20
+use-time-for-policy=false
+
 [org/mate/settings-daemon/plugins/media-keys]
 calculator='disabled'
 control-center='disabled'
