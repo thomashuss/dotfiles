@@ -40,3 +40,8 @@ unclutter-xfixes uuid vim-gtk3 wmctrl xcape xclip xdotool xss-lock
 ### Disable Debian's unclutter
 
 Set `START_UNCLUTTER` to `false` in `/etc/default/unclutter`
+
+## License
+
+Files in the `.local` directory are licensed under the GNU GPL v3 license.  See
+[LICENSE.md](LICENSE.md).
