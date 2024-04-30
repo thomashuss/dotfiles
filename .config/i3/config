@@ -74,7 +74,7 @@ set $ws10 10
 # }}}
 # floating only {{{
 set $ws_float 0
-for_window [workspace=$ws_float] floating enable
+for_window [workspace=^$ws_float$] floating enable
 # }}}
 # }}}
 # window rules {{{
