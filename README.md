@@ -43,5 +43,5 @@ Set `START_UNCLUTTER` to `false` in `/etc/default/unclutter`
 
 ## License
 
-Files in the `.local` directory are licensed under the GNU GPL v3 license.  See
-[LICENSE.md](LICENSE.md).
+Files in the `.local` directory except for `dconf` are licensed under the GNU
+GPL v3 license.  See [LICENSE.md](LICENSE.md).
