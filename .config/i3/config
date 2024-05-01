@@ -89,21 +89,23 @@ for_window [title="^Picture-in-Picture$" class="^[fF]irefox(-esr)?$"] sticky ena
 for_window [title="^Task Manager - Chromium$"] floating enable
 for_window [instance="^arandr$"] floating enable
 for_window [instance="^blueman-manager$"] floating enable, sticky enable
-for_window [instance="^caja$"] floating enable
 for_window [instance="^caja$" floating] sticky enable
+for_window [instance="^caja$"] floating enable
 for_window [instance="^carla-plugin$"] floating enable
 for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
 for_window [instance="^eom$"] floating enable
-for_window [instance="^feh$"] floating enable
 for_window [instance="^evolution" window_role="^ECompEditor(Event|Task|Memo)"] floating enable
 for_window [instance="^evolution-alarm-notify"] floating enable
+for_window [instance="^feh$"] floating enable
 for_window [instance="^flameshot$"] floating enable
 for_window [instance="^floating$"] floating enable
 for_window [instance="^gnome-pomodoro$"] floating enable
 for_window [instance="^gucharmap$"] floating enable, sticky enable
 for_window [instance="^kdeconnect-app$"] floating enable, sticky enable
 for_window [instance="^ksnip$"] floating enable
+for_window [instance="^mate-appearance-properties$"] floating enable
 for_window [instance="^mate-dictionary$"] floating enable
+for_window [instance="^mozo$"] floating enable
 for_window [instance="^mupen64plus$"] floating disable
 for_window [instance="^nm-connection-editor$"] floating enable
 for_window [instance="^org\.gnome\.clocks$"] floating enable, sticky enable
