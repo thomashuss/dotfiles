@@ -146,6 +146,9 @@ for_window [workspace=$ws_game] layout tabbed
 for_window [workspace=$ws_mail] layout stacking
 for_window [workspace=$ws_media] layout tabbed
 # }}}
+# no focus {{{
+no_focus [title="^Sending Message" instance="^Thunderbird$" window_role="^Dialog$"]
+# }}}
 # }}}
 # lock screen {{{
 set $lock_command "$HOME/.local/lib/dotfiles/i3_scripts/i3_lock"
