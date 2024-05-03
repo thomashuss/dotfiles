@@ -4,15 +4,17 @@ if [ -z "$DOTFILES_REPO" ]; then
 	echo "DOTFILES_REPO is not set.  Aborting."
 	exit 1
 fi
-files=$("$HOME/.local/lib/dotfiles/scripts/print_dotfiles")
+files=$(mktemp)
+"$HOME/.local/lib/dotfiles/scripts/print_dotfiles" > "$files"
 echo "Copying files..."
-echo "$files" | rsync --ignore-missing-args --files-from=- ~ "$DOTFILES_REPO"
+rsync --ignore-missing-args --files-from="$files" -0 "$HOME" "$DOTFILES_REPO"
 if ! cd "$DOTFILES_REPO"; then
 	echo "Cannot cd into DOTFILES_REPO.  Aborting."
 	exit 1
 fi
 echo "Fixing paths..."
-echo "$files" | xargs "$HOME/.local/lib/dotfiles/scripts/fix_paths" update
+xargs -0 "$HOME/.local/lib/dotfiles/scripts/fix_paths" update < "$files"
+rm -f "$files"
 echo "Initializing configurations..."
 "$HOME/.local/lib/dotfiles/scripts/init_config" update
 git status

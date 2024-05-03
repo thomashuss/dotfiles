@@ -11,15 +11,17 @@ if [ -z "$DOTFILES_REPO" ]; then
 	[ "$response" = y ] && echo "export DOTFILES_REPO=$DOTFILES_REPO" >> "$HOME/.profile"
 fi
 [ -n "$1" ] && cd "$DOTFILES_REPO" && git pull
-files=$("$DOTFILES_REPO/.local/lib/dotfiles/scripts/print_dotfiles")
+files=$(mktemp)
+"$DOTFILES_REPO/.local/lib/dotfiles/scripts/print_dotfiles" > "$files"
 echo "Copying files..."
-echo "$files" | rsync --ignore-missing-args --files-from=- "$DOTFILES_REPO" "$HOME"
+rsync --ignore-missing-args --files-from="$files" -0 "$DOTFILES_REPO" "$HOME"
 if ! cd "$HOME"; then
 	echo "Cannot cd into HOME.  Aborting."
 	exit 1
 fi
 echo "Fixing paths..."
-echo "$files" | xargs "$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" deploy
+xargs -0 "$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" deploy < "$files"
+rm -f "$files"
 echo "Initializing configurations..."
 "$DOTFILES_REPO/.local/lib/dotfiles/scripts/init_config" deploy
 command -v systemctl > /dev/null 2>& 1 && systemctl --user daemon-reload
