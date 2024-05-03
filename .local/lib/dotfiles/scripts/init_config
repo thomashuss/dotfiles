@@ -7,12 +7,12 @@ case $1 in
 				mkdir -p "$(dirname "$HOME/$f")" && cp "$DOTFILES_REPO/.local/lib/dotfiles/init/$f" "$HOME/$f" && echo "Created ~/$f"
 			fi
 		done
-		command -v dconf > /dev/null 2>&1 && dconf load / < "$DOTFILES_REPO/.local/lib/dotfiles/dconf";;
+		command -v dconf > /dev/null 2>&1 && dconf load / < "$DOTFILES_REPO/.local/lib/dotfiles/dconf"
+		pgrep ^i3$ > /dev/null && i3-msg -q reload;;
 
 	"update");;
 
 	*)
 		echo "$1 is not a valid direction."; exit 1;;
 esac
-pgrep ^i3$ > /dev/null && i3-msg -q reload
 exit 0

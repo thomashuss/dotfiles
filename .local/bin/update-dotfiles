@@ -1,19 +1,19 @@
 #!/bin/sh
 
-for var in DOTFILES_REPO $("$DOTFILES_REPO"/.local/lib/dotfiles/scripts/fix_paths 2>/dev/null); do
-	if eval '[ -z $'"$var ]"; then
-		echo "$var is not set.  Aborting."
-		exit 1
-	fi
-done
-files=$("$DOTFILES_REPO/.local/lib/dotfiles/scripts/print_dotfiles")
+if [ -z "$DOTFILES_REPO" ]; then
+	echo "DOTFILES_REPO is not set.  Aborting."
+	exit 1
+fi
+files=$("$HOME/.local/lib/dotfiles/scripts/print_dotfiles")
+echo "Copying files..."
 echo "$files" | rsync --ignore-missing-args --files-from=- ~ "$DOTFILES_REPO"
 if ! cd "$DOTFILES_REPO"; then
 	echo "Cannot cd into DOTFILES_REPO.  Aborting."
 	exit 1
 fi
-"$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" update $files
-"$DOTFILES_REPO/.local/lib/dotfiles/scripts/init_config" update
+echo "Fixing paths..."
+echo "$files" | xargs "$HOME/.local/lib/dotfiles/scripts/fix_paths" update
+echo "Initializing configurations..."
+"$HOME/.local/lib/dotfiles/scripts/init_config" update
 git status
 echo "Done."
-exit 0
