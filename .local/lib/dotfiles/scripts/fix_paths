@@ -11,7 +11,7 @@ exp=$(printf 'HOME' | awk -vdirection="$direction" '{
 }')
 grep -El "$(echo "$exp" | awk -vORS= -vFS=@ '{if(NR!=1)print "|";print $2}')" "$@" | while read -r f; do
 	echo "Correcting paths in $f"
-	cp -p "$f" "$f.fixed"
 	sed "$exp" "$f" > "$f.fixed"
+	chmod --reference="$f" "$f.fixed"  # GNU
 	mv "$f.fixed" "$f"
 done

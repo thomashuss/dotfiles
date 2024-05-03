@@ -1,4 +1,4 @@
 #!/bin/sh
 ignore='^\.git|^\.local\/lib\/dotfiles\/init'
 if ! pgrep ^systemd$ > /dev/null 2>&1; then ignore="$ignore"'|systemd'; fi
-find "$DOTFILES_REPO/" \! -name '*\.md' -a -type f -print0 | sed -E -z -e"s@$DOTFILES_REPO@@" -e's@^/@@' -e"/$ignore/d"
+find "$DOTFILES_REPO/" \! -name '*\.md' -a -type f -print0 | sed -E -z -e"s@$DOTFILES_REPO@@" -e's@^/@@' -e"/$ignore/d"  # GNU
