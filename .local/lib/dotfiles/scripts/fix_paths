@@ -19,7 +19,7 @@ printf 'HOME' | awk -vdirection="$direction" '{
 	else
 		while read -r f; do
 			cp -p "$f" "$f.fixed"  # for permissions
-			eval "sed$seq "'"'"$f"'"' > "$f.fixed"
+			eval "sed$seq "'"$f"' > "$f.fixed"
 			mv "$f.fixed" "$f"
 		done
 	fi
