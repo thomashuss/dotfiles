@@ -20,9 +20,9 @@ if ! cd "$HOME"; then
 	exit 1
 fi
 echo "Fixing paths..."
-xargs -0 "$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" deploy < "$files"
+"$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" deploy "$files"
 rm -f "$files"
 echo "Initializing configurations..."
 "$DOTFILES_REPO/.local/lib/dotfiles/scripts/init_config" deploy
-command -v systemctl > /dev/null 2>& 1 && systemctl --user daemon-reload
+command -v systemctl > /dev/null 2>&1 && systemctl --user daemon-reload
 echo "Done."

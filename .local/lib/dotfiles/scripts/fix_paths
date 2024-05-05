@@ -1,17 +1,26 @@
 #!/bin/sh
 # This script is almost pointless, but it originally processed more variables
 direction="$1"
-shift || exit 1
-exp=$(printf 'HOME' | awk -vdirection="$direction" '{
+files="$2"
+printf 'HOME' | awk -vdirection="$direction" '{
 	generic_path = "/path/to/" tolower($0)
 	if (direction == "deploy")
-		print "-es@" generic_path "@" ENVIRON[$0] "@g"
+		print NR " -es@" generic_path "@" ENVIRON[$0] "@g"
 	else
-		print "-es@" ENVIRON[$0] "@" generic_path "@g"
-}')
-grep -El "$(echo "$exp" | awk -vORS= -vFS=@ '{if(NR!=1)print "|";print $2}')" "$@" | while read -r f; do
-	echo "Correcting paths in $f"
-	sed "$exp" "$f" > "$f.fixed"
-	chmod --reference="$f" "$f.fixed"  # GNU
-	mv "$f.fixed" "$f"
-done
+		print NR " -es@" ENVIRON[$0] "@" generic_path "@g"
+}' | {
+	seq=
+	while read -r n e; do
+		eval "exp_$n="'"$e"'
+		seq="$seq "'"$exp_'"$n"'"'
+	done
+	xargs -0 grep -El "$(eval "printf '"'%s\n'"'$seq" | awk -vORS= -vFS=@ '{if(NR!=1)print "|";print $2}')" < "$files" | if sed --version 2> /dev/null | grep -q 'GNU sed'; then
+		tr '\n' '\0' | eval "xargs -0 sed -i$seq"
+	else
+		while read -r f; do
+			cp -p "$f" "$f.fixed"  # for permissions
+			eval "sed$seq "'"'"$f"'"' > "$f.fixed"
+			mv "$f.fixed" "$f"
+		done
+	fi
+}
