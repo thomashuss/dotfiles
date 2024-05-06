@@ -13,7 +13,7 @@ if ! cd "$DOTFILES_REPO"; then
 	exit 1
 fi
 echo "Fixing paths..."
-"$HOME/.local/lib/dotfiles/scripts/fix_paths" update "$files"
+"$HOME/.local/lib/dotfiles/scripts/fix_paths" update "$files" HOME
 rm -f "$files"
 echo "Initializing configurations..."
 "$HOME/.local/lib/dotfiles/scripts/init_config" update

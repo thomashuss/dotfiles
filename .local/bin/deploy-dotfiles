@@ -20,7 +20,7 @@ if ! cd "$HOME"; then
 	exit 1
 fi
 echo "Fixing paths..."
-"$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" deploy "$files"
+"$DOTFILES_REPO/.local/lib/dotfiles/scripts/fix_paths" deploy "$files" HOME
 rm -f "$files"
 echo "Initializing configurations..."
 "$DOTFILES_REPO/.local/lib/dotfiles/scripts/init_config" deploy

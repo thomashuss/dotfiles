@@ -1,8 +1,8 @@
 #!/bin/sh
-# This script is almost pointless, but it originally processed more variables
 direction="$1"
 files="$2"
-printf 'HOME' | awk -vdirection="$direction" '{
+shift 2 || exit 1
+printf '%s\n' "$@" | awk -vdirection="$direction" '{
 	generic_path = "/path/to/" tolower($0)
 	if (direction == "deploy")
 		print NR " -es@" generic_path "@" ENVIRON[$0] "@g"
