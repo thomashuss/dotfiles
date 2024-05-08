@@ -14,7 +14,7 @@ set $i3-nagbar i3-nagbar -f 'pango: sans 9'
 # }}}
 # color scheme {{{
 # class                 border  backgr. text    indicator child_border
-client.focused          #6b6347 #5c5540 #ffffff #9c885d   #756c4e
+client.focused          #6b6347 #5c5540 #ffffff #d9c991   #948963
 client.focused_inactive #363530 #403f39 #dddddd #484e50   #4a4942
 client.unfocused        #222222 #222222 #888888 #292d2e   #222222
 client.urgent           #c06200 #c06200 #ffffff #c06200   #c06200
