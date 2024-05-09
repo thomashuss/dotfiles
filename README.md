@@ -1,7 +1,6 @@
 # dotfiles
 
-I use a heavily customized i3 (for keyboard stuff) alongside a barebones MATE
-(for QoL) on Debian.
+I use a heavily customized i3 alongside a barebones MATE on Debian.
 
 ## Install
 
@@ -27,7 +26,7 @@ doesn't conflict with i3.
 adwaita-qt atril blueman caja caja-image-converter caja-open-terminal
 caja-sendto caja-xattr-tags dconf-cli dmenu dmz-cursor-theme dunst engrampa eom
 firefox-esr firewall-config flameshot fonts-dejavu fonts-liberation fonts-noto
-gnome-keyring gucharmap i3 i3lock jq keepassxc libnotify-bin lightdm
+gnome-keyring gtk3-nocsd gucharmap i3 i3lock jq keepassxc libnotify-bin lightdm
 mate-applets mate-control-center mate-icon-theme mate-media mate-power-manager
 mate-session-manager mate-settings-daemon mate-terminal mate-utils mozo mpv
 mpv-mpris network-manager-gnome pavucontrol picom pipewire-audio pipewire-jack
