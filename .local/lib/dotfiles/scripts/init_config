@@ -2,6 +2,9 @@
 
 case $1 in
 	"deploy")
+		if ! grep -q '\.bashrc\.d/\*' "$HOME/.bashrc"; then
+			echo 'if [ -d "$HOME"/.bashrc.d ]; then for f in "$HOME"/.bashrc.d/*; do . "$f"; done; fi' >> "$HOME/.bashrc"
+		fi
 		find "$DOTFILES_REPO/.local/lib/dotfiles/init" -type f | sed -e"s@$DOTFILES_REPO@@" -e's@^/@@' -e's@\.local/lib/dotfiles/init/@@' | while read -r f; do
 			if [ ! -f "$HOME/$f" ]; then
 				mkdir -p "$(dirname "$HOME/$f")" && cp "$DOTFILES_REPO/.local/lib/dotfiles/init/$f" "$HOME/$f" && echo "Created ~/$f"
