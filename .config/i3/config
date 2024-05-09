@@ -3,7 +3,6 @@
 # appearance {{{
 # borders {{{
 for_window [all] title_window_icon yes
-smart_borders on
 default_border pixel 3
 default_floating_border pixel
 # }}}
