@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if ! pgrep ^i3lock$ > /dev/null 2>&1; then
-	for f in "$HOME"/.local/lib/dotfiles/misc_scripts/lock/*.sh; do "$f"; done
-	i3lock -c 333333 --nofork
-	for f in "$HOME"/.local/lib/dotfiles/misc_scripts/unlock/*.sh; do "$f"; done
-fi

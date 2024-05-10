@@ -149,10 +149,6 @@ for_window [workspace=$ws_media] layout tabbed
 no_focus [title="^Sending Message" instance="^Thunderbird$" window_role="^Dialog$"]
 # }}}
 # }}}
-# lock screen {{{
-set $lock_command "$HOME/.local/lib/dotfiles/i3_scripts/i3_lock"
-exec --no-startup-id exec xss-lock --transfer-sleep-lock -- $lock_command
-# }}}
 # quasi-scripts {{{
 # Rofi launcher {{{
 set $launcher exec --no-startup-id "[ \\"$(shuf -n 1 -i 1-1000)\\" -gt 900 ] && c='-drun-reload-desktop-cache'; rofi -show combi -modi combi -combi-modi drun,run -display-combi Launch -disable-history -drun-use-desktop-cache \\"$c\\""
@@ -889,10 +885,6 @@ bindsym Shift+KP_Down move down
 bindsym Shift+KP_Up move up
 bindsym Shift+KP_Right move right
 # }}}
-# screen lock {{{
-bindsym XF86ScreenSaver exec --no-startup-id $lock_command
-bindsym $pmod+Escape exec --no-startup-id $lock_command
-# }}}
 # control {{{
 # media control {{{
 bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
@@ -923,8 +915,6 @@ bindsym Mod4+3 kill
 # }}}
 # screen snip key
 bindsym Mod4+Shift+s $screenshot
-# screen lock key
-bindsym Mod4+l exec --no-startup-id $lock_command
 # search key
 bindsym Mod4+Shift+XF86TouchpadToggle nop
 # MS Office keys {{{

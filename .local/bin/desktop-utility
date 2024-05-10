@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+# Imports {{{
+import signal
+import os
+from i3ipc import Connection, Event
+import gbulb
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+from enum import Enum
+# }}}
+# Model {{{
+class SignalHandler:
+    def register(self, ipc_grp):
+        self.ipc_grp = ipc_grp
+
+
+DBusBus = Enum('DBusBus', ('SYSTEM', 'SESSION'))
+
+
+class DBusSignalHandler(SignalHandler):
+    def register(self, ipc_grp):
+        super().register(ipc_grp)
+        if self.bus == DBusBus.SYSTEM:
+            bus = ipc_grp.d_sys()
+        elif self.bus == DBusBus.SESSION:
+            bus = ipc_grp.d_ses()
+        bus.add_signal_receiver(self.handler, **self.dbus_kwargs)
+
+
+class i3SignalHandler(SignalHandler):
+    def register(self, ipc_grp):
+        super().register(ipc_grp)
+        ipc_grp.i3().on(self.event, self.handler)
+
+
+class IPCGroup:
+    def __init__(self):
+        self._i3 = None
+        self._d_sys = None
+        self._d_ses = None
+
+    def i3(self):
+        if self._i3 is None:
+            self._i3 = Connection()
+        return self._i3
+
+    def pre_loop(self, loop):
+        self._loop = loop
+        if self._i3:
+            self._i3._event_socket_setup()
+            loop.add_reader(self._i3._sub_socket, self._i3._event_socket_poll)
+
+    def post_loop(self):
+        if self._i3:
+            self._i3._event_socket_teardown()
+
+    def d_sys(self):
+        if self._d_sys is None:
+            self._d_sys = dbus.SystemBus()
+        return self._d_sys
+
+    def d_ses(self):
+        if self._d_ses is None:
+            self._d_ses = dbus.SessionBus()
+        return self._d_ses
+
+    def quit(self):
+        self._loop.stop()
+
+
+class SignalHandlerGroup:
+    def __init__(self, *handlers):
+        self.handlers = handlers
+
+    def register(self, ipc_grp):
+        for handler in self.handlers:
+            handler.register(ipc_grp)
+
+
+class DesktopUtility:
+    def __init__(self, sh_grp):
+        self.sh_grp = sh_grp
+
+    def run(self, loop):
+        self._loop = loop
+        self.ipc_grp = IPCGroup()
+        self.sh_grp.register(self.ipc_grp)
+        self.ipc_grp.pre_loop(loop)
+        try:
+            self._loop.run_forever()
+        finally:
+            self.ipc_grp.post_loop()
+            self._loop.close()
+# }}}
+# Handlers {{{
+# Screensaver {{{
+class ScreensaverHandler(DBusSignalHandler):
+    bus = DBusBus.SESSION
+    dbus_kwargs = {'dbus_interface': 'org.mate.ScreenSaver'}
+
+    def handler(self, state, *args, **kwargs):
+        if state == 1:
+            os.system('dunstctl set-paused true')
+        elif state == 0:
+            os.system('dunstctl set-paused false')
+# }}}
+# Special workspace {{{
+class SpecialWorkspaceHandler(i3SignalHandler):
+    event = Event.WORKSPACE_FOCUS
+    launchers = {
+        'b': 'exec --no-startup-id exec $HOME/.i3/chatrc',
+        'e': 'exec --no-startup-id exec $HOME/.i3/mailrc',
+        'g': 'exec --no-startup-id exec $HOME/.i3/officerc',
+        't': 'exec --no-startup-id exec $TERMINAL',
+        'w': 'exec --no-startup-id exec $HOME/.i3/webrc',
+        'y': 'exec --no-startup-id exec $HOME/.i3/mediarc',
+        'z': 'exec --no-startup-id exec $HOME/.i3/gamerc'
+    }
+
+    def get_launcher(self, ws, override=False):
+        if ws.name[0] in self.launchers:
+            launcher = self.launchers[ws.name[0]]
+            if override:
+                return launcher
+            for _ in ws:
+                return None
+            return launcher
+        return None
+
+    def handler(self, i3, e):
+        if launcher := self.get_launcher(e.current):
+            for ws in i3.get_workspaces():
+                if ws.focused and ws.name != e.current.name:
+                    return
+            i3.command(launcher)
+# }}}
+# }}}
+# Main {{{
+if __name__ == '__main__':
+    gbulb.install(gtk=False)
+    DBusGMainLoop(set_as_default=True)
+    du = DesktopUtility(SignalHandlerGroup(
+        SpecialWorkspaceHandler(),
+        ScreensaverHandler()
+    ))
+    loop = gbulb.get_event_loop()
+    loop.add_signal_handler(signal.SIGINT, loop.stop)
+    loop.add_signal_handler(signal.SIGTERM, loop.stop)
+    du.run(loop)
+# }}}
+# vim: set foldmethod=marker foldmarker={{{,}}}:
