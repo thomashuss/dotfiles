@@ -10,14 +10,45 @@ from enum import Enum
 # }}}
 # Model {{{
 class SignalHandler:
+    def __init__(self):
+        self._parent = None
+
     def register(self, ipc_grp):
         self.ipc_grp = ipc_grp
+
+    def unregister(self):
+        ...
+
+
+class PriorityHandler(SignalHandler):
+    def __init__(self, init):
+        super().__init__()
+        self.handlers = [init]
+
+    def register(self, ipc_grp):
+        super().register(ipc_grp)
+        handlers[-1].register(ipc_grp)
+
+    def push(self, handler):
+        handler._parent = self
+        handler.register(self.ipc_grp)
+        self.handlers.append(handler)
+
+    def pop(self):
+        if len(self.handlers) > 1:
+            handler = self.handlers.pop(-1)
+            handler._parent = None
+            handler.unregister()
+            self.handlers[-1].register()
 
 
 DBusBus = Enum('DBusBus', ('SYSTEM', 'SESSION'))
 
 
 class DBusSignalHandler(SignalHandler):
+    def __init__(self):
+        super().__init__()
+
     def register(self, ipc_grp):
         super().register(ipc_grp)
         if self.bus == DBusBus.SYSTEM:
@@ -28,9 +59,29 @@ class DBusSignalHandler(SignalHandler):
 
 
 class i3SignalHandler(SignalHandler):
+    def __init__(self):
+        super().__init__()
+
     def register(self, ipc_grp):
         super().register(ipc_grp)
         ipc_grp.i3().on(self.event, self.handler)
+
+
+class i3BindHandler(i3SignalHandler):
+    event = Event.BINDING
+    def __init__(self):
+        super().__init__()
+
+    def handler(self, i3, e):
+        c = e.binding.command
+        if len(c) > 4 and c[0] == 'n' and c[1] == 'o' and c[2] == 'p':
+            cmd = c.split(' ', 2)
+            f = getattr(self, cmd[1], None)
+            if f is not None:
+                if len(cmd) == 2:
+                    f()
+                elif len(cmd) == 3:
+                    f(cmd[2])
 
 
 class IPCGroup:
@@ -95,6 +146,9 @@ class DesktopUtility:
 # Handlers {{{
 # Screensaver {{{
 class ScreensaverHandler(DBusSignalHandler):
+    def __init__(self):
+        super().__init__()
+
     bus = DBusBus.SESSION
     dbus_kwargs = {'dbus_interface': 'org.mate.ScreenSaver'}
 
@@ -106,6 +160,9 @@ class ScreensaverHandler(DBusSignalHandler):
 # }}}
 # Special workspace {{{
 class SpecialWorkspaceHandler(i3SignalHandler):
+    def __init__(self):
+        super().__init__()
+
     event = Event.WORKSPACE_FOCUS
     launchers = {
         'b': 'exec --no-startup-id exec $HOME/.i3/chatrc',
@@ -134,15 +191,33 @@ class SpecialWorkspaceHandler(i3SignalHandler):
                     return
             i3.command(launcher)
 # }}}
+# Keybindings {{{
+class KeybindingsHandler(i3BindHandler):
+    def __init__(self, special_ws):
+        super().__init__()
+        self.special_ws = special_ws
+
+    def launch_this(self):
+        i3 = self.ipc_grp.i3()
+        for ws in i3.get_workspaces():
+            if ws.focused:
+                if launcher := special_ws.get_launcher(ws, True):
+                    i3.command(launcher)
+                    break
+# }}}
 # }}}
 # Main {{{
 if __name__ == '__main__':
     gbulb.install(gtk=False)
     DBusGMainLoop(set_as_default=True)
+
+    special_ws = SpecialWorkspaceHandler()
     du = DesktopUtility(SignalHandlerGroup(
-        SpecialWorkspaceHandler(),
+        special_ws,
+        KeybindingsHandler(special_ws),
         ScreensaverHandler()
     ))
+
     loop = gbulb.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, loop.stop)
     loop.add_signal_handler(signal.SIGTERM, loop.stop)

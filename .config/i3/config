@@ -852,6 +852,7 @@ bindsym $pmod+f $file
 bindsym $pmod+j $word_count
 bindsym $pmod+m $phone_control
 bindsym $pmod+p $password_man
+bindsym $pmod+q nop launch_this
 bindsym $pmod+s $screenshot
 bindsym $pmod+t $timer
 bindsym $pmod+u $charmap
