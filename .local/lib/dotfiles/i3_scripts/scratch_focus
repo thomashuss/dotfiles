@@ -1,9 +1,0 @@
-#!/bin/sh
-if ids=$(i3-msg -t get_tree | jq -e '.. | select(.type?=="workspace" and .name!="__i3_scratch") | .floating_nodes | .. | select('"$1"') | .window'); then
-	i3-msg -q "[$2 floating] move scratchpad"
-	echo "$ids" | xargs -n1 xprop -f _NET_WM_STATE 32a -set _NET_WM_STATE _NET_WM_STATE_SKIP_TASKBAR -id
-else
-	if ! i3-msg -q "[$2 floating] move scratchpad, scratchpad show, sticky enable" 2> /dev/null && [ -n "$3" ]; then
-		i3-msg -q "$3"
-	fi
-fi

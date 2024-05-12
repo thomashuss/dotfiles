@@ -165,32 +165,13 @@ set $copy_screenshot exec --no-startup-id flameshot screen -r | xclip -selection
 set $save_screenshot exec --no-startup-id flameshot screen -p "$HOME"
 # }}}
 # Show/hide scratchpad calculator or launch it if not running {{{
-set $calc exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"scratch_calc\\"' 'instance=^scratch_calc$' 'exec --no-startup-id timeout 30s $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/scratch_calc'"
 set $launch_calc [instance="^scratch_calc$" floating] move scratchpad, scratchpad show; exec --no-startup-id "timeout 30s $HOME/.local/lib/dotfiles/misc_scripts/launch $HOME/.local/lib/dotfiles/applications/scratch_calc"
-# }}}
-# Show/hide password manager or launch it if not running {{{
-set $password_man exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.class==\\"KeePassXC\\"' 'class=^KeePassXC$' 'exec --no-startup-id exec keepassxc'"
-# }}}
-# Show/hide KDE Connect or launch it if not running {{{
-set $phone_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"kdeconnect-app\\"' 'instance=^kdeconnect-app$' 'exec kdeconnect-app'"
-# }}}
-# Launch audio i/o manager {{{
-set $audio_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance==\\"pavucontrol\\"' 'instance=^pavucontrol$' 'exec pavucontrol'"
-# }}}
-# Launch network connection manager {{{
-set $network_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance==\\"nm-connection-editor\\"' 'instance=^nm-connection-editor$' 'exec nm-connection-editor'"
-# }}}
-# Launch bluetooth manager {{{
-set $bt_control exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/launch_or_kill '.instance==\\"blueman-manager\\"' 'instance=^blueman-manager$' 'exec blueman-manager'"
 # }}}
 # Launch browser {{{
 set $www_launch exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/www_launch"
 # }}}
 # Launch browser private window {{{
 set $www_launch_private exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/www_launch p"
-# }}}
-# Show/hide scratchpad terminal or launch it if not running {{{
-set $scratch_term exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"scratch_term\\"' 'instance=^scratch_term$' 'exec \\"exec mate-terminal --name scratch_term --disable-factory\\"'"
 # }}}
 # Launch vim in terminal {{{
 set $launch_editor exec exec mate-terminal --name vim -e vim --disable-factory
@@ -239,14 +220,8 @@ set $launch_teams exec --no-startup-id exec gtk-launch chrome-cifhbcnohmdccbgoic
 # Launch MS 365 PWA {{{
 set $launch_ms365 exec --no-startup-id exec gtk-launch chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop
 # }}}
-# Launch character map {{{
-set $charmap exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties?.instance==\\"gucharmap\\"' 'instance=^gucharmap$' 'exec exec gucharmap'"
-# }}}
 # Word count {{{
 set $word_count exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/word_count"
-# }}}
-# Timer {{{
-set $timer exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/scratch_focus '.window_properties.instance==\\"org.gnome.clocks\\"' 'instance=^org\.gnome\.clocks$' 'exec --no-startup-id exec gnome-clocks'"
 # }}}
 # Click left mouse button {{{
 set $click exec --no-startup-id xdotool click 1
@@ -833,27 +808,27 @@ bindsym $pmod+Shift+e mode "normal"; exec --no-startup-id "$HOME/.local/lib/dotf
 # }}}
 # }}}
 # launch application {{{
-bindsym $pmod+BackSpace $scratch_term
+bindsym $pmod+BackSpace nop scratch_focus scratch_term
 bindsym $pmod+Return $launch_terminal
 bindsym $pmod+a $launcher
 bindsym $pmod+Shift+a $clipboard_run
-bindsym $pmod+b $bt_control
-bindsym $pmod+c $calc
+bindsym $pmod+b nop launch_or_kill bt_control
+bindsym $pmod+c nop scratch_focus calc
 bindsym $pmod+Shift+c $launch_calc
 bindsym $pmod+d $display_settings
-bindsym $pmod+e $network_control
+bindsym $pmod+e nop launch_or_kill network_control
 bindsym $pmod+f $file
 bindsym $pmod+j $word_count
-bindsym $pmod+m $phone_control
-bindsym $pmod+p $password_man
+bindsym $pmod+m nop scratch_focus phone_control
+bindsym $pmod+p nop scratch_focus password_man
 bindsym $pmod+q nop launch_this
 bindsym $pmod+s $screenshot
-bindsym $pmod+t $timer
-bindsym $pmod+u $charmap
-bindsym $pmod+v $audio_control
+bindsym $pmod+t nop scratch_focus timer
+bindsym $pmod+u nop scratch_focus charmap
+bindsym $pmod+v nop launch_or_kill audio_control
 bindsym $pmod+w $www_launch
 bindsym $pmod+Shift+w $www_launch_private
-bindsym XF86Calculator $calc
+bindsym XF86Calculator nop scratch_focus calc
 # }}}
 # one-key actions {{{
 #bindsym F10 $launcher
