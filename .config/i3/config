@@ -128,12 +128,9 @@ assign [instance="^evolution"] workspace $ws_mail
 assign [class="^thunderbird"] workspace $ws_mail
 assign [instance="^(ncspot|spotify)$"] workspace $ws_media
 for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
-#for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[class=\\"^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$\\" title=\\"^((?!Chromium$).)*$\\" workspace=$ws_web tiling tiling_from=auto] move container to workspace {new_ws}, focus'"
-#for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] move right
 for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "id=$(i3-msg -t get_tree | jq -e 'first(.. | select(.type?==\\"workspace\\" and (.name|test(\\"^w\\"))) | .. | select(.layout?==\\"tabbed\\" and any(.nodes | .[] | .window_properties? // empty | .class;test(\\"^(Chromium|[fF]irefox(-esr)?|Pale moon)$\\"))) | .nodes | .[] | select(.window_properties? // empty | ((.class|test(\\"^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$\\")) and .title!=\\"Chromium\\")) | .window)') && i3-msg -q \\"[id=$id] move up, move right\\""
 for_window [class="^(Chromium|[fF]irefox(-esr)?|Pale moon)$" workspace=$ws_mail] move container to workspace $ws_web
-for_window [class="^((?!^(Evolution|thunderbird)).)*$" workspace=$ws_mail tiling tiling_from=auto] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix mail --cmd '[class=\\"^((?!^(Evolution|thunderbird)).)*$\\" workspace=$ws_mail tiling tiling_from=auto] move container to workspace {new_ws}, focus'"
-#for_window [instance="^crx_" class="^Chromium$" workspace=$ws_web] exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/blank_workspace --postfix web --cmd '[instance=\\"^crx_\\" class=\\"^Chromium$\\" workspace=$ws_web] move container to workspace {new_ws}, focus'"
+for_window [class="^((?!^(Evolution|thunderbird)).)*$" workspace=$ws_mail tiling tiling_from=auto] mark move:mail
 # }}}
 # window layouts {{{
 for_window [class="^MusE$"] layout tabbed
@@ -156,9 +153,6 @@ exec --no-startup-id rm -f "$HOME/.cache/rofi-drun-desktop.cache"
 # }}}
 # Rofi window switcher {{{
 set $window_switcher exec --no-startup-id "rofi -show window -kb-remove-char-forward 'Control+d' -kb-delete-entry 'Delete' -window-close-on-delete false"
-# }}}
-# Switch to blank workspace {{{
-set $blank_workspace exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/blank_workspace
 # }}}
 # Launch terminal {{{
 set $launch_terminal exec exec mate-terminal
@@ -349,8 +343,8 @@ bindsym n move left $move_amount;$hm
 bindsym m move down $move_amount;$hm
 bindsym comma move up $move_amount;$hm
 bindsym period move right $move_amount;$hm
-bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
-bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+q nop;$unmark_d;nop blank_ws --move;$dm
+bindsym $key_move+$smod+q nop;$unmark_d;nop blank_ws --move --reverse;$dm
 bindsym $key_move+grave $unmark_d;move container to workspace number $ws_float;workspace number $ws_float;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
@@ -389,8 +383,8 @@ bindsym p focus parent;$hm
 bindsym o focus child;$hm
 # }}}
 # focus workspace {{{
-bindsym q $blank_workspace;$hm
-bindsym $smod+q $blank_workspace --reverse;$hm
+bindsym q nop blank_ws;$hm
+bindsym $smod+q nop blank_ws --reverse;$hm
 bindsym space workspace back_and_forth;$hm
 bindsym grave workspace number $ws_float;$hm
 bindsym 1 workspace number $ws1;$hm
@@ -455,8 +449,8 @@ bindsym n move left $move_amount
 bindsym m move down $move_amount
 bindsym comma move up $move_amount
 bindsym period move right $move_amount
-bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
-bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+q nop;$unmark_d;nop blank_ws --move;$dm
+bindsym $key_move+$smod+q nop;$unmark_d;nop blank_ws --move --reverse;$dm
 bindsym $key_move+grave $unmark_d;move container to workspace number $ws_float;workspace number $ws_float;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
@@ -495,8 +489,8 @@ bindsym p focus parent
 bindsym o focus child
 # }}}
 # focus workspace {{{
-bindsym q $blank_workspace
-bindsym $smod+q $blank_workspace --reverse
+bindsym q nop blank_ws
+bindsym $smod+q nop blank_ws --reverse
 bindsym space workspace back_and_forth
 bindsym grave workspace number $ws_float
 bindsym 1 workspace number $ws1
@@ -559,8 +553,8 @@ bindsym n move left $move_amount;$dm
 bindsym m move down $move_amount;$dm
 bindsym comma move up $move_amount;$dm
 bindsym period move right $move_amount;$dm
-bindsym $key_move+q $unmark_d;$blank_workspace --move;$dm
-bindsym $key_move+$smod+q $unmark_d;$blank_workspace --move --reverse;$dm
+bindsym $key_move+q nop;$unmark_d;nop blank_ws --move;$dm
+bindsym $key_move+$smod+q nop;$unmark_d;nop blank_ws --move --reverse;$dm
 bindsym $key_move+grave $unmark_d;move container to workspace number $ws_float;workspace number $ws_float;$dm
 bindsym $key_move+1 $unmark_d;move container to workspace number $ws1;workspace number $ws1;$dm
 bindsym $key_move+2 $unmark_d;move container to workspace number $ws2;workspace number $ws2;$dm
@@ -599,8 +593,8 @@ bindsym p focus parent
 bindsym o focus child
 # }}}
 # focus workspace {{{
-bindsym q $blank_workspace;$dm
-bindsym $smod+q $blank_workspace --reverse;$dm
+bindsym q nop blank_ws;$dm
+bindsym $smod+q nop blank_ws --reverse;$dm
 bindcode $ergo $window_switcher;$dm
 bindsym space workspace back_and_forth;$dm
 bindsym grave workspace number $ws_float;$dm

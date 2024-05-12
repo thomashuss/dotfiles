@@ -7,6 +7,7 @@ import gbulb
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 from enum import Enum
+import re
 # }}}
 # Model {{{
 class SignalHandler:
@@ -20,26 +21,30 @@ class SignalHandler:
         ...
 
 
-class PriorityHandler(SignalHandler):
+class MultiHandler(SignalHandler):
     def __init__(self, init):
         super().__init__()
+        init._parent = self
         self.handlers = [init]
 
     def register(self, ipc_grp):
         super().register(ipc_grp)
-        handlers[-1].register(ipc_grp)
+        for h in handlers:
+            h.ipc_grp = ipc_grp
+
+    def handler(self, *args, **kwargs):
+        for h in reversed(handlers):
+            h.handler(*args, **kwargs)
 
     def push(self, handler):
         handler._parent = self
-        handler.register(self.ipc_grp)
+        handler.ipc_grp = self.ipc_grp
         self.handlers.append(handler)
 
     def pop(self):
-        if len(self.handlers) > 1:
-            handler = self.handlers.pop(-1)
-            handler._parent = None
-            handler.unregister()
-            self.handlers[-1].register()
+        handler = self.handlers.pop(-1)
+        handler._parent = None
+        handler.ipc_grp = None
 
 
 DBusBus = Enum('DBusBus', ('SYSTEM', 'SESSION'))
@@ -67,21 +72,33 @@ class i3SignalHandler(SignalHandler):
         ipc_grp.i3().on(self.event, self.handler)
 
 
+class i3MultiHandler(MultiHandler):
+    def __init__(self):
+        super().__init__()
+
+    def register(self, ipc_grp):
+        super().register(ipc_grp)
+        ipc_grp.i3().on(self.event, self.handler)
+
+
+NOP_CMD_ARG = re.compile(r'.*nop ([^;, ]*) ?([^;,]*)(;|,|$)')
+
+
 class i3BindHandler(i3SignalHandler):
     event = Event.BINDING
     def __init__(self):
         super().__init__()
 
     def handler(self, i3, e):
-        c = e.binding.command
-        if len(c) > 4 and c[0] == 'n' and c[1] == 'o' and c[2] == 'p':
-            cmd = c.split(' ', 2)
-            f = getattr(self, cmd[1], None)
-            if f is not None:
-                if len(cmd) == 2:
-                    f()
-                elif len(cmd) == 3:
-                    f(cmd[2])
+        if len(e.binding.command) > 4 and e.binding.command[0] == 'n' \
+        and e.binding.command[1] == 'o' and e.binding.command[2] == 'p':
+            if m := NOP_CMD_ARG.match(e.binding.command):
+                cmd = m.groups()
+                if f := getattr(self, cmd[0], None):
+                    if len(cmd[1]) == 0:
+                        f()
+                    else:
+                        f(*cmd[1].split(' '))
 
 
 class IPCGroup:
@@ -142,6 +159,21 @@ class DesktopUtility:
         finally:
             self.ipc_grp.post_loop()
             self._loop.close()
+# }}}
+# Helper functions {{{
+def find_ws(i3_ws, postfix=None, reverse=False):
+    all_ws = {1,2,3,4,5,6,7,8,9,10}
+    for ws in i3_ws:
+        if postfix is not None and postfix in ws.name:
+            return ws.name
+        all_ws.discard(ws.num)
+    if reverse:
+        new_ws = str(max(all_ws))
+    else:
+        new_ws = str(min(all_ws))
+    if postfix is not None:
+        new_ws += ':' + postfix
+    return new_ws
 # }}}
 # Handlers {{{
 # Screensaver {{{
@@ -204,6 +236,28 @@ class KeybindingsHandler(i3BindHandler):
                 if launcher := special_ws.get_launcher(ws, True):
                     i3.command(launcher)
                     break
+
+    def blank_ws(self, *args):
+        reverse = len(args) > 0 and '--reverse' in args
+        move = len(args) > 0 and '--move' in args
+        i3 = self.ipc_grp.i3()
+        new_ws = find_ws(i3.get_workspaces(), reverse=reverse)
+        if move:
+            i3.command(f'move container to workspace number {new_ws};workspace number {new_ws}')
+        else:
+            i3.command(f'workspace number {new_ws}')
+# }}}
+# Move marked window {{{
+MOVE_MARK = re.compile(r'^move:(.+)')
+
+
+class MarkedWindowMoveHandler(i3SignalHandler):
+    event = Event.WINDOW_MARK
+    def handler(self, i3, e):
+        for mark in e.container.marks:
+            if m := MOVE_MARK.match(mark):
+                i3.command(f'[con_id={e.container.id}] move container to workspace {find_ws(i3.get_workspaces(), postfix=m.groups()[0])}, focus, unmark {mark}')
+                break
 # }}}
 # }}}
 # Main {{{
@@ -215,6 +269,7 @@ if __name__ == '__main__':
     du = DesktopUtility(SignalHandlerGroup(
         special_ws,
         KeybindingsHandler(special_ws),
+        MarkedWindowMoveHandler(),
         ScreensaverHandler()
     ))
 
