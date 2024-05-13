@@ -444,11 +444,11 @@ class FileModeHandler:
         return con.window_instance == 'caja' and filter_floating(con)
 
     def new_file_window(self, i3, e):
-        if self.check(e.container):
+        if self.check(e.container) and e.container.id not in self.cache:
             self.cache[e.container.id] = self.dpy.create_resource_object('window', e.container.window)
 
     def close_file_window(self, i3, e):
-        if self.check(e.container):
+        if self.check(e.container) and e.container.id in self.cache:
             self.cache.pop(e.container.id, None)
             if len(self.cache) == 0:
                 self.unwatch()
