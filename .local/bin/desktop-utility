@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 # Imports {{{
-import signal
-import os
-from i3ipc import Connection, Event
 import gbulb
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
+import asyncio
 from enum import Enum
-import re
+from i3ipc import Connection, Event
+from collections import OrderedDict
 import Xlib.X
 import Xlib.Xatom
 import Xlib.display
+import os
+import re
+import signal
 # }}}
 # Model {{{
 class SignalHandler:
@@ -24,30 +26,43 @@ class SignalHandler:
         ...
 
 
-#class MultiHandler(SignalHandler):
-#    def __init__(self, init):
-#        super().__init__()
-#        init._parent = self
-#        self.handlers = [init]
-#
-#    def register(self, ipc_grp):
-#        super().register(ipc_grp)
-#        for h in handlers:
-#            h.ipc_grp = ipc_grp
-#
-#    def handler(self, *args, **kwargs):
-#        for h in reversed(handlers):
-#            h.handler(*args, **kwargs)
-#
-#    def push(self, handler):
-#        handler._parent = self
-#        handler.ipc_grp = self.ipc_grp
-#        self.handlers.append(handler)
-#
-#    def pop(self):
-#        handler = self.handlers.pop(-1)
-#        handler._parent = None
-#        handler.ipc_grp = None
+class TransientHandler(SignalHandler):
+    def __init__(self):
+        super().__init__()
+        self._fns = list()
+        self._to_remove = list()
+        self._to_append = list()
+        self._handling = False
+
+    def register(self, ipc_grp):
+        super().register(ipc_grp)
+
+    def handler(self, *args, **kwargs):
+        if len(self._fns) > 0:
+            self._handling = True
+            for f in self._fns:
+                f(*args, **kwargs)
+            self._handling = False
+            if len(self._to_append) > 0:
+                for f in self._to_append:
+                    self._fns.append(f)
+                self._to_append.clear()
+            if len(self._to_remove) > 0:
+                for f in self._to_remove:
+                    self._fns.remove(f)
+                self._to_remove.clear()
+
+    def push(self, f):
+        if self._handling:
+            self._to_append.append(f)
+        else:
+            self._fns.append(f)
+
+    def remove(self, f):
+        if self._handling:
+            self._to_remove.append(f)
+        else:
+            self._fns.remove(f)
 
 
 DBusBus = Enum('DBusBus', ('SYSTEM', 'SESSION'))
@@ -75,16 +90,16 @@ class i3SignalHandler(SignalHandler):
         ipc_grp.i3().on(self.event, self.handler)
 
 
-#class i3MultiHandler(MultiHandler):
-#    def __init__(self):
-#        super().__init__()
-#
-#    def register(self, ipc_grp):
-#        super().register(ipc_grp)
-#        ipc_grp.i3().on(self.event, self.handler)
+class i3TransientHandler(TransientHandler):
+    def __init__(self):
+        super().__init__()
+
+    def register(self, ipc_grp):
+        super().register(ipc_grp)
+        ipc_grp.i3().on(self.event, self.handler)
 
 
-NOP_CMD_ARG = re.compile(r'.*nop ([^;, ]*) ?([^;,]*)(;|,|$)')
+NOP_CMD_ARG = re.compile(r'.*nop ([^;, ]+) ?([^;,]*)(;|,|$)')
 
 
 class i3BindHandler(i3SignalHandler):
@@ -110,6 +125,7 @@ class IPCGroup:
         self._d_sys = None
         self._d_ses = None
         self._dpy = None
+        self._loop = None
 
     def i3(self):
         if self._i3 is None:
@@ -142,6 +158,11 @@ class IPCGroup:
         if self._dpy is None:
             self._dpy = Xlib.display.Display()
         return self._dpy
+
+    def loop(self):
+        if self._loop is None:
+            raise RuntimeError('Tried to access event loop before it was ready.')
+        return self._loop
 
     def quit(self):
         self._loop.stop()
@@ -252,9 +273,10 @@ class SpecialWorkspaceHandler(i3SignalHandler):
 # Keybindings {{{
 class KeybindingsHandler(i3BindHandler):
     # Class {{{
-    def __init__(self, special_ws):
+    def __init__(self, special_ws, file_mode_handler):
         super().__init__()
         self.special_ws = special_ws
+        self.file_mode_handler = file_mode_handler
 
     def register(self, ipc_grp):
         super().register(ipc_grp)
@@ -292,6 +314,8 @@ class KeybindingsHandler(i3BindHandler):
                       'exec exec gucharmap'),
         'timer': (lambda c: c.find_instanced(r'^org\.gnome\.clocks$'),
                       'exec --no-startup-id exec gnome-clocks'),
+        'caja': (lambda c: c.find_instanced(r'^caja$'),
+                      'exec --no-startup-id exec caja --no-desktop $HOME'),
     }
     def scratch_focus(self, name):
         wanted = self.scratch_focus_ids[name]
@@ -300,13 +324,14 @@ class KeybindingsHandler(i3BindHandler):
             found = tuple(filter(filter_floating, wanted[0](s)))
             if len(found) > 0:
                 self.i3.command(';'.join(f'[con_id={con.id}] scratchpad show, sticky enable' for con in found))
-                return
+                return False
         found = tuple(filter(filter_floating, wanted[0](t)))
         if len(found) > 0:
             self.i3.command(';'.join(f'[con_id={con.id}] move scratchpad' for con in found))
             skip_taskbar(self.ipc_grp.dpy(), (c.window for c in found))
-            return
+            return False
         self.i3.command(wanted[1])
+        return True
     # }}}
     # Launch/kill floating window {{{
     launch_or_kill_ids = {
@@ -326,6 +351,10 @@ class KeybindingsHandler(i3BindHandler):
             return
         self.i3.command(wanted[1])
     # }}}
+    # File mode prompt {{{
+    def file_prompt(self):
+        self.file_mode_handler.show_prompt()
+    # }}}
 # }}}
 # Move marked window {{{
 MOVE_MARK = re.compile(r'^move:(.+)')
@@ -339,6 +368,143 @@ class MarkedWindowMoveHandler(i3SignalHandler):
                 i3.command(f'[con_id={e.container.id}] move container to workspace {find_ws(i3.get_workspaces(), postfix=m.groups()[0])}, focus, unmark {mark}')
                 break
 # }}}
+# New/close window {{{
+class NewWindowTransientHandler(i3TransientHandler):
+    event = Event.WINDOW_NEW
+
+
+class CloseWindowTransientHandler(i3TransientHandler):
+    event = Event.WINDOW_CLOSE
+# }}}
+# File mode {{{
+class FileModeHandler:
+    aliases = {
+        os.getenv('USER'): '~',
+        'Downloads': 'dl',
+        'onedrive': 'ondr',
+        'school_onedrive': 'sond'
+    }
+
+    def __init__(self, new_window_handler, close_window_handler):
+        self.cache = OrderedDict()
+        self.out = OrderedDict()
+        self.new_window_handler = new_window_handler
+        self.close_window_handler = close_window_handler
+        self.watching = False
+        self._dmenu = None
+
+    def register(self, ipc_grp):
+        self.ipc_grp = ipc_grp
+        self.dpy = ipc_grp.dpy()
+
+    def check(self, con):
+        return con.window_instance == 'caja' and filter_floating(con)
+
+    def new_file_window(self, i3, e):
+        if self.check(e.container):
+            self.cache[e.container.id] = self.dpy.create_resource_object('window', e.container.window)
+
+    def close_file_window(self, i3, e):
+        if self.check(e.container):
+            self.cache.pop(e.container.id, None)
+            if len(self.cache) == 0:
+                self.unwatch()
+                i3.command('mode default')
+
+    def watch(self):
+        if not self.watching:
+            self.watching = True
+            self.new_window_handler.push(self.new_file_window)
+            self.close_window_handler.push(self.close_file_window)
+
+    def unwatch(self):
+        if self.watching:
+            self.watching = False
+            self.new_window_handler.remove(self.new_file_window)
+            self.close_window_handler.remove(self.close_file_window)
+
+    def update_cache(self):
+        windows = self.ipc_grp.i3().get_tree().find_instanced(r'^caja$')
+        w_set = set()
+        for w in windows:
+            w_set.add(w.id)
+            if w.id not in self.cache:
+                self.cache[w.id] = self.dpy.create_resource_object('window', w.window)
+        for w in set(self.cache.keys()).difference(w_set):
+            self.cache.pop(w)
+
+    async def _set_dmenu_path(self):
+        proc = await asyncio.create_subprocess_shell(
+            'which dmenu',
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)
+        stdout, stderr = await proc.communicate()
+        if proc.returncode == 0 and stdout:
+            stdout = stdout.decode()
+            self._dmenu = stdout[:len(stdout) - 1]
+        else:
+            raise RuntimeError('Cannot find the dmenu path.')
+
+    async def _show_prompt(self):
+        for k in self.cache:
+            name = self.cache[k].get_wm_name()
+            if name in self.aliases:
+                name = self.aliases[name] + ':' + name
+            if name not in self.out:
+                self.out[name] = k
+            else:
+                count = 1
+                new_name = f'{name} {count}'
+                while new_name in self.out:
+                    count += 1
+                    new_name = f'{name} {count}'
+                self.out[new_name] = k
+        if self._dmenu is None:
+            await self._set_dmenu_path()
+        proc = await asyncio.create_subprocess_exec(
+            self._dmenu, '-l', '20', '-fn', 'sans', '-p', 'folder/file',
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)
+        stdout, stderr = await proc.communicate(bytes('\n'.join(reversed(self.out)), encoding='utf-8'))
+        if proc.returncode == 0 and stdout:
+            stdout = stdout.decode()
+            c = self.out[stdout[:len(stdout) - 1]]
+            self.ipc_grp.i3().command(f'[con_id={c}] focus')
+            self.cache.move_to_end(c)
+        self.out.clear()
+
+    def show_prompt(self):
+        self.update_cache()
+        self.ipc_grp.loop().create_task(self._show_prompt())
+
+
+class FileModeSwitchHandler(i3SignalHandler):
+    event = Event.MODE
+
+    def __init__(self, file_mode_handler, keybindings_handler):
+        super().__init__()
+        self.file_mode_handler = file_mode_handler
+        self.keybindings_handler = keybindings_handler
+
+    def new_cb(self, i3, e):
+        if self.file_mode_handler.check(e.container):
+            self.file_mode_handler.show_prompt()
+            self.file_mode_handler.new_window_handler.remove(self.new_cb)
+
+    def handler(self, i3, e):
+        if not self.file_mode_handler.watching and len(e.change) == 4 \
+                and e.change[0] == 'f' and e.change[1] == 'i' \
+                and e.change[2] == 'l' and e.change[3] == 'e':
+            self.file_mode_handler.watch()
+            if self.keybindings_handler.scratch_focus('caja'):
+                self.file_mode_handler.new_window_handler.push(self.new_cb)
+            else:
+                self.file_mode_handler.show_prompt()
+        elif self.file_mode_handler.watching and e.change == 'default':
+            self.keybindings_handler.scratch_focus('caja')
+            self.file_mode_handler.unwatch()
+# }}}
 # }}}
 # Main {{{
 if __name__ == '__main__':
@@ -346,10 +512,18 @@ if __name__ == '__main__':
     DBusGMainLoop(set_as_default=True)
 
     special_ws = SpecialWorkspaceHandler()
+    new_window_handler = NewWindowTransientHandler()
+    close_window_handler = CloseWindowTransientHandler()
+    file_mode_handler = FileModeHandler(new_window_handler, close_window_handler)
+    keybindings_handler = KeybindingsHandler(special_ws, file_mode_handler)
     du = DesktopUtility(SignalHandlerGroup(
+        keybindings_handler,
         special_ws,
-        KeybindingsHandler(special_ws),
         MarkedWindowMoveHandler(),
+        new_window_handler,
+        close_window_handler,
+        file_mode_handler,
+        FileModeSwitchHandler(file_mode_handler, keybindings_handler),
         ScreensaverHandler()
     ))
 

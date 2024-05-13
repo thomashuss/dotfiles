@@ -623,12 +623,11 @@ bindsym e split v;$dm
 }
 # }}}
 # file mode {{{
-set $file exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/file_mode"
 mode "file" {
 bindsym button2 kill
 bindcode $ergo mode "file ergo"
-bindsym slash exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_show"
-bindsym $pmod+f exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/rofi_fm_hide"
+bindsym slash nop file_prompt
+bindsym $pmod+f mode default
 bindsym $pmod+Tab $notif_close
 }
 mode "file ergo" {
@@ -817,7 +816,7 @@ bindsym $pmod+c nop scratch_focus calc
 bindsym $pmod+Shift+c $launch_calc
 bindsym $pmod+d $display_settings
 bindsym $pmod+e nop launch_or_kill network_control
-bindsym $pmod+f $file
+bindsym $pmod+f mode file
 bindsym $pmod+j $word_count
 bindsym $pmod+m nop scratch_focus phone_control
 bindsym $pmod+p nop scratch_focus password_man
