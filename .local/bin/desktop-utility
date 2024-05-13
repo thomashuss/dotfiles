@@ -7,6 +7,7 @@ import asyncio
 from enum import Enum
 from i3ipc import Connection, Event
 from collections import OrderedDict
+from uuid import uuid4
 import Xlib.X
 import Xlib.Xatom
 import Xlib.display
@@ -253,17 +254,15 @@ class SpecialWorkspaceHandler(i3SignalHandler):
         'z': 'exec --no-startup-id exec $HOME/.i3/gamerc'
     }
 
-    def get_launcher(self, ws, override=False):
+    def get_launcher(self, ws):
         if ws.name[0] in self.launchers:
             launcher = self.launchers[ws.name[0]]
-            if override:
-                return launcher
-            for _ in ws:
-                return None
             return launcher
         return None
 
     def handler(self, i3, e):
+        if len(e.current.descendants()) > 0:
+            return
         if launcher := self.get_launcher(e.current):
             for ws in i3.get_workspaces():
                 if ws.focused and ws.name != e.current.name:
@@ -273,10 +272,11 @@ class SpecialWorkspaceHandler(i3SignalHandler):
 # Keybindings {{{
 class KeybindingsHandler(i3BindHandler):
     # Class {{{
-    def __init__(self, special_ws, file_mode_handler):
+    def __init__(self, special_ws, file_mode_handler, new_window_handler):
         super().__init__()
         self.special_ws = special_ws
         self.file_mode_handler = file_mode_handler
+        self.new_window_handler = new_window_handler
 
     def register(self, ipc_grp):
         super().register(ipc_grp)
@@ -286,7 +286,7 @@ class KeybindingsHandler(i3BindHandler):
     def launch_this(self):
         for ws in self.i3.get_workspaces():
             if ws.focused:
-                if launcher := special_ws.get_launcher(ws, True):
+                if launcher := special_ws.get_launcher(ws):
                     self.i3.command(launcher)
                     break
     # }}}
@@ -317,6 +317,7 @@ class KeybindingsHandler(i3BindHandler):
         'caja': (lambda c: c.find_instanced(r'^caja$'),
                       'exec --no-startup-id exec caja --no-desktop $HOME'),
     }
+
     def scratch_focus(self, name):
         wanted = self.scratch_focus_ids[name]
         t = self.i3.get_tree()
@@ -354,6 +355,36 @@ class KeybindingsHandler(i3BindHandler):
     # File mode prompt {{{
     def file_prompt(self):
         self.file_mode_handler.show_prompt()
+    # }}}
+    # Misc scratchpad {{{
+    misc_scratchpad_marker = 'd'
+
+    def _misc_scratchpad_mark_cb(self, i3, e):
+        self.new_window_handler.remove(self._misc_scratchpad_mark_cb)
+        self._misc_scratchpad_mark(i3.get_tree().find_by_id(e.container.id))
+
+    def _misc_scratchpad_mark(self, con):
+        if ws := con.workspace():
+            my_id = str(uuid4())
+            marker = self.misc_scratchpad_marker + ws.name + ':' + my_id[0]
+            i = 1
+            while i < len(my_id) and marker in con.marks:
+                marker += my_id[i]
+                i += 1
+            self.i3.command(f'[con_id={con.id}] mark {marker}, floating enable, sticky disable; [con_mark=^{self.misc_scratchpad_marker}{ws.name}:.+] move scratchpad, scratchpad show; [con_id={con.id}] focus')
+
+    def misc_scratchpad_mark(self):
+        if foc := self.i3.get_tree().find_focused():
+            self._misc_scratchpad_mark(foc)
+
+    def misc_scratchpad_mark_new(self):
+        self.new_window_handler.push(self._misc_scratchpad_mark_cb)
+
+    def misc_scratchpad(self):
+        t = self.i3.get_tree()
+        if foc := t.find_focused():
+            if ws := foc.workspace():
+                self.i3.command(f'[con_mark=^{self.misc_scratchpad_marker}{ws.name}:.+] scratchpad show')
     # }}}
 # }}}
 # Move marked window {{{
@@ -489,8 +520,8 @@ class FileModeSwitchHandler(i3SignalHandler):
 
     def new_cb(self, i3, e):
         if self.file_mode_handler.check(e.container):
-            self.file_mode_handler.show_prompt()
             self.file_mode_handler.new_window_handler.remove(self.new_cb)
+            self.file_mode_handler.show_prompt()
 
     def handler(self, i3, e):
         if not self.file_mode_handler.watching and len(e.change) == 4 \
@@ -515,7 +546,7 @@ if __name__ == '__main__':
     new_window_handler = NewWindowTransientHandler()
     close_window_handler = CloseWindowTransientHandler()
     file_mode_handler = FileModeHandler(new_window_handler, close_window_handler)
-    keybindings_handler = KeybindingsHandler(special_ws, file_mode_handler)
+    keybindings_handler = KeybindingsHandler(special_ws, file_mode_handler, new_window_handler)
     du = DesktopUtility(SignalHandlerGroup(
         keybindings_handler,
         special_ws,

@@ -236,11 +236,8 @@ set $focus_cycle exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/fo
 set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F 'exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/run_with_clipboard %s"' -P 'Run with clipboard: ' > /dev/null
 # }}}
 # Misc scratchpad {{{
-set $unmark_d [con_id=__focused__ con_mark="^d[0-9]+:.+"] unmark
+set $unmark_d [con_id=__focused__ con_mark="^d.+:.+"] unmark
 set $kill_d exec --no-startup-id i3-msg -q "[con_mark=^d$(i3-msg -t get_workspaces | jq -r 'first(.[] | select(.focused==true).name)'):.+] kill"
-set $focus_d exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad d"
-set $mark_d exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad_mark d \\"$(xdotool getwindowfocus)\\""
-set $mark_d_new exec --no-startup-id "timeout 30s python3 -c 'from i3ipc import Connection,Event;i3=Connection();i3.on(Event.WINDOW_NEW,lambda i3,e:(i3.command(f\\"exec --no-startup-id $HOME/.local/lib/dotfiles/i3_scripts/misc_scratchpad_mark d {e.container.window}\\"),i3.main_quit()));i3.main()'"
 # }}}
 # Swap workspaces {{{
 set $swap_ws exec --no-startup-id "$HOME/.local/lib/dotfiles/i3_scripts/swap_ws"
@@ -303,9 +300,9 @@ bindsym $smod+c [workspace=__focused__] kill;$kill_d;$hm
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$hm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle;$hm
-bindsym d $focus_d;$hm
-bindsym $key_move+d $mark_d;$hm
-bindsym $smod+d $mark_d_new;$hm
+bindsym d nop misc_scratchpad;$hm
+bindsym $key_move+d nop misc_scratchpad_mark;$hm
+bindsym $smod+d nop misc_scratchpad_mark_new;$hm
 bindsym r mode "rename"
 bindsym s mode "size"
 # }}}
@@ -409,9 +406,9 @@ bindsym $smod+c [workspace=__focused__] kill;$kill_d
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle
-bindsym d $focus_d
-bindsym $key_move+d $mark_d
-bindsym $smod+d $mark_d_new
+bindsym d nop misc_scratchpad
+bindsym $key_move+d nop misc_scratchpad_mark
+bindsym $smod+d nop misc_scratchpad_mark_new
 bindsym r mode "rename"
 bindsym s mode "size"
 # }}}
@@ -513,9 +510,9 @@ bindsym $smod+c [workspace=__focused__] kill;$kill_d;$dm
 bindsym $key_move+f floating toggle, sticky disable;$unmark_d;$dm
 bindsym $smod+f floating enable, sticky toggle;$unmark_d;$dm
 bindsym x fullscreen toggle;$dm
-bindsym d $focus_d;$dm
-bindsym $key_move+d $mark_d;$dm
-bindsym $smod+d $mark_d_new;$dm
+bindsym d nop misc_scratchpad;$dm
+bindsym $key_move+d nop misc_scratchpad_mark;$dm
+bindsym $smod+d nop misc_scratchpad_mark_new;$dm
 bindsym r mode "rename lazy"
 bindsym s mode "size lazy"
 # }}}
@@ -642,7 +639,7 @@ bindsym period move right $move_amount;mode "file hold"
 bindsym c kill;mode "file hold"
 bindsym f focus mode_toggle;mode "file hold"
 bindsym Shift+f floating toggle;mode "file hold"
-bindsym $smod+d $mark_d_new;mode "file hold"
+bindsym $smod+d nop misc_scratchpad_mark_new;mode "file hold"
 bindcode --release $ergo mode "file lazy"
 }
 mode "file hold" {
@@ -657,7 +654,7 @@ bindsym period move right $move_amount
 bindsym c kill
 bindsym f focus mode_toggle
 bindsym Shift+f floating toggle
-bindsym $smod+d $mark_d_new
+bindsym $smod+d nop misc_scratchpad_mark_new
 bindcode --release $ergo mode "file"
 }
 mode "file lazy" {
@@ -672,7 +669,7 @@ bindsym period move right $move_amount;mode "file"
 bindsym c kill;mode "file"
 bindsym f focus mode_toggle;mode "file"
 bindsym Shift+f floating toggle;mode "file"
-bindsym $smod+d $mark_d_new;mode "file"
+bindsym $smod+d nop misc_scratchpad_mark_new;mode "file"
 bindcode $ergo mode "file"
 bindsym --release Alt_L mode "file"
 }

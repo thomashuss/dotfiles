@@ -1,3 +1,0 @@
-#!/bin/sh
-
-i3-msg -q "[con_mark=^$1$(i3-msg -t get_workspaces | jq -r 'first(.[] | select(.focused==true).name)'):.+] scratchpad show" 2> /dev/null
