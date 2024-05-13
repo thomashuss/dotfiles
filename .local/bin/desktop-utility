@@ -398,6 +398,17 @@ class MarkedWindowMoveHandler(i3SignalHandler):
             if m := MOVE_MARK.match(mark):
                 i3.command(f'[con_id={e.container.id}] move container to workspace {find_ws(i3.get_workspaces(), postfix=m.groups()[0])}, focus, unmark {mark}')
                 break
+            elif 'shift' == mark:
+                for c in i3.get_tree().descendants():
+                    if c.layout == 'tabbed':
+                        i = 0
+                        d = c.descendants()
+                        while i < len(d) and d[i].id != e.container.id:
+                            i += 1
+                        if i != len(d):
+                            i3.command(f'[con_id={e.container.id}] {",".join(["move right"] * (len(d) - i))},unmark shift')
+                            break
+                break
 # }}}
 # New/close window {{{
 class NewWindowTransientHandler(i3TransientHandler):

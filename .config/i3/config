@@ -128,7 +128,7 @@ assign [instance="^evolution"] workspace $ws_mail
 assign [class="^thunderbird"] workspace $ws_mail
 assign [instance="^(ncspot|spotify)$"] workspace $ws_media
 for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
-for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] exec --no-startup-id "id=$(i3-msg -t get_tree | jq -e 'first(.. | select(.type?==\\"workspace\\" and (.name|test(\\"^w\\"))) | .. | select(.layout?==\\"tabbed\\" and any(.nodes | .[] | .window_properties? // empty | .class;test(\\"^(Chromium|[fF]irefox(-esr)?|Pale moon)$\\"))) | .nodes | .[] | select(.window_properties? // empty | ((.class|test(\\"^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$\\")) and .title!=\\"Chromium\\")) | .window)') && i3-msg -q \\"[id=$id] move up, move right\\""
+for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] mark shift
 for_window [class="^(Chromium|[fF]irefox(-esr)?|Pale moon)$" workspace=$ws_mail] move container to workspace $ws_web
 for_window [class="^((?!^(Evolution|thunderbird)).)*$" workspace=$ws_mail tiling tiling_from=auto] mark move:mail
 # }}}
