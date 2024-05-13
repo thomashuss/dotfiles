@@ -405,7 +405,8 @@ class MarkedWindowMoveHandler(i3SignalHandler):
                         while i < len(c.nodes) and c.nodes[i].id != e.container.id:
                             i += 1
                         if i != len(c.nodes):
-                            i3.command(f'[con_id={e.container.id}] {",".join(["move right"] * (len(c.nodes) - i))},unmark shift')
+                            cmd = 'move right,' * (len(c.nodes) - 1)
+                            i3.command(f'[con_id={e.container.id}] {cmd}unmark shift')
                             return
                 i3.command(f'[con_id={e.container.id}] unmark shift')
                 return
