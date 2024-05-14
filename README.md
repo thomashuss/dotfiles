@@ -32,7 +32,7 @@ mate-screensaver mate-session-manager mate-settings-daemon mate-terminal
 mate-utils mozo mpv mpv-mpris network-manager-gnome pavucontrol picom
 pipewire-audio pipewire-jack playerctl python3-dbus python3-gbulb python3-i3ipc
 python3-xlib qalculate-gtk redshift-gtk rofi rsync suckless-tools thunderbird
-unclutter-xfixes vim-gtk3 xcape xclip xdotool
+unclutter-xfixes vim-gtk3 wmctrl xcape xclip xdotool
 ```
 
 ## Fixes
