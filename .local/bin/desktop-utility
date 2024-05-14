@@ -209,17 +209,6 @@ def find_ws(i3_ws, postfix=None, reverse=False):
     return new_ws
 
 
-def skip_taskbar(display, windows):
-    st = display.intern_atom('_NET_WM_STATE')
-    sk = [display.intern_atom('_NET_WM_STATE_SKIP_TASKBAR')]
-    for wid in windows:
-        display.create_resource_object('window', wid).change_property(st,
-                                                                      Xlib.Xatom.ATOM,
-                                                                      32, sk,
-                                                                      Xlib.X.PropModeReplace)
-    display.flush()
-
-
 def filter_floating(con):
     return con.floating == 'auto_on' or con.floating == 'user_on'
 # }}}
@@ -279,6 +268,7 @@ class KeybindingsHandler(i3BindHandler):
         self.special_ws = special_ws
         self.file_mode_handler = file_mode_handler
         self.new_window_handler = new_window_handler
+        self._st = self._sk = None
 
     def register(self, ipc_grp):
         super().register(ipc_grp)
@@ -320,6 +310,20 @@ class KeybindingsHandler(i3BindHandler):
                       'exec --no-startup-id exec caja --no-desktop $HOME'),
     }
 
+    def _skip_taskbar(self, windows):
+        display = self.ipc_grp.dpy()
+        if self._st is None:
+            self._st = display.intern_atom('_NET_WM_STATE')
+        if self._sk is None:
+            self._sk = [display.intern_atom('_NET_WM_STATE_SKIP_TASKBAR')]
+        for wid in windows:
+            print(wid)
+            display.create_resource_object('window', wid).change_property(self._st,
+                                                                        Xlib.Xatom.ATOM,
+                                                                        32, self._sk,
+                                                                        Xlib.X.PropModeReplace)
+        display.flush()
+
     def scratch_focus(self, name):
         wanted = self.scratch_focus_ids[name]
         t = self.i3.get_tree()
@@ -331,7 +335,7 @@ class KeybindingsHandler(i3BindHandler):
         found = tuple(filter(filter_floating, wanted[0](t)))
         if len(found) > 0:
             self.i3.command(';'.join(f'[con_id={con.id}] move scratchpad' for con in found))
-            skip_taskbar(self.ipc_grp.dpy(), (c.window for c in found))
+            self._skip_taskbar(c.window for c in found)
             return False
         self.i3.command(wanted[1])
         return True
