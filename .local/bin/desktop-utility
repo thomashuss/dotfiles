@@ -16,6 +16,7 @@ import re
 import signal
 # }}}
 # Model {{{
+# Handler types {{{
 class SignalHandler:
     def __init__(self):
         self._parent = None
@@ -119,7 +120,15 @@ class i3BindHandler(i3SignalHandler):
                     else:
                         f(*cmd[1].split(' '))
 
+class SignalHandlerGroup:
+    def __init__(self, *handlers):
+        self.handlers = handlers
 
+    def register(self, ipc_grp):
+        for handler in self.handlers:
+            handler.register(ipc_grp)
+# }}}
+# IPCGroup {{{
 class IPCGroup:
     def __init__(self):
         self._i3 = None
@@ -127,6 +136,7 @@ class IPCGroup:
         self._d_ses = None
         self._dpy = None
         self._loop = None
+        self._x_windows = dict()
 
     def i3(self):
         if self._i3 is None:
@@ -160,6 +170,15 @@ class IPCGroup:
             self._dpy = Xlib.display.Display()
         return self._dpy
 
+    def get_x_window(self, wid):
+        if wid not in self._x_windows:
+            self._x_windows[wid] = self.dpy().create_resource_object('window', wid)
+        return self._x_windows[wid]
+
+    def rm_x_window(self, wid):
+        if wid in self._x_windows:
+            del self._x_windows[wid]
+
     def loop(self):
         if self._loop is None:
             raise RuntimeError('Tried to access event loop before it was ready.')
@@ -167,17 +186,8 @@ class IPCGroup:
 
     def quit(self):
         self._loop.stop()
-
-
-class SignalHandlerGroup:
-    def __init__(self, *handlers):
-        self.handlers = handlers
-
-    def register(self, ipc_grp):
-        for handler in self.handlers:
-            handler.register(ipc_grp)
-
-
+# }}}
+# Desktop utility {{{
 class DesktopUtility:
     def __init__(self, sh_grp):
         self.sh_grp = sh_grp
@@ -192,6 +202,129 @@ class DesktopUtility:
         finally:
             self.ipc_grp.post_loop()
             self._loop.close()
+# }}}
+# File mode {{{
+class FileMode:
+    aliases = {
+        os.getenv('USER'): '~',
+        'Downloads': 'dl',
+        'onedrive': 'ondr',
+        'school_onedrive': 'sond'
+    }
+
+    def __init__(self, new_window_handler, close_window_handler):
+        self.cache = OrderedDict()
+        self.out = OrderedDict()
+        self.new_window_handler = new_window_handler
+        self.close_window_handler = close_window_handler
+        self.watching = False
+        self._rofi = None
+
+    def register(self, ipc_grp):
+        self.ipc_grp = ipc_grp
+        self.dpy = ipc_grp.dpy()
+
+    def check(self, con):
+        return con.window_instance == 'caja' and filter_floating(con)
+
+    def new_file_window(self, i3, e):
+        if self.check(e.container) and e.container.id not in self.cache:
+            self.cache[e.container.id] = self.ipc_grp.get_x_window(e.container.window)
+
+    def _close_file_window(self, con_id):
+        if con_id in self.cache:
+            self.cache.pop(con_id, None)
+            if len(self.cache) == 0:
+                self.unwatch()
+                self.ipc_grp.i3().command('mode default')
+
+
+    def close_file_window(self, i3, e):
+        if self.check(e.container):
+            self._close_file_window(e.container.id)
+
+    def watch(self):
+        if not self.watching:
+            self.watching = True
+            self.new_window_handler.push(self.new_file_window)
+            self.close_window_handler.push(self.close_file_window)
+
+    def unwatch(self):
+        if self.watching:
+            self.watching = False
+            self.new_window_handler.remove(self.new_file_window)
+            self.close_window_handler.remove(self.close_file_window)
+
+    def update_cache(self):
+        windows = self.ipc_grp.i3().get_tree().find_instanced(r'^caja$')
+        w_set = set()
+        for w in windows:
+            w_set.add(w.id)
+            if w.id not in self.cache:
+                self.cache[w.id] = self.ipc_grp.get_x_window(w.window)
+        for w in set(self.cache.keys()).difference(w_set):
+            self.cache.pop(w)
+
+    async def _set_rofi(self):
+        proc = await asyncio.create_subprocess_shell(
+            'which rofi',
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)
+        stdout, stderr = await proc.communicate()
+        if proc.returncode == 0 and stdout:
+            stdout = stdout.decode()
+            self._rofi = stdout[:len(stdout) - 1]
+        else:
+            raise RuntimeError('Cannot find the rofi path.')
+
+    async def _show_prompt(self):
+        if len(self.cache) == 0:
+            return
+        if len(self.out) == 0:
+            for k in self.cache:
+                name = self.cache[k].get_wm_name()
+                if name in self.aliases:
+                    name = self.aliases[name] + ':' + name
+                if name not in self.out:
+                    self.out[name] = k
+                else:
+                    count = 1
+                    new_name = f'{name} {count}'
+                    while new_name in self.out:
+                        count += 1
+                        new_name = f'{name} {count}'
+                    self.out[new_name] = k
+        if self._rofi is None:
+            await self._set_rofi()
+        proc = await asyncio.create_subprocess_exec(
+            self._rofi, '-dmenu', '-l', str(len(self.out)), '-p',
+            'folder/file', '-kb-custom-1', '[66]', '-kb-custom-2', 'Super_L+f',
+            '-w', str(self.cache[next(reversed(self.cache))].id),
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)
+        stdout, stderr = await proc.communicate(bytes('\n'.join(reversed(self.out)), encoding='utf-8'))
+        if proc.returncode == 11:
+            self.ipc_grp.i3().command(f'mode default')
+            self.out.clear()
+        elif stdout:
+            stdout = stdout.decode()
+            stdout = stdout[:len(stdout) - 1]
+            c = self.out[stdout]
+            if proc.returncode == 0:
+                self.ipc_grp.i3().command(f'[con_id={c}] focus')
+                self.cache.move_to_end(c)
+                self.out.clear()
+            elif proc.returncode == 10:
+                self.ipc_grp.i3().command(f'[con_id={c}] kill')
+                self._close_file_window(c)
+                del self.out[stdout]
+                await self._show_prompt()
+
+    def show_prompt(self):
+        self.update_cache()
+        self.ipc_grp.loop().create_task(self._show_prompt())
+# }}}
 # }}}
 # Helper functions {{{
 def find_ws(i3_ws, postfix=None, reverse=False):
@@ -306,7 +439,7 @@ class KeybindingsHandler(i3BindHandler):
                       'exec exec gucharmap'),
         'timer': (lambda c: c.find_instanced(r'^org\.gnome\.clocks$'),
                       'exec --no-startup-id exec gnome-clocks'),
-        'caja': (lambda c: c.find_instanced(r'^caja$'),
+        'file': (lambda c: c.find_instanced(r'^caja$'),
                       'exec --no-startup-id exec caja --no-desktop $HOME'),
     }
 
@@ -317,10 +450,10 @@ class KeybindingsHandler(i3BindHandler):
         if self._sk is None:
             self._sk = [display.intern_atom('_NET_WM_STATE_SKIP_TASKBAR')]
         for wid in windows:
-            display.create_resource_object('window', wid).change_property(self._st,
-                                                                        Xlib.Xatom.ATOM,
-                                                                        32, self._sk,
-                                                                        Xlib.X.PropModeReplace)
+            self.ipc_grp.get_x_window(wid).change_property(self._st,
+                                                           Xlib.Xatom.ATOM, 32,
+                                                           self._sk,
+                                                           Xlib.X.PropModeReplace)
         display.flush()
 
     def scratch_focus(self, name):
@@ -423,130 +556,15 @@ class NewWindowTransientHandler(i3TransientHandler):
 
 class CloseWindowTransientHandler(i3TransientHandler):
     event = Event.WINDOW_CLOSE
-# }}}
-# File mode {{{
-class FileModeHandler:
-    aliases = {
-        os.getenv('USER'): '~',
-        'Downloads': 'dl',
-        'onedrive': 'ondr',
-        'school_onedrive': 'sond'
-    }
-
-    def __init__(self, new_window_handler, close_window_handler):
-        self.cache = OrderedDict()
-        self.out = OrderedDict()
-        self.new_window_handler = new_window_handler
-        self.close_window_handler = close_window_handler
-        self.watching = False
-        self._rofi = None
 
     def register(self, ipc_grp):
-        self.ipc_grp = ipc_grp
-        self.dpy = ipc_grp.dpy()
+        super().register(ipc_grp)
+        self.push(self.i3_rm_x_window)
 
-    def check(self, con):
-        return con.window_instance == 'caja' and filter_floating(con)
-
-    def new_file_window(self, i3, e):
-        if self.check(e.container) and e.container.id not in self.cache:
-            self.cache[e.container.id] = self.dpy.create_resource_object('window', e.container.window)
-
-    def _close_file_window(self, con_id):
-        if con_id in self.cache:
-            self.cache.pop(con_id, None)
-            if len(self.cache) == 0:
-                self.unwatch()
-                self.ipc_grp.i3().command('mode default')
-
-
-    def close_file_window(self, i3, e):
-        if self.check(e.container):
-            self._close_file_window(e.container.id)
-
-    def watch(self):
-        if not self.watching:
-            self.watching = True
-            self.new_window_handler.push(self.new_file_window)
-            self.close_window_handler.push(self.close_file_window)
-
-    def unwatch(self):
-        if self.watching:
-            self.watching = False
-            self.new_window_handler.remove(self.new_file_window)
-            self.close_window_handler.remove(self.close_file_window)
-
-    def update_cache(self):
-        windows = self.ipc_grp.i3().get_tree().find_instanced(r'^caja$')
-        w_set = set()
-        for w in windows:
-            w_set.add(w.id)
-            if w.id not in self.cache:
-                self.cache[w.id] = self.dpy.create_resource_object('window', w.window)
-        for w in set(self.cache.keys()).difference(w_set):
-            self.cache.pop(w)
-
-    async def _set_rofi(self):
-        proc = await asyncio.create_subprocess_shell(
-            'which rofi',
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE)
-        stdout, stderr = await proc.communicate()
-        if proc.returncode == 0 and stdout:
-            stdout = stdout.decode()
-            self._rofi = stdout[:len(stdout) - 1]
-        else:
-            raise RuntimeError('Cannot find the rofi path.')
-
-    async def _show_prompt(self):
-        if len(self.cache) == 0:
-            return
-        if len(self.out) == 0:
-            for k in self.cache:
-                name = self.cache[k].get_wm_name()
-                if name in self.aliases:
-                    name = self.aliases[name] + ':' + name
-                if name not in self.out:
-                    self.out[name] = k
-                else:
-                    count = 1
-                    new_name = f'{name} {count}'
-                    while new_name in self.out:
-                        count += 1
-                        new_name = f'{name} {count}'
-                    self.out[new_name] = k
-        if self._rofi is None:
-            await self._set_rofi()
-        proc = await asyncio.create_subprocess_exec(
-            self._rofi, '-dmenu', '-l', str(len(self.out)), '-p',
-            'folder/file', '-kb-custom-1', '[66]', '-kb-custom-2', 'Super_L+f',
-            '-w', str(self.cache[next(reversed(self.cache))].id),
-            stdin=asyncio.subprocess.PIPE,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE)
-        stdout, stderr = await proc.communicate(bytes('\n'.join(reversed(self.out)), encoding='utf-8'))
-        if proc.returncode == 11:
-            self.ipc_grp.i3().command(f'mode default')
-            self.out.clear()
-        elif stdout:
-            stdout = stdout.decode()
-            stdout = stdout[:len(stdout) - 1]
-            c = self.out[stdout]
-            if proc.returncode == 0:
-                self.ipc_grp.i3().command(f'[con_id={c}] focus')
-                self.cache.move_to_end(c)
-                self.out.clear()
-            elif proc.returncode == 10:
-                self.ipc_grp.i3().command(f'[con_id={c}] kill')
-                self._close_file_window(c)
-                del self.out[stdout]
-                await self._show_prompt()
-
-    def show_prompt(self):
-        self.update_cache()
-        self.ipc_grp.loop().create_task(self._show_prompt())
-
-
+    def i3_rm_x_window(self, i3, e):
+        self.ipc_grp.rm_x_window(e.container.window)
+# }}}
+# File mode switch handler {{{
 class FileModeSwitchHandler(i3SignalHandler):
     event = Event.MODE
 
@@ -565,12 +583,12 @@ class FileModeSwitchHandler(i3SignalHandler):
                 and e.change[0] == 'f' and e.change[1] == 'i' \
                 and e.change[2] == 'l' and e.change[3] == 'e':
             self.file_mode_handler.watch()
-            if self.keybindings_handler.scratch_focus('caja'):
+            if self.keybindings_handler.scratch_focus('file'):
                 self.file_mode_handler.new_window_handler.push(self.new_cb)
             else:
                 self.file_mode_handler.show_prompt()
         elif self.file_mode_handler.watching and e.change == 'default':
-            self.keybindings_handler.scratch_focus('caja')
+            self.keybindings_handler.scratch_focus('file')
             self.file_mode_handler.unwatch()
 # }}}
 # }}}
@@ -582,7 +600,7 @@ if __name__ == '__main__':
     special_ws = SpecialWorkspaceHandler()
     new_window_handler = NewWindowTransientHandler()
     close_window_handler = CloseWindowTransientHandler()
-    file_mode_handler = FileModeHandler(new_window_handler, close_window_handler)
+    file_mode_handler = FileMode(new_window_handler, close_window_handler)
     keybindings_handler = KeybindingsHandler(special_ws, file_mode_handler, new_window_handler)
     du = DesktopUtility(SignalHandlerGroup(
         keybindings_handler,
