@@ -317,7 +317,6 @@ class KeybindingsHandler(i3BindHandler):
         if self._sk is None:
             self._sk = [display.intern_atom('_NET_WM_STATE_SKIP_TASKBAR')]
         for wid in windows:
-            print(wid)
             display.create_resource_object('window', wid).change_property(self._st,
                                                                         Xlib.Xatom.ATOM,
                                                                         32, self._sk,
@@ -440,7 +439,7 @@ class FileModeHandler:
         self.new_window_handler = new_window_handler
         self.close_window_handler = close_window_handler
         self.watching = False
-        self._dmenu = None
+        self._rofi = None
 
     def register(self, ipc_grp):
         self.ipc_grp = ipc_grp
@@ -453,12 +452,17 @@ class FileModeHandler:
         if self.check(e.container) and e.container.id not in self.cache:
             self.cache[e.container.id] = self.dpy.create_resource_object('window', e.container.window)
 
-    def close_file_window(self, i3, e):
-        if self.check(e.container) and e.container.id in self.cache:
-            self.cache.pop(e.container.id, None)
+    def _close_file_window(self, con_id):
+        if con_id in self.cache:
+            self.cache.pop(con_id, None)
             if len(self.cache) == 0:
                 self.unwatch()
-                i3.command('mode default')
+                self.ipc_grp.i3().command('mode default')
+
+
+    def close_file_window(self, i3, e):
+        if self.check(e.container):
+            self._close_file_window(e.container.id)
 
     def watch(self):
         if not self.watching:
@@ -482,46 +486,61 @@ class FileModeHandler:
         for w in set(self.cache.keys()).difference(w_set):
             self.cache.pop(w)
 
-    async def _set_dmenu_path(self):
+    async def _set_rofi(self):
         proc = await asyncio.create_subprocess_shell(
-            'which dmenu',
+            'which rofi',
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE)
         stdout, stderr = await proc.communicate()
         if proc.returncode == 0 and stdout:
             stdout = stdout.decode()
-            self._dmenu = stdout[:len(stdout) - 1]
+            self._rofi = stdout[:len(stdout) - 1]
         else:
-            raise RuntimeError('Cannot find the dmenu path.')
+            raise RuntimeError('Cannot find the rofi path.')
 
     async def _show_prompt(self):
-        for k in self.cache:
-            name = self.cache[k].get_wm_name()
-            if name in self.aliases:
-                name = self.aliases[name] + ':' + name
-            if name not in self.out:
-                self.out[name] = k
-            else:
-                count = 1
-                new_name = f'{name} {count}'
-                while new_name in self.out:
-                    count += 1
+        if len(self.cache) == 0:
+            return
+        if len(self.out) == 0:
+            for k in self.cache:
+                name = self.cache[k].get_wm_name()
+                if name in self.aliases:
+                    name = self.aliases[name] + ':' + name
+                if name not in self.out:
+                    self.out[name] = k
+                else:
+                    count = 1
                     new_name = f'{name} {count}'
-                self.out[new_name] = k
-        if self._dmenu is None:
-            await self._set_dmenu_path()
+                    while new_name in self.out:
+                        count += 1
+                        new_name = f'{name} {count}'
+                    self.out[new_name] = k
+        if self._rofi is None:
+            await self._set_rofi()
         proc = await asyncio.create_subprocess_exec(
-            self._dmenu, '-l', '20', '-fn', 'sans', '-p', 'folder/file',
+            self._rofi, '-dmenu', '-l', str(len(self.out)), '-p',
+            'folder/file', '-kb-custom-1', '[66]', '-kb-custom-2', 'Super_L+f',
+            '-w', str(self.cache[next(reversed(self.cache))].id),
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE)
         stdout, stderr = await proc.communicate(bytes('\n'.join(reversed(self.out)), encoding='utf-8'))
-        if proc.returncode == 0 and stdout:
+        if proc.returncode == 11:
+            self.ipc_grp.i3().command(f'mode default')
+            self.out.clear()
+        elif stdout:
             stdout = stdout.decode()
-            c = self.out[stdout[:len(stdout) - 1]]
-            self.ipc_grp.i3().command(f'[con_id={c}] focus')
-            self.cache.move_to_end(c)
-        self.out.clear()
+            stdout = stdout[:len(stdout) - 1]
+            c = self.out[stdout]
+            if proc.returncode == 0:
+                self.ipc_grp.i3().command(f'[con_id={c}] focus')
+                self.cache.move_to_end(c)
+                self.out.clear()
+            elif proc.returncode == 10:
+                self.ipc_grp.i3().command(f'[con_id={c}] kill')
+                self._close_file_window(c)
+                del self.out[stdout]
+                await self._show_prompt()
 
     def show_prompt(self):
         self.update_cache()
