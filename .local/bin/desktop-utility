@@ -456,19 +456,24 @@ class KeybindingsHandler(i3BindHandler):
                                                            Xlib.X.PropModeReplace)
         display.flush()
 
-    def scratch_focus(self, name):
+    def scratch_focus(self, name, force_show=False):
         wanted = self.scratch_focus_ids[name]
         t = self.i3.get_tree()
-        if s := t.scratchpad():
+        if force_show:
+            found = tuple(filter(filter_floating, wanted[0](t)))
+            if len(found) > 0:
+                self.i3.command(';'.join(f'[con_id={con.id}] scratchpad show, sticky enable' for con in found))
+                return False
+        elif s := t.scratchpad():
             found = tuple(filter(filter_floating, wanted[0](s)))
             if len(found) > 0:
                 self.i3.command(';'.join(f'[con_id={con.id}] scratchpad show, sticky enable' for con in found))
                 return False
-        found = tuple(filter(filter_floating, wanted[0](t)))
-        if len(found) > 0:
-            self.i3.command(';'.join(f'[con_id={con.id}] move scratchpad' for con in found))
-            self._skip_taskbar(c.window for c in found)
-            return False
+            found = tuple(filter(filter_floating, wanted[0](t)))
+            if len(found) > 0:
+                self.i3.command(';'.join(f'[con_id={con.id}] move scratchpad' for con in found))
+                self._skip_taskbar(c.window for c in found)
+                return False
         self.i3.command(wanted[1])
         return True
     # }}}
@@ -583,7 +588,7 @@ class FileModeSwitchHandler(i3SignalHandler):
                 and e.change[0] == 'f' and e.change[1] == 'i' \
                 and e.change[2] == 'l' and e.change[3] == 'e':
             self.file_mode_handler.watch()
-            if self.keybindings_handler.scratch_focus('file'):
+            if self.keybindings_handler.scratch_focus('file', force_show=True):
                 self.file_mode_handler.new_window_handler.push(self.new_cb)
             else:
                 self.file_mode_handler.show_prompt()
