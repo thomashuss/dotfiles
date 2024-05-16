@@ -52,8 +52,6 @@ else
 	}
 fi
 
-if ! launch_browser "$(xprop WM_CLASS -id "$(xdotool getwindowfocus)" | perl -wln -e '/(?<=", ")[^"]+(?="$)/ and print $&;')"; then
-	if ! launch_browser "$(i3-msg -t get_tree | jq -r 'first(.. | select(.type? == "workspace" and (.name|test("^w"))) | .. | .window_properties? // empty | .class | select(test("'"$regex"'")))')"; then
-		launch_default
-	fi
+if ! launch_browser "$(i3-msg -t get_tree | jq -r 'last(.. | ((select(.type? == "workspace" and (.name|test("^w"))) | .. | select(.type? == "con")), select(.focused? == true)) | .window_properties? // empty | .class | select(test("'"$regex"'")))')"; then
+	launch_default
 fi
