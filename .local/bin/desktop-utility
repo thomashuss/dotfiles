@@ -299,7 +299,8 @@ class FileMode:
         proc = await asyncio.create_subprocess_exec(
             self._rofi, '-dmenu', '-l', str(len(self.out)), '-p',
             'folder/file', '-kb-custom-1', '[66]', '-kb-custom-2', 'Super_L+f',
-            '-w', str(self.cache[next(reversed(self.cache))].id),
+            '-w', str(self.cache[next(reversed(self.cache))].id), '-i',
+            '-matching', 'regex',
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE)
