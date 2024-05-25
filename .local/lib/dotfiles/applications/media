@@ -1,4 +1,4 @@
-spotify
+spotify	spotify --disable-gpu
 ncspot	mate-terminal --name ncspot --disable-factory -e ncspot
 vlc
 mpv	mpv --player-operation-mode=pseudo-gui
