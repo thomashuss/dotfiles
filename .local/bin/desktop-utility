@@ -7,7 +7,7 @@ import asyncio
 from enum import Enum
 from i3ipc import Connection, Event
 from collections import OrderedDict
-from uuid import uuid4
+from random import choice
 import Xlib.X
 import Xlib.Xatom
 import Xlib.display
@@ -219,13 +219,14 @@ class FileMode:
         self.close_window_handler = close_window_handler
         self.watching = False
         self._rofi = None
+        self._w_set = set()
 
     def register(self, ipc_grp):
         self.ipc_grp = ipc_grp
         self.dpy = ipc_grp.dpy()
 
     def check(self, con):
-        return con.window_instance == 'caja' and filter_floating(con)
+        return con.window_instance and (con.window_instance == 'caja' or con.window_instance == 'engrampa') and filter_floating(con)
 
     def new_file_window(self, i3, e):
         if self.check(e.container) and e.container.id not in self.cache:
@@ -237,7 +238,6 @@ class FileMode:
             if len(self.cache) == 0:
                 self.unwatch()
                 self.ipc_grp.i3().command('mode default')
-
 
     def close_file_window(self, i3, e):
         if self.check(e.container):
@@ -256,14 +256,13 @@ class FileMode:
             self.close_window_handler.remove(self.close_file_window)
 
     def update_cache(self):
-        windows = self.ipc_grp.i3().get_tree().find_instanced(r'^caja$')
-        w_set = set()
-        for w in windows:
-            w_set.add(w.id)
+        for w in filter(self.check, self.ipc_grp.i3().get_tree()):
+            self._w_set.add(w.id)
             if w.id not in self.cache:
                 self.cache[w.id] = self.ipc_grp.get_x_window(w.window)
-        for w in set(self.cache.keys()).difference(w_set):
+        for w in set(self.cache.keys()).difference(self._w_set):
             self.cache.pop(w)
+        self._w_set.clear()
 
     async def _set_rofi(self):
         proc = await asyncio.create_subprocess_shell(
@@ -284,7 +283,7 @@ class FileMode:
             for k in self.cache:
                 name = self.cache[k].get_wm_name()
                 if name in self.aliases:
-                    name = self.aliases[name] + ':' + name
+                    name = f'{self.aliases[name]}:{name}'
                 if name not in self.out:
                     self.out[name] = k
                 else:
@@ -306,7 +305,7 @@ class FileMode:
             stderr=asyncio.subprocess.PIPE)
         stdout, stderr = await proc.communicate(bytes('\n'.join(reversed(self.out)), encoding='utf-8'))
         if proc.returncode == 11:
-            self.ipc_grp.i3().command(f'mode default')
+            self.ipc_grp.i3().command('mode default')
             self.out.clear()
         elif stdout:
             stdout = stdout.decode()
@@ -320,7 +319,8 @@ class FileMode:
                 self.ipc_grp.i3().command(f'[con_id={c}] kill')
                 self._close_file_window(c)
                 del self.out[stdout]
-                await self._show_prompt()
+                if len(self.cache) > 0:
+                    self.ipc_grp.loop().create_task(self._show_prompt())
 
     def show_prompt(self):
         self.update_cache()
@@ -395,6 +395,9 @@ class SpecialWorkspaceHandler(i3SignalHandler):
             i3.command(launcher)
 # }}}
 # Keybindings {{{
+RANDOM_CHOICES = 'abcdefghijklmnopqrstuvwxyz1234567890'
+
+
 class KeybindingsHandler(i3BindHandler):
     # Class {{{
     def __init__(self, special_ws, file_mode_handler, new_window_handler):
@@ -440,7 +443,7 @@ class KeybindingsHandler(i3BindHandler):
                       'exec exec gucharmap'),
         'timer': (lambda c: c.find_instanced(r'^org\.gnome\.clocks$'),
                       'exec --no-startup-id exec gnome-clocks'),
-        'file': (lambda c: c.find_instanced(r'^caja$'),
+        'file': (lambda c: c.find_instanced(r'^(caja|engrampa)$'),
                       'exec --no-startup-id exec caja --no-desktop $HOME'),
     }
 
@@ -454,21 +457,21 @@ class KeybindingsHandler(i3BindHandler):
             self.ipc_grp.get_x_window(wid).change_property(self._st,
                                                            Xlib.Xatom.ATOM, 32,
                                                            self._sk,
-                                                           Xlib.X.PropModeReplace)
+                                                           Xlib.X.PropModeAppend)
         display.flush()
 
     def scratch_focus(self, name, force_show=False):
         wanted = self.scratch_focus_ids[name]
         t = self.i3.get_tree()
         if force_show:
-            found = tuple(filter(filter_floating, wanted[0](t)))
-            if len(found) > 0:
-                self.i3.command(';'.join(f'[con_id={con.id}] scratchpad show, sticky enable' for con in found))
+            cmd = ';'.join(f'[con_id={con.id}] scratchpad show, sticky enable' for con in wanted[0](t) if filter_floating(con))
+            if len(cmd) > 0:
+                self.i3.command(cmd)
                 return False
         elif s := t.scratchpad():
-            found = tuple(filter(filter_floating, wanted[0](s)))
-            if len(found) > 0:
-                self.i3.command(';'.join(f'[con_id={con.id}] scratchpad show, sticky enable' for con in found))
+            cmd = ';'.join(f'[con_id={con.id}] scratchpad show, sticky enable' for con in wanted[0](s) if filter_floating(con))
+            if len(cmd) > 0:
+                self.i3.command(cmd)
                 return False
             found = tuple(filter(filter_floating, wanted[0](t)))
             if len(found) > 0:
@@ -489,10 +492,9 @@ class KeybindingsHandler(i3BindHandler):
     }
     def launch_or_kill(self, name):
         wanted = self.launch_or_kill_ids[name]
-        t = self.i3.get_tree()
-        found = tuple(filter(filter_floating, wanted[0](t)))
-        if len(found) > 0:
-            self.i3.command(';'.join(f'[con_id={con.id}] kill' for con in found))
+        cmd = ';'.join(f'[con_id={con.id}] kill' for con in wanted[0](self.i3.get_tree()) if filter_floating(con))
+        if len(cmd) > 0:
+            self.i3.command(cmd)
             return
         self.i3.command(wanted[1])
     # }}}
@@ -505,28 +507,28 @@ class KeybindingsHandler(i3BindHandler):
 
     def _misc_scratchpad_mark_cb(self, i3, e):
         self.new_window_handler.remove(self._misc_scratchpad_mark_cb)
-        self._misc_scratchpad_mark(i3.get_tree().find_by_id(e.container.id))
+        t = i3.get_tree()
+        if con := t.find_by_id(e.container.id):
+            self._misc_scratchpad_mark(con, t)
 
-    def _misc_scratchpad_mark(self, con):
+    def _misc_scratchpad_mark(self, con, t):
         if ws := con.workspace():
-            my_id = str(uuid4())
-            marker = self.misc_scratchpad_marker + ws.name + ':' + my_id[0]
-            i = 1
-            while i < len(my_id) and marker in con.marks:
-                marker += my_id[i]
-                i += 1
-            self.i3.command(f'[con_id={con.id}] mark {marker}, floating enable, sticky disable; [con_mark=^{self.misc_scratchpad_marker}{ws.name}:.+] move scratchpad, scratchpad show; [con_id={con.id}] focus')
+            marks = set(m for c in t for m in c.marks)
+            mark = f'{self.misc_scratchpad_marker}{ws.name}:{choice(RANDOM_CHOICES)}'
+            while mark in marks:
+                mark += choice(RANDOM_CHOICES)
+            self.i3.command(f'[con_id={con.id}] mark {mark}, floating enable, sticky disable; [con_mark=^{self.misc_scratchpad_marker}{ws.name}:.+] move scratchpad, scratchpad show; [con_id={con.id}] focus')
 
     def misc_scratchpad_mark(self):
-        if foc := self.i3.get_tree().find_focused():
-            self._misc_scratchpad_mark(foc)
+        t = self.i3.get_tree()
+        if foc := t.find_focused():
+            self._misc_scratchpad_mark(foc, t)
 
     def misc_scratchpad_mark_new(self):
         self.new_window_handler.push(self._misc_scratchpad_mark_cb)
 
     def misc_scratchpad(self):
-        t = self.i3.get_tree()
-        if foc := t.find_focused():
+        if foc := self.i3.get_tree().find_focused():
             if ws := foc.workspace():
                 self.i3.command(f'[con_mark=^{self.misc_scratchpad_marker}{ws.name}:.+] scratchpad show')
     # }}}
@@ -543,7 +545,7 @@ class MarkedWindowMoveHandler(i3SignalHandler):
                 i3.command(f'[con_id={e.container.id}] move container to workspace {find_ws(i3.get_workspaces(), postfix=m.groups()[0])}, focus, unmark {mark}')
                 return
             elif 'shift' == mark:
-                for c in i3.get_tree().descendants():
+                for c in i3.get_tree():
                     if c.layout == 'tabbed':
                         i = 0
                         while i < len(c.nodes) and c.nodes[i].id != e.container.id:
