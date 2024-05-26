@@ -77,6 +77,11 @@ menus-have-icons=true
 monospace-font-name='Monospace 10'
 overlay-scrolling=false
 
+[org/mate/desktop/keybindings/custom100]
+action="/bin/sh -c 'if [ \"$(gsettings get org.mate.background draw-background)\" = true ]; then gsettings set org.mate.background draw-background false; gsettings set org.mate.background draw-background true; fi'"
+binding='<Primary><Mod4>b'
+name='Re-draw background'
+
 [org/mate/desktop/peripherals/mouse]
 cursor-theme='DMZ-White'
 
