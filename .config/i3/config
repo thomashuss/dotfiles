@@ -88,8 +88,8 @@ for_window [title="^Picture-in-Picture$" class="^[fF]irefox(-esr)?$"] sticky ena
 for_window [title="^Task Manager - Chromium$"] floating enable
 for_window [instance="^arandr$"] floating enable
 for_window [instance="^blueman-manager$"] floating enable, sticky enable
-for_window [instance="^caja$" floating] sticky enable
-for_window [instance="^caja$"] floating enable
+for_window [instance="^(caja|engrampa)$" floating] sticky enable
+for_window [instance="^(caja|engrampa)$"] floating enable
 for_window [instance="^carla-plugin$"] floating enable
 for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
 for_window [instance="^eom$"] floating enable
