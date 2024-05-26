@@ -323,7 +323,6 @@ class FileMode:
                     self.ipc_grp.loop().create_task(self._show_prompt())
 
     def show_prompt(self):
-        self.update_cache()
         self.ipc_grp.loop().create_task(self._show_prompt())
 # }}}
 # }}}
@@ -594,6 +593,7 @@ class FileModeSwitchHandler(i3SignalHandler):
             if self.keybindings_handler.scratch_focus('file', force_show=True):
                 self.file_mode_handler.new_window_handler.push(self.new_cb)
             else:
+                self.file_mode_handler.update_cache()
                 self.file_mode_handler.show_prompt()
         elif self.file_mode_handler.watching and e.change == 'default':
             self.keybindings_handler.scratch_focus('file')
