@@ -506,30 +506,29 @@ class KeybindingsHandler(i3BindHandler):
 
     def _misc_scratchpad_mark_cb(self, i3, e):
         self.new_window_handler.remove(self._misc_scratchpad_mark_cb)
-        t = i3.get_tree()
-        if con := t.find_by_id(e.container.id):
-            self._misc_scratchpad_mark(con, t)
+        if con := i3.get_tree().find_by_id(e.container.id):
+            self._misc_scratchpad_mark(con)
 
-    def _misc_scratchpad_mark(self, con, t):
+    def _misc_scratchpad_mark(self, con):
         if ws := con.workspace():
-            marks = set(m for c in t for m in c.marks)
+            marks = self.i3.get_marks()
             mark = f'{self.misc_scratchpad_marker}{ws.name}:{choice(RANDOM_CHOICES)}'
             while mark in marks:
                 mark += choice(RANDOM_CHOICES)
             self.i3.command(f'[con_id={con.id}] mark {mark}, floating enable, sticky disable; [con_mark=^{self.misc_scratchpad_marker}{ws.name}:.+] move scratchpad, scratchpad show; [con_id={con.id}] focus')
 
     def misc_scratchpad_mark(self):
-        t = self.i3.get_tree()
-        if foc := t.find_focused():
-            self._misc_scratchpad_mark(foc, t)
+        if foc := self.i3.get_tree().find_focused():
+            self._misc_scratchpad_mark(foc)
 
     def misc_scratchpad_mark_new(self):
         self.new_window_handler.push(self._misc_scratchpad_mark_cb)
 
     def misc_scratchpad(self):
-        if foc := self.i3.get_tree().find_focused():
-            if ws := foc.workspace():
+        for ws in self.i3.get_workspaces():
+            if ws.focused:
                 self.i3.command(f'[con_mark=^{self.misc_scratchpad_marker}{ws.name}:.+] scratchpad show')
+                return
     # }}}
 # }}}
 # Move marked window {{{
