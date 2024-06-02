@@ -57,7 +57,7 @@ labels-beside-icons=true
 always-use-browser=false
 click-policy='single'
 date-format='iso'
-default-folder-viewer='icon-view'
+default-folder-viewer='list-view'
 enable-delete=true
 
 [org/mate/desktop/background]
