@@ -110,9 +110,10 @@ class i3BindHandler(i3SignalHandler):
         super().__init__()
 
     def handler(self, i3, e):
-        if len(e.binding.command) > 4 and e.binding.command[0] == 'n' \
-        and e.binding.command[1] == 'o' and e.binding.command[2] == 'p':
-            if m := NOP_CMD_ARG.match(e.binding.command):
+        bcmd = e.binding.command
+        if len(bcmd) > 4 and bcmd[0] == 'n' \
+        and bcmd[1] == 'o' and bcmd[2] == 'p':
+            if m := NOP_CMD_ARG.match(bcmd):
                 cmd = m.groups()
                 if f := getattr(self, cmd[0], None):
                     if len(cmd[1]) == 0:
@@ -282,8 +283,8 @@ class FileMode:
         if len(self.out) == 0:
             for k in self.cache:
                 name = self.cache[k].get_wm_name()
-                if name in self.aliases:
-                    name = f'{self.aliases[name]}:{name}'
+                if alias := self.aliases.get(name):
+                    name = f'{alias}:{name}'
                 if name not in self.out:
                     self.out[name] = k
                 else:
@@ -377,10 +378,7 @@ class SpecialWorkspaceHandler(i3SignalHandler):
     }
 
     def get_launcher(self, ws):
-        if ws.name[0] in self.launchers:
-            launcher = self.launchers[ws.name[0]]
-            return launcher
-        return None
+        return self.launchers.get(ws.name[0])
 
     def handler(self, i3, e):
         if len(e.current.nodes) > 0:
@@ -543,13 +541,18 @@ class MarkedWindowMoveHandler(i3SignalHandler):
                 i3.command(f'[con_id={e.container.id}] move container to workspace {find_ws(i3.get_workspaces(), postfix=m.groups()[0])}, focus, unmark {mark}')
                 return
             elif 'shift' == mark:
+                i = 0
+                nodes = None
+                l = 0
                 for c in i3.get_tree():
                     if c.layout == 'tabbed':
                         i = 0
-                        while i < len(c.nodes) and c.nodes[i].id != e.container.id:
+                        nodes = c.nodes
+                        l = len(nodes)
+                        while i < l and nodes[i].id != e.container.id:
                             i += 1
-                        if i != len(c.nodes):
-                            cmd = 'move right,' * (len(c.nodes) - i)
+                        if i != l:
+                            cmd = 'move right,' * (l - i)
                             i3.command(f'[con_id={e.container.id}] {cmd}unmark shift')
                             return
                 i3.command(f'[con_id={e.container.id}] unmark shift')
@@ -585,9 +588,10 @@ class FileModeSwitchHandler(i3SignalHandler):
             self.file_mode_handler.show_prompt()
 
     def handler(self, i3, e):
-        if not self.file_mode_handler.watching and len(e.change) == 4 \
-                and e.change[0] == 'f' and e.change[1] == 'i' \
-                and e.change[2] == 'l' and e.change[3] == 'e':
+        change = e.change
+        if not self.file_mode_handler.watching and len(change) == 4 \
+                and change[0] == 'f' and change[1] == 'i' \
+                and change[2] == 'l' and change[3] == 'e':
             self.file_mode_handler.watch()
             if self.keybindings_handler.scratch_focus('file', force_show=True):
                 self.file_mode_handler.new_window_handler.push(self.new_cb)
