@@ -159,6 +159,7 @@ set $launch_terminal exec exec mate-terminal
 # }}}
 # Launch screenshot utility {{{
 set $screenshot exec exec flameshot gui
+set $screenshot_ocr exec --no-startup-id flameshot gui -r -s | tesseract - - | head -c-1 | xclip -i -sel c
 # }}}
 # Quietly take screenshot {{{
 set $copy_screenshot exec --no-startup-id flameshot screen -r | xclip -selection clipboard -t image/png
@@ -817,6 +818,7 @@ bindsym $pmod+f mode file
 bindsym $pmod+j $word_count
 bindsym $pmod+m nop scratch_focus phone_control
 bindsym $pmod+p nop scratch_focus password_man
+bindsym $pmod+Print $screenshot_ocr
 bindsym $pmod+q nop launch_this
 bindsym $pmod+s $screenshot
 bindsym $pmod+t nop scratch_focus timer
