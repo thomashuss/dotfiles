@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LyX
+GenericName=Document Processor
+Comment=High level LaTeX frontend
+Keywords=WYSIWYG;WYSIWYM;TeX;LaTeX;GUI;frontend;editor;
+Exec=env QT_STYLE_OVERRIDE=adwaita-dark lyx %F
+TryExec=lyx
+Icon=lyx
+StartupNotify=false
+StartupWMClass=lyx
+Terminal=false
+Categories=Office;WordProcessor;Qt;
+MimeType=text/x-lyx;application/x-lyx;
