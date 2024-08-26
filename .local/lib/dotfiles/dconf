@@ -61,7 +61,7 @@ default-folder-viewer='list-view'
 enable-delete=true
 
 [org/mate/desktop/background]
-primary-color='rgb(64,62,54)'
+primary-color='rgb(0,0,0)'
 secondary-color='rgb(82,75,55)'
 show-desktop-icons=false
 
