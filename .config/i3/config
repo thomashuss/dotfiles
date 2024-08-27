@@ -818,8 +818,8 @@ bindsym $pmod+f mode file
 bindsym $pmod+j $word_count
 bindsym $pmod+m nop scratch_focus phone_control
 bindsym $pmod+p nop scratch_focus password_man
-bindsym $pmod+Print $screenshot_ocr
 bindsym $pmod+q nop launch_this
+bindsym $pmod+r $screenshot_ocr
 bindsym $pmod+s $screenshot
 bindsym $pmod+t nop scratch_focus timer
 bindsym $pmod+u nop scratch_focus charmap
@@ -835,9 +835,6 @@ bindsym XF86Calculator nop scratch_focus calc
 #bindsym F4 workspace back_and_forth
 bindsym Print $copy_screenshot
 bindsym Shift+Print $save_screenshot
-#bindsym Pause workspace back_and_forth
-#bindsym Pause kill
-#bindsym $smod+Pause [workspace=__focused__] kill;$kill_d
 # }}}
 # focus/move with numpad {{{
 bindsym KP_Left focus left
