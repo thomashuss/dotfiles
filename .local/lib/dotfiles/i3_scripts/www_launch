@@ -9,12 +9,11 @@ try_firefox() {
 	done
 }
 if [ p = "$1" ]; then
-	regex='^([fF]irefox(-esr)?|Chromium|Pale moon)$'
+	regex='^([fF]irefox(-esr)?|[cC]hromium|Pale moon)$'
 	launch_browser () {
 		case "$1" in
-			"firefox"*) try_firefox --private-window;;
-			"Firefox"*) try_firefox --private-window;;
-			"Chromium") i3-msg -q "exec --no-startup-id exec chromium --incognito";;
+			*"irefox"*) try_firefox --private-window;;
+			*"hromium") i3-msg -q "exec --no-startup-id exec chromium --incognito";;
 			"Pale moon") i3-msg -q "exec exec palemoon --private-window";;
 			*) return 1;;
 		esac
@@ -33,12 +32,11 @@ if [ p = "$1" ]; then
 		fi
 	}
 else
-	regex='^([fF]irefox(-esr)?|Chromium|Pale moon)$'
+	regex='^([fF]irefox(-esr)?|[cC]hromium|Pale moon)$'
 	launch_browser () {
 		case "$1" in
-			"firefox"*) try_firefox;;
-			"Firefox"*) try_firefox;;
-			"Chromium") i3-msg -q "exec --no-startup-id exec chromium";;
+			*"irefox"*) try_firefox;;
+			*"hromium") i3-msg -q "exec --no-startup-id exec chromium";;
 			"Pale moon") i3-msg -q "exec exec palemoon";;
 			*) return 1;;
 		esac
@@ -52,6 +50,6 @@ else
 	}
 fi
 
-if ! launch_browser "$(i3-msg -t get_tree | jq -r 'last(.. | ((select(.type? == "workspace" and (.name|test("^w"))) | .. | select(.type? == "con")), select(.focused? == true)) | .window_properties? // empty | .class | select(test("'"$regex"'")))')"; then
+if ! launch_browser "$(i3-msg -t get_tree | jq -r 'first(.. | (select(.focused? == true), select(.type? == "workspace" and (.name|test("^w"))) | .. | select(.type? == "con")) | .window_properties? // empty | .class | select(test("'"$regex"'")))')"; then
 	launch_default
 fi
