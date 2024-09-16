@@ -381,15 +381,15 @@ class SpecialWorkspaceHandler(i3SignalHandler):
         return self.launchers.get(ws.name[0])
 
     def handler(self, i3, e):
-        if len(e.current.nodes) > 0:
-            return
-        if launcher := self.get_launcher(e.current):
-            for ws in i3.get_workspaces():
-                if ws.focused:
-                    if ws.name != e.current.name:
-                        return
-                    break
-            i3.command(launcher)
+        current = e.current
+        if len(current.nodes) == 0 and len(current.floating_nodes) == 0:
+            if launcher := self.get_launcher(current):
+                for ws in i3.get_workspaces():
+                    if ws.focused:
+                        if ws.name != current.name:
+                            return
+                        break
+                i3.command(launcher)
 # }}}
 # Keybindings {{{
 RANDOM_CHOICES = 'abcdefghijklmnopqrstuvwxyz1234567890'
