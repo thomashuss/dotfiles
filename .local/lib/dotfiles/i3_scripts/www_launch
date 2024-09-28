@@ -10,7 +10,7 @@ try_firefox() {
 }
 if [ p = "$1" ]; then
 	regex='^([fF]irefox(-esr)?|[cC]hromium|Pale moon)$'
-	launch_browser () {
+	launch_browser() {
 		case "$1" in
 			*"irefox"*) try_firefox --private-window;;
 			*"hromium") i3-msg -q "exec --no-startup-id exec chromium --incognito";;
@@ -33,7 +33,7 @@ if [ p = "$1" ]; then
 	}
 else
 	regex='^([fF]irefox(-esr)?|[cC]hromium|Pale moon)$'
-	launch_browser () {
+	launch_browser() {
 		case "$1" in
 			*"irefox"*) try_firefox;;
 			*"hromium") i3-msg -q "exec --no-startup-id exec chromium";;
@@ -50,6 +50,6 @@ else
 	}
 fi
 
-if ! launch_browser "$(i3-msg -t get_tree | jq -r 'first(.. | (select(.focused? == true), select(.type? == "workspace" and (.name|test("^w"))) | .. | select(.type? == "con")) | .window_properties? // empty | .class | select(test("'"$regex"'")))')"; then
+if ! launch_browser "$(i3-msg -t get_tree | jq -r 'first(([..|select(.type?=="con" and .focused?==true)|.window_properties? // empty|.class|select(test("'"$regex"'"))],[..|select(.type?=="workspace" and (.name|test("^w")))|..|select(.type?=="con")|.window_properties? // empty|.class|select(test("'"$regex"'"))])|.[])')"; then
 	launch_default
 fi
