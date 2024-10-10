@@ -184,8 +184,8 @@ set $now_playing exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/no
 set $select_player exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/select_player"
 # }}}
 # Traverse pages in browser {{{
-set $prev_page exec --no-startup-id xdotool key "Alt+Left"
-set $next_page exec --no-startup-id xdotool key "Alt+Right"
+#set $prev_page exec --no-startup-id xdotool key "Alt+Left"
+#set $next_page exec --no-startup-id xdotool key "Alt+Right"
 # }}}
 # Cycle tabs in browser {{{
 set $next_tab exec --no-startup-id xdotool key "Ctrl+Next"
@@ -207,10 +207,10 @@ set $notif_close exec --no-startup-id dunstctl close
 set $notif_clear exec --no-startup-id dunstctl close-all
 # }}}
 # Open firefox library {{{
-set $ff_lib exec --no-startup-id xdotool key "ctrl+H"
+#set $ff_lib exec --no-startup-id xdotool key "ctrl+H"
 # }}}
 # Evolution: mark mail as read and move to folder {{{
-set $e_read_move exec --no-startup-id xdotool key "Ctrl+k" "Ctrl+V"
+#set $e_read_move exec --no-startup-id xdotool key "Ctrl+k" "Ctrl+V"
 # }}}
 # Launch office program {{{
 set $launch_office exec libreoffice
@@ -228,10 +228,7 @@ set $word_count exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/wor
 set $click exec --no-startup-id xdotool click 1
 # }}}
 # Center mouse in focused window {{{
-set $center_mouse exec --no-startup-id xdotool getwindowfocus mousemove --window %1 --polar 0 0
-# }}}
-# Focus cycle {{{
-set $focus_cycle exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/focus_stack 0.7"
+#set $center_mouse exec --no-startup-id xdotool getwindowfocus mousemove --window %1 --polar 0 0
 # }}}
 # Run program with clipboard contents {{{
 set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F 'exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/run_with_clipboard %s"' -P 'Run with clipboard: ' > /dev/null
@@ -837,14 +834,14 @@ bindsym Print $copy_screenshot
 bindsym Shift+Print $save_screenshot
 # }}}
 # focus/move with numpad {{{
-bindsym KP_Left focus left
-bindsym KP_Down focus down
-bindsym KP_Up focus up
-bindsym KP_Right focus right
-bindsym Shift+KP_Left move left
-bindsym Shift+KP_Down move down
-bindsym Shift+KP_Up move up
-bindsym Shift+KP_Right move right
+#bindsym KP_Left focus left
+#bindsym KP_Down focus down
+#bindsym KP_Up focus up
+#bindsym KP_Right focus right
+#bindsym Shift+KP_Left move left
+#bindsym Shift+KP_Down move down
+#bindsym Shift+KP_Up move up
+#bindsym Shift+KP_Right move right
 # }}}
 # control {{{
 # media control {{{
@@ -870,9 +867,9 @@ bindsym button2 kill
 # }}}
 # microsoft keyboard {{{
 # top left 1,2,3 keys {{{
-bindsym Mod4+1 workspace back_and_forth
-bindsym Mod4+2 focus mode_toggle
-bindsym Mod4+3 kill
+#bindsym Mod4+1 workspace back_and_forth
+#bindsym Mod4+2 focus mode_toggle
+#bindsym Mod4+3 kill
 # }}}
 # screen snip key
 bindsym Mod4+Shift+s $screenshot
