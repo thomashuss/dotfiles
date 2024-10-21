@@ -438,8 +438,8 @@ class KeybindingsHandler(i3BindHandler):
                       'exec "exec mate-terminal --name scratch_term --disable-factory"'),
         'charmap': (lambda c: c.find_instanced(r'^gucharmap$'),
                       'exec exec gucharmap'),
-        'timer': (lambda c: c.find_instanced(r'^org\.gnome\.clocks$'),
-                      'exec --no-startup-id exec gnome-clocks'),
+        'timer': (lambda c: c.find_instanced(r'^alarm-clock-applet$'),
+                      'exec --no-startup-id exec alarm-clock-applet'),
         'file': (lambda c: c.find_instanced(r'^(caja|engrampa)$'),
                       'exec --no-startup-id exec caja --no-desktop $HOME'),
     }
