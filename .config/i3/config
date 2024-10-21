@@ -785,7 +785,7 @@ bindsym --release w exec --no-startup-id xdotool key --clearmodifiers "ctrl+Righ
 bindsym --release v mode "visual"
 
 bindsym Escape $dm; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys_revert"
-bindsym $pmod+Shift+e $dm; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys_revert"
+bindsym $pmod+Control+e $dm; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys_revert"
 }
 mode "visual" {
 bindsym --release Left exec --no-startup-id xdotool key --clearmodifiers "Shift+Left"
@@ -798,7 +798,7 @@ bindsym --release Escape mode "normal"; exec --no-startup-id xdotool key --clear
 bindsym --release y mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "ctrl+c" "Left"
 bindsym --release d mode "normal"; exec --no-startup-id xdotool key --clearmodifiers "ctrl+x" "Left"
 }
-bindsym $pmod+Shift+e mode "normal"; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys"
+bindsym $pmod+Control+e mode "normal"; exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/vim_keys"
 # }}}
 # }}}
 # launch application {{{
