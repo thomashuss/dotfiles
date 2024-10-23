@@ -11,6 +11,7 @@ from random import choice
 import Xlib.X
 import Xlib.Xatom
 import Xlib.display
+import Xlib.error
 import os
 import re
 import signal
@@ -180,6 +181,9 @@ class IPCGroup:
         if wid in self._x_windows:
             del self._x_windows[wid]
 
+    def clear_x_windows(self):
+        self._x_windows.clear()
+
     def loop(self):
         if self._loop is None:
             raise RuntimeError('Tried to access event loop before it was ready.')
@@ -221,6 +225,7 @@ class FileMode:
         self.watching = False
         self._rofi = None
         self._w_set = set()
+        self._tmp = list()
 
     def register(self, ipc_grp):
         self.ipc_grp = ipc_grp
@@ -282,7 +287,11 @@ class FileMode:
             return
         if len(self.out) == 0:
             for k in self.cache:
-                name = self.cache[k].get_wm_name()
+                try:
+                    name = self.cache[k].get_wm_name()
+                except Xlib.error.BadWindow:
+                    self._tmp.append(k)
+                    continue
                 if alias := self.aliases.get(name):
                     name = f'{alias}:{name}'
                 if name not in self.out:
@@ -294,6 +303,11 @@ class FileMode:
                         count += 1
                         new_name = f'{name} {count}'
                     self.out[new_name] = k
+            if len(self._tmp) > 0:
+                for k in self._tmp:
+                    del self._cache[k]
+                self.ipc_grp.clear_x_windows()
+                self._tmp.clear()
         if self._rofi is None:
             await self._set_rofi()
         proc = await asyncio.create_subprocess_exec(
