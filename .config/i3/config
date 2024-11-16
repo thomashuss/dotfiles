@@ -78,18 +78,18 @@ for_window [workspace=^$ws_float] floating enable
 # }}}
 # window rules {{{
 # floating windows {{{
-for_window [class="^dosbox$"] floating disable
 for_window [class="^KeePassXC$" title="^((?!^Unlock Database).)*$"] floating enable, sticky enable
 for_window [class="^MusE$" title="^((?!^MusE( Project)?).)*$"] floating enable
+for_window [class="^dosbox$"] floating disable
 for_window [class="^zoom$" title="^((?!^Zoom (Meeting|for Government)$).)*$"] floating enable
 for_window [class="^zoom$" title="^Zoom (Meeting|for Government)$"] floating disable
 for_window [instance="^((?!^Navigator$).)*$" class="^([fF]irefox(-esr)?|Tor Browser|Pale moon)$"] floating enable
-for_window [title="^Picture-in-Picture$" class="^[fF]irefox(-esr)?$"] sticky enable
-for_window [title="^Task Manager - Chromium$"] floating enable
-for_window [instance="^arandr$"] floating enable
-for_window [instance="^blueman-manager$"] floating enable, sticky enable
 for_window [instance="^(caja|engrampa)$" floating] sticky enable
 for_window [instance="^(caja|engrampa)$"] floating enable
+for_window [instance="^Variety$"] floating enable
+for_window [instance="^alarm-clock-applet$"] floating enable, sticky enable
+for_window [instance="^arandr$"] floating enable
+for_window [instance="^blueman-manager$"] floating enable, sticky enable
 for_window [instance="^carla-plugin$"] floating enable
 for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
 for_window [instance="^eom$"] floating enable
@@ -108,13 +108,14 @@ for_window [instance="^mozo$"] floating enable
 for_window [instance="^mupen64plus$"] floating disable
 for_window [instance="^nm-connection-editor$"] floating enable
 for_window [instance="^org\.gnome\.clocks$"] floating enable, sticky enable
-for_window [instance="^alarm-clock-applet$"] floating enable, sticky enable
 for_window [instance="^patch1$"] floating enable
 for_window [instance="^pavucontrol$"] floating enable, sticky enable
 for_window [instance="^scratch_calc$"] floating enable, sticky enable
 for_window [instance="^scratch_term$"] floating enable, sticky enable
 for_window [instance="^system-config-printer$"] floating enable
 for_window [title="^Console window" class="^MultiMC$"] floating enable
+for_window [title="^Picture-in-Picture$" class="^[fF]irefox(-esr)?$"] sticky enable
+for_window [title="^Task Manager - Chromium$"] floating enable
 # }}}
 # workspace assignments {{{
 # Only for windows that need to be out of the way.
