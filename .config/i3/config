@@ -93,8 +93,8 @@ for_window [instance="^blueman-manager$"] floating enable, sticky enable
 for_window [instance="^carla-plugin$"] floating enable
 for_window [instance="^crx_ocdlmjhbenodhlknglojajgokahchlkk$" class="^Chromium$"] floating enable
 for_window [instance="^eom$"] floating enable
-for_window [instance="evolution" window_role="^ECompEditor(Event|Task|Memo)"] floating enable
-for_window [instance="evolution-alarm-notify"] floating enable
+for_window [instance="[eE]volution$" window_role="^ECompEditor(Event|Task|Memo)"] floating enable
+for_window [instance="^evolution-alarm-notify$"] floating enable
 for_window [instance="^feh$"] floating enable
 for_window [instance="^flameshot$"] floating enable
 for_window [instance="^floating$"] floating enable
@@ -126,13 +126,13 @@ assign [class="^dolphin-emu$"] workspace $ws_game
 assign [class="^zoom$"] workspace $ws_chat
 assign [instance="^(microsoft teams - preview|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$"] workspace $ws_chat
 assign [instance="^discord$"] workspace $ws_chat
-assign [instance="evolution"] workspace $ws_mail
+assign [instance="[eE]volution$"] workspace $ws_mail
 assign [class="^thunderbird"] workspace $ws_mail
 assign [instance="^(ncspot|spotify)$"] workspace $ws_media
 for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
 for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] mark shift
 for_window [class="^(Chromium|[fF]irefox(-esr)?|Pale moon)$" workspace=$ws_mail] move container to workspace $ws_web
-for_window [class="^((?!Evolution|^thunderbird).)*$" workspace=$ws_mail tiling tiling_from=auto] mark move:mail
+for_window [class="^((?![eE]volution$|^thunderbird).)*$" workspace=$ws_mail tiling tiling_from=auto] mark move:mail
 # }}}
 # window layouts {{{
 for_window [class="^MusE$"] layout tabbed
