@@ -127,7 +127,7 @@ assign [class="^zoom$"] workspace $ws_chat
 assign [instance="^(microsoft teams - preview|crx_cifhbcnohmdccbgoicgdjpfamggdegmo)$"] workspace $ws_chat
 assign [instance="^discord$"] workspace $ws_chat
 assign [instance="[eE]volution$"] workspace $ws_mail
-assign [class="^thunderbird"] workspace $ws_mail
+assign [instance="^((?!^Calendar$).)*$" class="^thunderbird"] workspace $ws_mail
 assign [instance="^(ncspot|spotify)$"] workspace $ws_media
 for_window [instance="^((?!^crx_cifhbcnohmdccbgoicgdjpfamggdegmo$).)*$" class="^Chromium$" workspace=$ws_chat tiling tiling_from=auto] move container to workspace $ws_editor
 for_window [class="^((?!^(Chromium|[fF]irefox(-esr)?|Pale moon)$).)*$" title="^((?!Chromium$).)*$" workspace=$ws_web tiling tiling_from=auto] mark shift
