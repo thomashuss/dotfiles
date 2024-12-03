@@ -305,7 +305,7 @@ class FileMode:
                     self.out[new_name] = k
             if len(self._tmp) > 0:
                 for k in self._tmp:
-                    del self._cache[k]
+                    del self.cache[k]
                 self.ipc_grp.clear_x_windows()
                 self._tmp.clear()
         if self._rofi is None:
