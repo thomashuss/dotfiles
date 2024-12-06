@@ -623,7 +623,7 @@ bindsym e split v;$dm
 mode "file" {
 bindsym button2 kill
 bindcode $ergo mode "file ergo"
-bindsym F9 nop file_prompt
+bindsym F4 nop file_prompt
 bindsym $pmod+f mode default
 bindsym $pmod+Tab $notif_close
 }
