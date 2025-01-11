@@ -106,6 +106,9 @@ percentage-critical=10
 percentage-low=20
 use-time-for-policy=false
 
+[org/mate/panel/menubar]
+show-icon=false
+
 [org/mate/settings-daemon/plugins/media-keys]
 calculator='disabled'
 control-center='disabled'
