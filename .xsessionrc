@@ -3,6 +3,6 @@ export TERMINAL="$(which mate-terminal)"
 export MOZ_USE_XINPUT2=1
 if [ -r ~/.profile ]; then . ~/.profile; fi
 xset b off
-xcape -e Alt_L=Escape -t 400
+xcape -e 'Alt_L=Escape;Super_L=Control_L|n' -t 400
 unclutter &
 playerctld daemon
