@@ -1,2 +1,2 @@
 #!/bin/sh
-timeout 30s "$HOME/.local/lib/dotfiles/misc_scripts/launch" "$HOME/.local/lib/dotfiles/applications/chat"
+exec "$HOME/.local/lib/dotfiles/applications/chat"

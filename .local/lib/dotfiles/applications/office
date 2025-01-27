@@ -1,8 +1,2 @@
-lowriter
-localc
-loimpress
-lyx	QT_STYLE_OVERRIDE=adwaita-dark lyx
-terminal	"$TERMINAL"	true
-ms365	$HOME/.local/lib/dotfiles/misc_scripts/ms365	test -f "$HOME/.local/share/applications/chrome-ocdlmjhbenodhlknglojajgokahchlkk-Default.desktop"
-code
-atril
+#!/bin/sh
+"$HOME/.local/lib/dotfiles/misc_scripts/launch_desktop" 'office' 'Office|TextEditor|Development|Microsoft 365'

@@ -1,0 +1,77 @@
+#!/bin/sh
+DESKTOP_LANG=en
+prompt() {
+	IFS=' '
+	if c=$(for n in $seq; do
+			eval echo '"$name_'"$n"'"'
+		done | dmenu -i -l 50 -fn sans -p "$1"); then
+		eval 'case $c in
+		"");;
+		'"$(for n in $seq; do
+			echo '"$name_'"$n"'") exec dex "$dfile_'"$n"'";;'
+		done)"'
+		*);;
+		esac'
+	fi
+}
+cache=/tmp/launch_desktop_"$1"."$USER"
+if [ -n "$(find "$cache" 2> /dev/null)" ]; then
+	. "$cache"
+	prompt "$1"
+else
+	IFS=$(printf '\t')
+	awk '
+	function p(s) {
+		printf("%s/applications%c",s,0)
+	}
+	BEGIN {
+		n=split(ENVIRON["XDG_DATA_DIRS"],a,":")
+		h=ENVIRON["HOME"] "/.local/share"
+		u="/usr/share"
+		p(h)
+		for (i=1; i<=n; i++) {
+			s = a[i]
+			if (s!=h && s!=u) p(s)
+		}
+		p(u)
+	}' | find -files0-from - -name '*.desktop' 2> /dev/null\
+	| xargs awk -vq='^[^=]+=.*('"$2"')' -vs="$IFS" -vfields="$3" -vignore="$4" '
+	BEGIN {
+		DEFAULT_FIELDS = "^(Name|GenericName|Categories|Comment|Exec|Keywords)"
+		if (fields) {
+			fields = "^(" fields ")"
+		} else {
+			fields = DEFAULT_FIELDS
+		}
+	}
+	function p() {
+		if (f != 2 && fname && dname && !printed[dname]) {
+			print dname s fname
+			printed[dname] = 1
+		}
+	}
+	FNR==1 {
+		p(); fname=dname=0; f=1; next
+	}
+	f==2 { next }
+	$0=="NoDisplay=true" || (ignore && $0~ignore && $0~DEFAULT_FIELDS) {
+		f=2; next
+	}
+	dname==0 && /^Name(\['"$DESKTOP_LANG"'[^\]]*\])?=/ {
+		dname=substr($0,index($0,"=")+1)
+	}
+	f==1 && $0~fields && $0~q {
+		fname=FILENAME; f=0
+	}
+	END {p()}' | sort -k1 -t"$IFS" | nl -nln -s"$IFS" -w1 | {
+		seq=
+		while read -r n name dfile; do
+			seq="$seq $n"
+			eval "name_$n="'$name'
+			eval "dfile_$n="'$dfile'
+		done
+		set | grep -E '^(seq|(name|dfile)_[0-9]+)=' > "$cache"
+		chmod 600 "$cache"
+		prompt "$1"
+	}
+fi

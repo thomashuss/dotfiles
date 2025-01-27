@@ -1,4 +1,2 @@
-teams	gtk-launch chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default.desktop	test -f "$HOME/.local/share/applications/chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default.desktop"
-zoom
-skype	skypeforlinux	command -v skypeforlinux
-discord
+#!/bin/sh
+"$HOME/.local/lib/dotfiles/misc_scripts/launch_desktop" 'chat' 'Zoom|Teams|Skype|Discord'
