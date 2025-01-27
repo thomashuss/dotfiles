@@ -24,8 +24,8 @@ doesn't conflict with i3.
 
 ```
 adwaita-qt alarm-clock-applet atril blueman caja caja-image-converter
-caja-open-terminal caja-sendto caja-xattr-tags dconf-cli dmz-cursor-theme dunst
-engrampa eom firefox-esr firewall-config flameshot fonts-dejavu
+caja-open-terminal caja-sendto caja-xattr-tags dconf-cli dex dmz-cursor-theme
+dunst engrampa eom firefox-esr firewall-config flameshot fonts-dejavu
 fonts-liberation fonts-noto gnome-keyring gucharmap i3-wm jq keepassxc
 libnotify-bin lightdm mate-applets mate-control-center mate-icon-theme
 mate-media mate-power-manager mate-screensaver mate-session-manager
