@@ -1,2 +1,2 @@
 #!/bin/sh
-"$HOME/.local/lib/dotfiles/misc_scripts/launch_desktop" 'office' 'Office|TextEditor|Development|Microsoft 365'
+"$HOME/.local/lib/dotfiles/misc_scripts/launch_desktop" 'office' 'Office|TextEditor|Development|Terminal|Microsoft 365'
