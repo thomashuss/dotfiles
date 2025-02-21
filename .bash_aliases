@@ -9,3 +9,4 @@ alias sond="cd ~/school_onedrive"
 alias dl="cd ~/Downloads"
 alias e="$EDITOR"
 alias mpv-yta='mpv --ytdl-format=140 --force-window'
+alias tm='tmux attach || tmux new-session \; split-window -h \; last-pane'
