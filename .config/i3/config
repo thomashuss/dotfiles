@@ -231,7 +231,7 @@ set $click exec --no-startup-id xdotool click 1
 #set $center_mouse exec --no-startup-id xdotool getwindowfocus mousemove --window %1 --polar 0 0
 # }}}
 # Run program with clipboard contents {{{
-set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F 'exec --no-startup-id "$HOME/.local/lib/dotfiles/misc_scripts/run_with_clipboard %s"' -P 'Run with clipboard: ' > /dev/null
+set $clipboard_run exec --no-startup-id i3-input -f 'pango: sans 10' -F "exec --no-startup-id echo 'exec %s "'"$(xclip -o -sel c)"'"'"' | "$SHELL" -i > /dev/null' -P 'Run with clipboard: ' > /dev/null
 # }}}
 # Misc scratchpad {{{
 set $unmark_d [con_id=__focused__ con_mark="^d.+:.+"] unmark
