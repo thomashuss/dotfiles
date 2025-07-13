@@ -307,6 +307,8 @@ class FileMode:
                 except Xlib.error.BadWindow:
                     self.__tmp.append(k)
                     continue
+                if len(name) == 0:
+                    continue
                 if alias := self.aliases.get(name):
                     name = f'{alias}:{name}'
                 if name not in self.out:
