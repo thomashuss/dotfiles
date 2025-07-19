@@ -30,10 +30,6 @@ notify-sound-beep=false
 notify-sound-enabled=true
 notify-status-notification=false
 
-[org/gnome/evolution/plugin/prefer-plain]
-mode='prefer_plain'
-show-suppressed=true
-
 [org/gnome/evolution/shell]
 buttons-style='icons'
 menubar-visible=true
