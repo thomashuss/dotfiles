@@ -388,7 +388,7 @@
 #    fullscreen = show
 
 [onedrive_nag]
-	summary = "OneDrive"
+	summary = "OneDrive Client for Linux"
 	body = "WARNING: Your onedrive client version is now obsolete and unsupported. Please upgrade your client version."
 	skip_display = yes
 	history_ignore = yes
