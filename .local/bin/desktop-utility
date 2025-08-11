@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # Imports {{{
-import gbulb
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.events import GLibEventLoopPolicy
+from gi.repository import Gtk
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 import asyncio
@@ -664,7 +667,7 @@ class FileModeSwitchHandler(i3SignalHandler):
 # }}}
 # Main {{{
 if __name__ == '__main__':
-    gbulb.install(gtk=False)
+    asyncio.set_event_loop_policy(GLibEventLoopPolicy())
     DBusGMainLoop(set_as_default=True)
 
     special_ws = SpecialWorkspaceHandler()
@@ -684,7 +687,7 @@ if __name__ == '__main__':
         ScreensaverHandler()
     ))
 
-    loop = gbulb.get_event_loop()
+    loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, loop.stop)
     loop.add_signal_handler(signal.SIGTERM, loop.stop)
     du.run(loop)

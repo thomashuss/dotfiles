@@ -31,7 +31,7 @@ libnotify-bin lightdm mate-applets mate-control-center mate-icon-theme
 mate-media mate-power-manager mate-screensaver mate-session-manager
 mate-settings-daemon mate-terminal mozo mpv mpv-mpris network-manager-gnome
 pavucontrol picom pipewire-audio pipewire-jack playerctl python3-dbus
-python3-gbulb python3-i3ipc python3-xlib qalculate-gtk redshift-gtk rofi rsync
+python3-gi python3-i3ipc python3-xlib qalculate-gtk redshift-gtk rofi rsync
 suckless-tools unclutter-xfixes vim-gtk3 wmctrl xcape xclip xdotool
 ```
 
