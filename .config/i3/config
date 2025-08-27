@@ -77,6 +77,7 @@ for_window [workspace=^$ws_float] floating enable
 # }}}
 # }}}
 # window rules {{{
+# xprop: WM_CLASS(STRING) = <instance>, <class>
 # floating windows {{{
 for_window [class="^KeePassXC$" title="^((?!^Unlock Database).)*$"] floating enable, sticky enable
 for_window [class="^MusE$" title="^((?!^MusE( Project)?).)*$"] floating enable
@@ -135,6 +136,7 @@ for_window [class="^((?![eE]volution$|^thunderbird).)*$" workspace=$ws_mail tili
 # window layouts {{{
 for_window [class="^MusE$"] layout tabbed
 for_window [instance="^VirtualBox Manager$"] layout tabbed
+for_window [instance="^virt-manager$"] layout tabbed
 for_window [instance="^qtractor$"] layout tabbed
 for_window [instance="^calibre-gui$" tiling] split h,layout tabbed
 for_window [instance="^(Navigator|chromium)$" workspace=$ws_web] layout tabbed
