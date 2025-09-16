@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 alias ccopy="xclip -i -sel c"
 alias cpaste="xclip -o -sel c"
+alias cwd="pwd | head -c-1 | xclip -i -sel c"
 alias i3-config='"$EDITOR" "$HOME"/.config/i3/config'
 alias dconf-config="vim -o $HOME/.local/lib/dotfiles/dconf <(dconf dump /)"
 alias doc="cd ~/Documents"
