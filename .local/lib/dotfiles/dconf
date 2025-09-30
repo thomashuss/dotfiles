@@ -12,7 +12,7 @@ overlay-scrolling=false
 use-24hour-format=true
 
 [org/gnome/evolution/mail]
-composer-mode='markdown-html'
+composer-mode='html'
 composer-reply-start-bottom=false
 forward-style-name='quoted'
 image-loading-policy='never'
