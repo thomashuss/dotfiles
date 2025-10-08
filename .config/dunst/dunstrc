@@ -387,17 +387,17 @@
 #    msg_urgency = critical
 #    fullscreen = show
 
-[onedrive_nag]
-	summary = "OneDrive Client for Linux"
-	body = "WARNING: Your onedrive client version is now obsolete and unsupported. Please upgrade your client version."
-	skip_display = yes
-	history_ignore = yes
+#[onedrive_nag]
+#	summary = "OneDrive Client for Linux"
+#	body = "WARNING: Your onedrive client version is now obsolete and unsupported. Please upgrade your client version."
+#	skip_display = yes
+#	history_ignore = yes
 
-[onedrive_nag1]
-	summary = "OneDrive Client for Linux"
-	body = "INFO: A new onedrive client version is available. Please upgrade your client version when possible."
-	skip_display = yes
-	history_ignore = yes
+#[onedrive_nag1]
+#	summary = "OneDrive Client for Linux"
+#	body = "INFO: A new onedrive client version is available. Please upgrade your client version when possible."
+#	skip_display = yes
+#	history_ignore = yes
 
 #[espeak]
 #    summary = "*"
