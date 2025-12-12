@@ -899,7 +899,6 @@ bindsym $pmod+Control+r restart
 # }}}
 # }}}
 # start programs {{{
-exec --no-startup-id exec picom 2> /dev/null
 exec --no-startup-id exec $HOME/.local/bin/desktop-utility
 # }}}
 # machine specific config
