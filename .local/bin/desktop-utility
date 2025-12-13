@@ -397,6 +397,7 @@ class ScreensaverHandler(DBusSignalHandler):
             os.system('dunstctl set-paused true')
         elif state == 0:
             os.system('dunstctl set-paused false')
+            os.system('pgrep variety > /dev/null && variety -n 2> /dev/null')
 # }}}
 # Special workspace {{{
 
